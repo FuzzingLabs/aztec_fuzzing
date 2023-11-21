@@ -1,11 +1,21 @@
 # Aztek Fuzzing
 
-## REPORTS 
+## REPORTS
 
 ### FieldElement attempt to negate with overflow
 
-[link to the "FieldElement attempt to negate with overflow" report](acir_field/reports/FieldElement_i128_attempt_to_negate_with_overflow.md)
+[XXX](XXX)
 
 #### Reproducer
 
-[link to the "FieldElement attempt to negate with overflow" report](acir_field/reports/FieldElement_i128_attempt_to_negate_with_overflow_reproducer.zip)
+[XXX](XXX)
+
+---
+
+### FieldElement attempt to negate with overflow
+
+[FieldElement attempt to negate with overflow report](acir_field/reports/FieldElement_i128_attempt_to_negate_with_overflow.md)
+
+#### Reproducer
+
+[FieldElement attempt to negate with overflow reproducer](acir_field/reports/FieldElement_i128_attempt_to_negate_with_overflow_reproducer.zip)

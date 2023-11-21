@@ -46,7 +46,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-acir = { path = "../acvm/acir" }
+acir = { path = "../acvm/acir_field" }
 
 ```
 
@@ -64,19 +64,17 @@ https://github.com/noir-lang/acvm/blob/2f503c4b444d68d4b8489eba78e95e6889382c2e/
 ## Detailed behavior (RUST_BACKTRACE=1)
 
 ``` sh
-thread 'main' panicked at 'attempt to negate with overflow', /home/sebastien/Downloads/acvm/acir_field/src/generic_ark.rs:98:17
-stack backtrace:
-   0: rust_begin_unwind
-             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/std/src/panicking.rs:593:5
-   1: core::panicking::panic_fmt
-             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/core/src/panicking.rs:67:14
-   2: core::panicking::panic
-             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/core/src/panicking.rs:117:5
-   3: <acir_field::generic_ark::FieldElement<F> as core::convert::From<i128>>::from
-             at /home/sebastien/Downloads/acvm/acir_field/src/generic_ark.rs:98:17
-   4: je_suis_un_test::main
-             at ./src/main.rs:4:13
-   5: core::ops::function::FnOnce::call_once
-             at /rustc/5680fa18feaa87f3ff04063800aec256c3d4b4be/library/core/src/ops/function.rs:250:5
-note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+-------------------------------------------------------------
+field_element value: 340282366920938463463374607431768211455
+to_u128 output: 340282366920938463463374607431768211455
+try_into_u128 output: 340282366920938463463374607431768211455
+-------------------------------------------------------------
+field_element value: 2¹²⁸
+to_u128 output: 0
+try_into_u128 output: None
+-------------------------------------------------------------
+field_element value: 340282366920938463463374607431768211457
+to_u128 output: 1
+try_into_u128 output: None
+-------------------------------------------------------------
 ```

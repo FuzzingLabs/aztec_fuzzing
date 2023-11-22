@@ -1,4 +1,4 @@
-# Aztek Fuzzing
+# Aztec Fuzzing
 
 ## REPORTS
 

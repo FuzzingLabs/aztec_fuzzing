@@ -1,0 +1,92 @@
+Record Declaration :
+	- Field Declaration
+
+Inside Function Declaration :
+	- Opérateurs Unaires : 
+		Opérateurs d'inversion :
+			! : Négation logique (inversion des bits).
+		Opérateurs arithmétiques unaires :
+			- : Négation arithmétique (changement de signe).
+		Opérateurs de référence :
+			& : Référence (utilisé pour créer une référence).
+		Opérateurs de déréférencement :
+			* : Déréférencement (utilisé pour accéder à la valeur référencée).
+		Opérateur de complément bit à bit :
+			! : Complément bit à bit (inversion des bits).
+
+	- Opérateurs Binaires : 
+		Opérateurs arithmétiques:
+			+ : Addition
+			- : Soustraction
+			* : Multiplication
+			/ : Division
+			% : Modulo
+		Opérateurs de comparaison:
+			== : Égalité
+			!= : Différence
+			< : Inférieur à
+			> : Supérieur à
+			<= : Inférieur ou égal à
+			>= : Supérieur ou égal à
+		Opérateurs logiques:
+			&& : ET logique
+			|| : OU logique
+		Opérateurs bit à bit:
+			& : ET bit à bit
+			| : OU bit à bit
+			^ : OU exclusif bit à bit
+			<< : Décalage à gauche
+			>> : Décalage à droite
+		Opérateurs d'affectation:
+			= : Affectation
+			+= : Addition avec affectation
+			-= : Soustraction avec affectation
+			*= : Multiplication avec affectation
+			/= : Division avec affectation
+			%= : Modulo avec affectation
+			&= : ET bit à bit avec affectation
+			|= : OU bit à bit avec affectation
+			^= : OU exclusif bit à bit avec affectation
+			<<= : Décalage à gauche avec affectation
+			>>= : Décalage à droite avec affectation
+
+
+- Opérateur Unaire :
+	Type (int / ...)
+	Opérateurs (! / - / ...)
+		Référence
+		Literal
+
+- Litéral :
+	Type (int / ...)
+	Valeur (4 / 5 / ...)
+
+
+- Declaration Statment
+	Variable Declaration Statment :
+		Opération Unaire
+		Opération Binaire
+		Type (int / const int / ...)
+		Value :
+			Literal
+			Reference
+
+
+- If Statment
+- For Statment
+- Call Expression
+
+
+
+
+
+- BinaryOperation : <ValuesType> & <BinaryOperator>
+	* Value
+	* Value
+
+- ShorthandOperation : <Values_Type> & <ShorthandBinaryOperator>
+
+
+- Value
+	* VarReference : <VarName> & <VarType>
+	* IntegerLiteral : <Type> & <Value>

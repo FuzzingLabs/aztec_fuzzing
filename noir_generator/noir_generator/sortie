@@ -1,0 +1,191 @@
+[0m[1m[38;5;11mwarning[0m[1m: unused variable var3[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:37:10
+   [0m[34m│[0m
+[0m[34m37[0m [0m[34m│[0m     let mut var3 : u16 = 56577;
+   [0m[34m│[0m             [0m[34m----[0m [0m[34munused variable [0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: Unused expression result of type bool[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:19:2
+   [0m[34m│[0m
+[0m[34m19[0m [0m[34m│[0m     var2;
+   [0m[34m│[0m     [0m[34m----[0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: Unused expression result of type u32[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:25:2
+   [0m[34m│[0m
+[0m[34m25[0m [0m[34m│[0m     var1;
+   [0m[34m│[0m     [0m[34m----[0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: Unused expression result of type u32[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:43:2
+   [0m[34m│[0m
+[0m[34m43[0m [0m[34m│[0m     -var1;
+   [0m[34m│[0m     [0m[34m-----[0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: Unused expression result of type bool[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:49:2
+   [0m[34m│[0m
+[0m[34m49[0m [0m[34m│[0m     var2;
+   [0m[34m│[0m     [0m[34m----[0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: Unused expression result of type u32[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:61:2
+   [0m[34m│[0m
+[0m[34m61[0m [0m[34m│[0m     var1;
+   [0m[34m│[0m     [0m[34m----[0m
+   [0m[34m│[0m
+
+Failed to verify proof /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/proofs/test.proof
+[0m[1m[38;5;11mwarning[0m[1m: unused variable var2[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:32:6
+   [0m[34m│[0m
+[0m[34m32[0m [0m[34m│[0m     let var2 : i127 = 45767284798095855469088038980629432142;
+   [0m[34m│[0m         [0m[34m----[0m [0m[34munused variable [0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: unused variable var3[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:50:6
+   [0m[34m│[0m
+[0m[34m50[0m [0m[34m│[0m     let var3 : u64 = 16134563336166651659;
+   [0m[34m│[0m         [0m[34m----[0m [0m[34munused variable [0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: unused variable var4[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:62:10
+   [0m[34m│[0m
+[0m[34m62[0m [0m[34m│[0m     let mut var4 : i64 = -4266032667059736041;
+   [0m[34m│[0m             [0m[34m----[0m [0m[34munused variable [0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: Unused expression result of type bool[0m
+  [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:8:2
+  [0m[34m│[0m
+[0m[34m8[0m [0m[34m│[0m     !var1;
+  [0m[34m│[0m     [0m[34m-----[0m
+  [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: Unused expression result of type bool[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:56:2
+   [0m[34m│[0m
+[0m[34m56[0m [0m[34m│[0m     var1;
+   [0m[34m│[0m     [0m[34m----[0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: Signed integer types are experimental and aren't fully supported yet[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:32:13
+   [0m[34m│[0m
+[0m[34m32[0m [0m[34m│[0m     let var2 : i127 = 45767284798095855469088038980629432142;
+   [0m[34m│[0m                [0m[34m----[0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: Signed integer types are experimental and aren't fully supported yet[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:62:17
+   [0m[34m│[0m
+[0m[34m62[0m [0m[34m│[0m     let mut var4 : i64 = -4266032667059736041;
+   [0m[34m│[0m                    [0m[34m---[0m
+   [0m[34m│[0m
+
+[test] Constraint system successfully built!
+[0m[1m[38;5;11mwarning[0m[1m: unused variable var3[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:50:6
+   [0m[34m│[0m
+[0m[34m50[0m [0m[34m│[0m     let var3 : u64 = 16134563336166651659;
+   [0m[34m│[0m         [0m[34m----[0m [0m[34munused variable [0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: unused variable var4[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:62:10
+   [0m[34m│[0m
+[0m[34m62[0m [0m[34m│[0m     let mut var4 : i64 = -4266032667059736041;
+   [0m[34m│[0m             [0m[34m----[0m [0m[34munused variable [0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: unused variable var2[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:32:6
+   [0m[34m│[0m
+[0m[34m32[0m [0m[34m│[0m     let var2 : i127 = 45767284798095855469088038980629432142;
+   [0m[34m│[0m         [0m[34m----[0m [0m[34munused variable [0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: Unused expression result of type bool[0m
+  [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:8:2
+  [0m[34m│[0m
+[0m[34m8[0m [0m[34m│[0m     !var1;
+  [0m[34m│[0m     [0m[34m-----[0m
+  [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: Unused expression result of type bool[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:56:2
+   [0m[34m│[0m
+[0m[34m56[0m [0m[34m│[0m     var1;
+   [0m[34m│[0m     [0m[34m----[0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: Signed integer types are experimental and aren't fully supported yet[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:32:13
+   [0m[34m│[0m
+[0m[34m32[0m [0m[34m│[0m     let var2 : i127 = 45767284798095855469088038980629432142;
+   [0m[34m│[0m                [0m[34m----[0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: Signed integer types are experimental and aren't fully supported yet[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:62:17
+   [0m[34m│[0m
+[0m[34m62[0m [0m[34m│[0m     let mut var4 : i64 = -4266032667059736041;
+   [0m[34m│[0m                    [0m[34m---[0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: unused variable var2[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:32:6
+   [0m[34m│[0m
+[0m[34m32[0m [0m[34m│[0m     let var2 : i127 = 45767284798095855469088038980629432142;
+   [0m[34m│[0m         [0m[34m----[0m [0m[34munused variable [0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: unused variable var3[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:50:6
+   [0m[34m│[0m
+[0m[34m50[0m [0m[34m│[0m     let var3 : u64 = 16134563336166651659;
+   [0m[34m│[0m         [0m[34m----[0m [0m[34munused variable [0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: unused variable var4[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:62:10
+   [0m[34m│[0m
+[0m[34m62[0m [0m[34m│[0m     let mut var4 : i64 = -4266032667059736041;
+   [0m[34m│[0m             [0m[34m----[0m [0m[34munused variable [0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: Unused expression result of type bool[0m
+  [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:8:2
+  [0m[34m│[0m
+[0m[34m8[0m [0m[34m│[0m     !var1;
+  [0m[34m│[0m     [0m[34m-----[0m
+  [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: Unused expression result of type bool[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:56:2
+   [0m[34m│[0m
+[0m[34m56[0m [0m[34m│[0m     var1;
+   [0m[34m│[0m     [0m[34m----[0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: Signed integer types are experimental and aren't fully supported yet[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:32:13
+   [0m[34m│[0m
+[0m[34m32[0m [0m[34m│[0m     let var2 : i127 = 45767284798095855469088038980629432142;
+   [0m[34m│[0m                [0m[34m----[0m
+   [0m[34m│[0m
+
+[0m[1m[38;5;11mwarning[0m[1m: Signed integer types are experimental and aren't fully supported yet[0m
+   [0m[34m┌─[0m /home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr:62:17
+   [0m[34m│[0m
+[0m[34m62[0m [0m[34m│[0m     let mut var4 : i64 = -4266032667059736041;
+   [0m[34m│[0m                    [0m[34m---[0m
+   [0m[34m│[0m
+

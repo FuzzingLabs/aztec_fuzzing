@@ -1,29 +1,16 @@
-use crate::variables::Variables;
-
-#[macro_use]
-extern crate lazy_static;
-
+mod random;
+mod generate_function;
+mod generate_instruction;
+mod bloc_variables;
 mod variable;
-mod variables;
-mod values;
-mod operators;
-mod statments;
-mod unary_operation_functions;
-mod binary_operation_functions;
-mod arithmetic_operation;
-mod affectation_operation;
-mod beautifier;
+mod types;
 
 fn main() {
-    
-    println!("fn main() {{");
+    random::initialize_rng(None);
 
-    for i in 0..200 {
-        println!("//__________________________________________________________________________________________\n//\n// Opération n°{} :\n//__________________\n", i);
-        
-        println!("{}", beautifier::beautify_statment(statments::generate_statment(), false));
-    }
+    let mut code_generated: String = String::new();
 
-    println!("}}");
+    code_generated = format!("{}{}", code_generated, generate_function::generate_function("main".to_string()));
    
+   println!("{}", code_generated);
 }

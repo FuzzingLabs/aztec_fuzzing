@@ -14,9 +14,9 @@ lazy_static! {
         }
     }
 
-pub fn generate_random_number() -> u32 {
+pub fn generate_random_number(lower_limit: u32, upper_limit: u32) -> u32 {
     let mut rng = RNG.lock().unwrap();
-    rng.generate_random_number()
+    rng.generate_random_number(lower_limit, upper_limit)
 }
 
 pub fn generate_random_bool() -> bool {
@@ -24,9 +24,9 @@ pub fn generate_random_bool() -> bool {
     rng.generate_random_bool()
 }
 
-pub fn select_random_string_from_vec(strings: &Vec<String>) -> String {
+pub fn select_random_str_from_vec(strings: Vec<&'static str>) -> &'static str {
     let mut rng = RNG.lock().unwrap();
-    rng.select_random_string_from_vec(strings)
+    rng.select_random_str_from_vec(strings)
 }
 
 pub fn choose_random_item_from_vec<T: Clone>(items: &Vec<T>) -> Option<T> {
@@ -34,7 +34,7 @@ pub fn choose_random_item_from_vec<T: Clone>(items: &Vec<T>) -> Option<T> {
     rng.choose_random_item_from_vec(items)
 } 
 
-pub fn generate_random_value_for_type(type_: String) -> String {
+pub fn generate_random_value_for_type(type_: &'static str) -> String {
     let mut rng = RNG.lock().unwrap();
     rng.generate_random_value_for_type(type_)
 }
@@ -49,8 +49,12 @@ impl RandomGenerator {
         RandomGenerator { rng }
     }
 
-    pub fn generate_random_number(&mut self) -> u32 {
-        self.rng.gen()
+    pub fn generate_random_number(&mut self, lower_limit: u32, upper_limit: u32) -> u32 {
+        if upper_limit <= lower_limit {
+            panic!("Upper limit must be greater than lower limit");
+        }
+    
+        self.rng.gen_range(lower_limit..upper_limit)
     }
 
     pub fn generate_random_bool(&mut self) -> bool {
@@ -59,9 +63,9 @@ impl RandomGenerator {
 
 
     // TODO: DELETE
-    pub fn select_random_string_from_vec(&mut self, strings: &Vec<String>) -> String {
+    pub fn select_random_str_from_vec(&mut self, strings: Vec<&'static str>) -> &'static str {
         if strings.is_empty() {
-            return String::new();
+            return "";
         }
 
         let index = self.rng.gen_range(0..strings.len());
@@ -81,8 +85,8 @@ impl RandomGenerator {
         }
     }
 
-    pub fn generate_random_value_for_type(&mut self, type_: String) -> String {
-        match type_.as_str() {
+    pub fn generate_random_value_for_type(&mut self, type_: &'static str) -> String {
+        match type_{
             "Field" => {
                 let upper_part: u128 = self.rng.gen();
                 let lower_part: u128 = self.rng.gen();

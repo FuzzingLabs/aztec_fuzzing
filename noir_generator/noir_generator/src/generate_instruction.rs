@@ -3,52 +3,42 @@ use crate::variable::Variable;
 use crate::types;
 use crate::random;
 
-pub fn generate_random_instruction(mut bloc_variables: BlocVariables) -> String {
-    let mut instruction: String = String::new();
-
-    let mut variables: Vec<Option<Variable>> = Vec::new();
-
-    for i in 0..10 {
-        match bloc_variables.get_random_variable(types::types(), None, None) {
+pub fn fill_bloc_variables(bloc_variables: &mut BlocVariables, variables_used: &mut Vec<Variable>, allowed_types: Vec<&'static str>) -> String {
+    let mut variables_to_initialize: String = String::new();
+    let n = random::generate_random_number(2, 10);
+    for _ in 0..n {
+        match bloc_variables.get_random_variable(variables_used.clone(), allowed_types.clone(), None, None) {
             Some(variable) => {
-                variables.push(Some(variable.clone()));
+                variables_used.push(variable.clone());
             }
             None => {
-                if let Some(new_variable) = bloc_variables.new_variable(types::types(), None, None) {
-                    instruction = format!("{}{}", instruction, new_variable.initialise());
-                    variables.push(Some(new_variable.clone()));
-                } else {
-                    // Gérer le cas où aucune nouvelle variable n'a été créée
-                    panic!("Impossible de créer une nouvelle variable.");
-                }
+                let new_variable = bloc_variables.new_variable(allowed_types.clone(), None, None);
+                variables_to_initialize = format!("{}{}", variables_to_initialize, new_variable.initialise());
+                variables_used.push(new_variable.clone());
             }
         }
     }
+    variables_to_initialize
+}
 
-    // Utilisez la première variable différemment
-    if let Some(first_variable) = variables.get(0) {
-        if let Some(variable) = first_variable {
-            instruction = format!("{}{}", instruction, variable.name());
-        } else {
-            // Gérer le cas où la première variable n'est pas initialisée
-            panic!("Impossible de continuer avec une première variable non initialisée.");
-        }
-    }
+pub fn generate_operation_instruction(bloc_variables: &mut BlocVariables) -> String {
+    let mut instruction: String = String::new();
+    let mut variables_used: Vec<Variable> = Vec::new();
+
+    let chosen_type = random::select_random_str_from_vec(types::types());
+
+    instruction = format!("{}{}", instruction, fill_bloc_variables(bloc_variables, &mut variables_used, [chosen_type].to_vec()));
+
+    instruction = format!("{}{}", instruction, variables_used[0].name());
 
     // Utilisez toutes les variables dans la génération d'instruction
-    for var_option in variables.iter().skip(1) {
-        if let Some(variable) = var_option {
-            instruction = format!(
-                "{} {} {}",
-                instruction,
-                random::select_random_string_from_vec(&types::operators()),
-                variable.name()
-            );
-        } else {
-            // Gérer le cas où une variable n'est pas initialisée
-            panic!("Impossible de continuer avec une variable non initialisée.");
-        }
+    for var in variables_used.iter().skip(1) {
+        instruction = format!("{} {} {}", instruction, random::select_random_str_from_vec(types::supported_operations_for_type(chosen_type)), var.name());
     }
 
     instruction + "\n"
+}
+
+pub fn generate_random_instruction(bloc_variables: &mut BlocVariables) -> String {
+    generate_operation_instruction(bloc_variables)
 }

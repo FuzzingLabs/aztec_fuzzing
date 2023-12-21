@@ -7,12 +7,12 @@ fn fill_bloc_variables(bloc_variables: &mut BlocVariables, variables_used: &mut 
     let mut variables_to_initialize: String = String::new();
     let n = random::generate_random_number(2, 10);
     for _ in 0..n {
-        match bloc_variables.get_random_variable(variables_used.clone(), allowed_types.clone(), None, None) {
+        match bloc_variables.get_random_variable(variables_used.clone(), allowed_types.clone(), None) {
             Some(variable) => {
                 variables_used.push(variable.clone());
             }
             None => {
-                let new_variable = bloc_variables.new_variable(allowed_types.clone(), None, None);
+                let new_variable = bloc_variables.new_variable(allowed_types.clone(), None);
                 variables_to_initialize = format!("{}{}", variables_to_initialize, new_variable.initialise());
                 variables_used.push(new_variable.clone());
             }
@@ -36,7 +36,7 @@ pub fn generate_operation_instruction(bloc_variables: &mut BlocVariables) -> Str
         instruction = format!("{} {} {}", instruction, random::select_random_str_from_vec(types::supported_operations_for_type(chosen_type)), var.name());
     }
 
-    instruction + "\n"
+    instruction + ";\n"
 }
 
 pub fn generate_random_instruction(bloc_variables: &mut BlocVariables) -> String {

@@ -69,11 +69,8 @@ impl RandomGenerator {
         }
 
         let index = self.rng.gen_range(0..strings.len());
-        strings[index].clone()
+        strings[index]
 
-        // if type_ == "str" {
-        //     type_ = format!("str<{}>", value.len()-2); // -2 because of the ""
-        // }
     }
 
     pub fn choose_random_item_from_vec<T: Clone>(&mut self, items: &Vec<T>) -> Option<T> {
@@ -87,11 +84,7 @@ impl RandomGenerator {
 
     pub fn generate_random_value_for_type(&mut self, type_: &'static str) -> String {
         match type_{
-            "Field" => {
-                let upper_part: u128 = self.rng.gen();
-                let lower_part: u128 = self.rng.gen();
-                format!("{:032x}{:032x}", upper_part, lower_part)
-            },
+            "Field" => self.rng.gen_range(0..=u128::MAX).to_string(),
             "u8" => self.rng.gen_range(0..=u8::MAX).to_string(),
             "u16" => self.rng.gen_range(0..=u16::MAX).to_string(),
             "u32" => self.rng.gen_range(0..=u32::MAX).to_string(),

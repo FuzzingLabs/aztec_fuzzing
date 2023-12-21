@@ -6,13 +6,13 @@ lazy_static! {
     static ref RNG: Mutex<RandomGenerator> = Mutex::new(RandomGenerator::new(0));
 }
 
-    pub fn initialize_rng(seed: Option<u64>) {
-        let mut rng = RNG.lock().unwrap();
-        match seed {
-            Some(s) => *rng = RandomGenerator::new(s),
-            None => *rng = RandomGenerator::new(rand::thread_rng().gen()),
-        }
+pub fn initialize_rng(seed: Option<u8>) {
+    let mut rng = RNG.lock().unwrap();
+    match seed {
+        Some(s) => *rng = RandomGenerator::new(u64::from(s)),
+        None => *rng = RandomGenerator::new(rand::thread_rng().gen()),
     }
+}
 
 pub fn generate_random_number(lower_limit: u32, upper_limit: u32) -> u32 {
     let mut rng = RNG.lock().unwrap();

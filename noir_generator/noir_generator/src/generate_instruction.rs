@@ -3,7 +3,7 @@ use crate::variable::Variable;
 use crate::types;
 use crate::random;
 
-pub fn fill_bloc_variables(bloc_variables: &mut BlocVariables, variables_used: &mut Vec<Variable>, allowed_types: Vec<&'static str>) -> String {
+fn fill_bloc_variables(bloc_variables: &mut BlocVariables, variables_used: &mut Vec<Variable>, allowed_types: Vec<&'static str>) -> String {
     let mut variables_to_initialize: String = String::new();
     let n = random::generate_random_number(2, 10);
     for _ in 0..n {

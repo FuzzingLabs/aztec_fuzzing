@@ -48,6 +48,6 @@ impl Variable {
     }
 
     pub fn initialise(&self) -> String{
-        format!("let{} {} : {} = {};\n", if self.is_mutable() { " mut" } else { "" }, self.name(), self.type_(), self.value())
+        format!("let{} {}: {} = {};\n", if self.is_mutable() { " mut" } else { "" }, self.name(), self.type_(), self.value())
     }
 }

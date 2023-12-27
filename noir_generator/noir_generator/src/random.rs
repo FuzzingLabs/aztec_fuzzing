@@ -105,11 +105,12 @@ impl RandomGenerator {
             },
             "bool" => self.rng.gen::<bool>().to_string(),
             "str" => {
-                let length = self.rng.gen_range(0..100); // Vous pouvez ajuster la plage de longueurs selon vos besoins
+                let length = self.rng.gen_range(1..100); // Vous pouvez ajuster la plage de longueurs selon vos besoins
                 let random_string: String = (0..length)
                     .map(|_| (self.rng.gen_range(b'a'..=b'z') as char))
                     .collect();
-                random_string
+                let result = format!("\"{}\"", random_string);
+                result
             },
             _ => panic!("Unknown type {}", type_),
         }

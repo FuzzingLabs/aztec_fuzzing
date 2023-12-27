@@ -29,16 +29,60 @@ pub fn generate_operation_instruction(bloc_variables: &mut BlocVariables) -> Str
 
     instruction = format!("{}{}", instruction, fill_bloc_variables(bloc_variables, &mut variables_used, [chosen_type].to_vec()));
 
-    instruction = format!("{}{}", instruction, variables_used[0].name());
+    instruction = format!("{}{} = {}", instruction, variables_used[0].name(), variables_used[1].name());
 
     // Utilisez toutes les variables dans la génération d'instruction
-    for var in variables_used.iter().skip(1) {
+    for var in variables_used.iter().skip(2) {
         instruction = format!("{} {} {}", instruction, random::select_random_str_from_vec(types::supported_operations_for_type(chosen_type)), var.name());
     }
 
     instruction + ";\n"
 }
 
+pub fn generate_assert_instruction(bloc_variables: &mut BlocVariables) -> String {
+    let mut instruction: String = String::new();
+    let mut variables_used: Vec<Variable> = Vec::new();
+
+    fill_bloc_variables(bloc_variables, &mut variables_used, types::types());
+    instruction = format!("{}{}", instruction, fill_bloc_variables(bloc_variables, &mut variables_used, types::types()));
+
+    instruction = format!("{}assert({}", instruction, variables_used[0].name());
+
+    let mut bracket_count = 0;
+    for var in variables_used.iter().skip(1) {
+        let mut negation = "";
+        let operand = random::select_random_str_from_vec(types::supported_operations_for_assertion(var.type_()));
+        if random::generate_random_bool()  { negation = "!" };
+
+        match random::generate_random_number(0, 3) {
+            0 => instruction = format!("{} {} {}{}", instruction, operand, negation, var.name()),
+            1 => {
+                bracket_count  += 1;
+                instruction = format!("{} {} ({}{}", instruction, operand, negation, var.name());
+            },
+            2 => {
+                if(bracket_count != 0){
+                    bracket_count  -= 1;
+                    instruction = format!("{} {} {}{})", instruction, operand, negation, var.name());
+                } else {
+                    bracket_count  += 1;
+                    instruction = format!("{} {} ({}{}", instruction, operand, negation, var.name());
+                } 
+            }
+            _ => {}
+        }
+    }
+
+    for _ in 0..bracket_count {
+        instruction = format!("{})", instruction);
+    }
+
+    instruction + ");\n"
+}
+
 pub fn generate_random_instruction(bloc_variables: &mut BlocVariables) -> String {
-    generate_operation_instruction(bloc_variables)
+    let mut instruction: String = String::new();
+    instruction = format!("{}{}", instruction, generate_operation_instruction(bloc_variables));
+    instruction = format!("{}{}", instruction, generate_assert_instruction(bloc_variables));
+    instruction
 }

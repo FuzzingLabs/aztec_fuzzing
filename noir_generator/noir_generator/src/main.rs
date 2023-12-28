@@ -1,9 +1,7 @@
 mod random;
 mod generate_function;
-mod generate_instruction;
-mod bloc_variables;
-mod variable;
-mod types;
+mod instructions;
+mod variables;
 
 use noirc_frontend::parser;
 
@@ -28,9 +26,13 @@ fn main() {
     random::initialize_rng(None);
     
     let mut errors: Option<Vec<parser::ParserError>> = None;
+    let mut compteur = 0;
 
     while let None = errors {
         errors = compile_code();
+
+        compteur += 1;
+        println!("nb loop: {}", compteur);
     }
 
     for error in &errors {

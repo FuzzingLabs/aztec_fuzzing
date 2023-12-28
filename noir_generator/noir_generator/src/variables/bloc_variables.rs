@@ -1,4 +1,4 @@
-use crate::variable::Variable;
+use crate::variables::variable::Variable;
 use crate::random;
 
 pub struct BlocVariables{

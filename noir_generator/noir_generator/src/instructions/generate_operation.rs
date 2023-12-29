@@ -11,13 +11,14 @@ pub fn generate_operation_instruction(bloc_variables: &mut BlocVariables) -> Str
     let chosen_type = random::select_random_str_from_vec(types::basic_types());
 
     instruction = format!("{}{}", instruction, fill_bloc_variables(bloc_variables, &mut variables_used, [chosen_type].to_vec()));
+    match bloc_variables.get_random_variable([chosen_type].to_vec(), Some(true)) {
+        Some(assigned_var) => instruction = format!("{}{} = {}", instruction, assigned_var.name(), variables_used[0].name()),
+        None => instruction = format!("{}{}", instruction, variables_used[0].name()),
+    }
 
-    instruction = format!("{}{} = {}", instruction, variables_used[0].name(), variables_used[1].name());
-
-    // Utilisez toutes les variables dans la génération d'instruction
-    for var in variables_used.iter().skip(2) {
+    for var in variables_used.iter().skip(1) {
         instruction = format!("{} {} {}", instruction, random::select_random_str_from_vec(types::supported_operations_by_type(chosen_type)), var.name());
     }
 
-    instruction + "\n"
+    instruction + ";\n"
 }

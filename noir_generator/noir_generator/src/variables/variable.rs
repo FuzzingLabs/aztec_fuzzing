@@ -20,7 +20,7 @@ impl Variable {
 
         let value = match value {
             Some(v) => v,
-            None => random::generate_random_value_for_type(type_.clone()),
+            None => random::generate_random_value_for_basic_type(type_.clone()),
         };
         
         Self {

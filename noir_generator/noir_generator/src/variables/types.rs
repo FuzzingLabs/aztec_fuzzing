@@ -1,5 +1,3 @@
-use crate::random;
-
 pub fn basic_types() -> Vec<&'static str> {
     vec![
         "Field",
@@ -14,7 +12,6 @@ pub fn basic_types() -> Vec<&'static str> {
         "i64",
         "i127",
         "bool",
-        "str",
     ]
 }
 

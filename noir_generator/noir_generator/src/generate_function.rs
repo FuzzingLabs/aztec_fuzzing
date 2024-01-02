@@ -9,7 +9,7 @@ pub fn generate_function(function_name: String) -> String{
 
     let mut bloc_variables = BlocVariables::new();
 
-    for _ in 0..random::generate_random_number(0, NB_MAX_INSTRUCTION) {
+    for _ in 0..random::gen_range(0, NB_MAX_INSTRUCTION) {
         function = format!("{}{}", function, generate_instruction::generate_random_instruction(&mut bloc_variables));     
     }
     

@@ -1,4 +1,5 @@
 use crate::variables::variable::Variable;
+use crate::variables::var_type::VarType;
 use crate::random;
 
 pub struct BlocVariables{
@@ -16,7 +17,7 @@ impl BlocVariables {
         self.variables.push(variable)
     }
 
-    pub fn new_variable(&mut self, allowed_types: Vec<&'static str>, mutable: Option<bool>) -> Variable{
+    pub fn new_variable(&mut self, allowed_types: Vec<VarType>, mutable: Option<bool>) -> Variable{
         let new_var = Variable::new(
             format!("var{}", self.next_id()),
             mutable,
@@ -29,18 +30,22 @@ impl BlocVariables {
         new_var
     }
 
-    pub fn get_random_variable(&mut self, allowed_types: Vec<&'static str>, mutable: Option<bool>) -> Option<&Variable> {
+    pub fn get_random_variable(&mut self, allowed_types: Vec<VarType>, mutable: Option<bool>) -> Option<&Variable> {
         let filtered_variables: Vec<&Variable> = self.variables
             .iter()
             .filter(|v| {
-                let type_condition = allowed_types.contains(&v.type_());
+                let type_condition = allowed_types.contains(&v.var_type());
                 let mutable_condition = mutable.map_or(true, |value| v.is_mutable() == value);
         
                 type_condition && mutable_condition
             })
             .collect();
+
+        if filtered_variables.len() == 0 {
+            return None;
+        }
     
-        random::choose_random_item_from_vec(&filtered_variables)
+        Some(random::choose_random_item_from_vec(&filtered_variables))
     }  
 
     fn next_id(&self) -> usize {

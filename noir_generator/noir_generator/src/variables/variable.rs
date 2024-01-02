@@ -1,32 +1,35 @@
+use crate::variables::var_type::VarType;
+use crate::variables::value::Value;
+use crate::variables::value;
 use crate::random;
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Variable {
+pub(crate) struct Variable {
     name: String,
+    var_type: VarType,
     mutable: bool,
-    type_: &'static str,
-    value: String,
+    value: Value,
 }
 
 impl Variable {
-    pub fn new(name: String, mutable: Option<bool>, allowed_types: Vec<&'static str>, value: Option<String>) -> Self {
+    pub fn new(name: String, mutable: Option<bool>, allowed_types: Vec<VarType>, value: Option<Value>) -> Self {
 
         let mutable = match mutable {
             Some(v) => v,
-            None => random::generate_random_bool(),
+            None => random::gen_bool(),
         };
 
-        let type_ = random::select_random_str_from_vec(allowed_types);
+        let var_type = random::choose_random_item_from_vec(&allowed_types);
 
         let value = match value {
             Some(v) => v,
-            None => random::generate_random_value_for_basic_type(type_.clone()),
+            None => value::random_value(&var_type),
         };
         
         Self {
             name,
             mutable,
-            type_,
+            var_type,
             value,
         }
     }
@@ -39,15 +42,15 @@ impl Variable {
         &self.name
     }
     
-    pub fn type_(&self) -> &'static str {
-        self.type_
+    pub fn var_type(&self) -> &VarType {
+        &self.var_type
     }
     
-    pub fn value(&self) -> &String {
+    pub fn value(&self) -> &Value {
         &self.value
     }
 
     pub fn initialise(&self) -> String{
-        format!("let{} {}: {} = {};\n", if self.is_mutable() { " mut" } else { "" }, self.name(), self.type_(), self.value())
+        format!("let{} {}: {} = {};\n", if self.is_mutable() { " mut" } else { "" }, self.name(), self.var_type(), self.value())
     }
 }

@@ -8,7 +8,7 @@ pub fn generate_operation_instruction(bloc_variables: &mut BlocVariables) -> Str
     let mut instruction: String = String::new();
     let mut variables_used: Vec<Variable> = Vec::new();
 
-    let chosen_type = var_type::random_type();
+    let chosen_type = var_type::random_basic_type();
 
     instruction = format!("{}{}", instruction, fill_bloc_variables(bloc_variables, &mut variables_used, [chosen_type.clone()].to_vec()));
     match bloc_variables.get_random_variable([chosen_type.clone()].to_vec(), Some(true)) {

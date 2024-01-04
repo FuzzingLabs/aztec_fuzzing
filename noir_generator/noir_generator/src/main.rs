@@ -29,7 +29,7 @@ fn compile_code() -> Option<Vec<parser::ParserError>> {
 
 fn main() {
 
-    random::initialize_rng(Some(12));
+    random::initialize_rng(None);
     
     let mut errors: Option<Vec<parser::ParserError>> = None;
     let mut compteur = 0;

@@ -7,6 +7,7 @@ use std::collections::BTreeMap;
 use iter_extended::vecmap;
 
 use noirc_frontend::hir::def_collector::dc_crate::CompilationError;
+use noirc_frontend::hir::resolution::errors::ResolverError;
 use noirc_frontend::parse_program;
 use noirc_frontend::hir::def_map::ModuleData;
 use noirc_errors::Location;
@@ -74,6 +75,12 @@ fn compile_code() -> Option<Vec<(CompilationError, FileId)>> {
             Vec::new(), // No macro processors
         ));
     }
+
+    errors.retain(|(err,_)| match err {
+        CompilationError::ResolverError(ResolverError::UnusedVariable{..}) => false,
+        _ => true,
+    });
+    
 
     if errors.len() != 0 {
         let nr_file_path = "/home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr"; // Choisissez un chemin approprié

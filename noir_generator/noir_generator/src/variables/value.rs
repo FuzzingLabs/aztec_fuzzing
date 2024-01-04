@@ -51,7 +51,7 @@ impl std::fmt::Display for Value {
             },
             Value::Slice(value) => {
                 write!(f, "[")?;
-                if value.len() != 0 && value.iter().all(|x| *x == value[0]) {
+                if value.len() > 1 && value.iter().all(|x| *x == value[0]) {
                     write!(f, "{}; {}", value[0], value.len())?;
                 } else {
                     for (i, item) in value.iter().enumerate() {
@@ -103,7 +103,7 @@ pub fn random_value(var_type: &VarType) -> Value {
         VarType::i64 => Value::I64(random::gen_i64()),
         VarType::i127 => Value::I127(random::gen_i127()),
         VarType::bool => Value::Bool(random::gen_bool()),
-        VarType::str => Value::Str(random::gen_str()),
+        VarType::str(size) => Value::Str(random::gen_str(*size)),
         VarType::Array(type_param, size) => {
             let mut random_vec = Vec::with_capacity(*size);
             for _ in 0..*size {

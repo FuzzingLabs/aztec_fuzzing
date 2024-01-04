@@ -6,8 +6,8 @@ mod variables;
 use std::collections::BTreeMap;
 use iter_extended::vecmap;
 
-use noirc_frontend::hir::def_collector::dc_crate::CompilationError;
 use noirc_frontend::parse_program;
+use noirc_frontend::parser;
 use noirc_frontend::hir::def_map::ModuleData;
 use noirc_errors::Location;
 use arena::Arena;
@@ -16,32 +16,18 @@ use fm::FileManager;
 use noirc_frontend::hir::def_map::{CrateDefMap, LocalModuleId};
 use noirc_frontend::hir::Context;
 use noirc_frontend::hir::def_collector::dc_crate::DefCollector;
-use noirc_frontend::parser::ParserErrorReason;
 
 
 const NB_MAX_FUNCTION: u32 = 10;
 
-fn has_parser_error(errors: &[(CompilationError, FileId)]) -> bool {
-    errors.iter().any(|(e, _f)| matches!(e, CompilationError::ParseError(_)))
-}
-
-fn remove_experimental_warnings(errors: &mut Vec<(CompilationError, FileId)>) {
-    errors.retain(|(error, _)| match error {
-        CompilationError::ParseError(error) => {
-            !matches!(error.reason(), Some(ParserErrorReason::ExperimentalFeature(..)))
-        }
-        _ => true,
-    });
-}
-
-fn compile_code() -> Option<Vec<(CompilationError, FileId)>> {
+fn compile_code() -> Option<Vec<parser::ParserError>> {
 
     let mut code_generated = String::new();
+
     for _ in 0..random::gen_range(0, NB_MAX_FUNCTION) {
         code_generated = format!("{}{}\n", code_generated, generate_function::generate_function(random::gen_name()));
     }
     code_generated = format!("{}{}", code_generated, generate_function::generate_function("main".to_string()));
-    
 
     let root = std::path::Path::new("/");
     let fm = FileManager::new(root);
@@ -73,9 +59,7 @@ fn compile_code() -> Option<Vec<(CompilationError, FileId)>> {
             root_file_id,
             Vec::new(), // No macro processors
         ));
-    }
 
-    if errors.len() != 0 {
         let nr_file_path = "/home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr"; // Choisissez un chemin approprié
         std::fs::write(nr_file_path, code_generated).expect("Failed to write temp file");
         return Some(errors);
@@ -88,20 +72,18 @@ fn main() {
 
     random::initialize_rng(None);
     
-    let mut errors_opt: Option<Vec<(CompilationError, FileId)>> = None;
+    let mut errors: Option<Vec<parser::ParserError>> = None;
     let mut compteur = 0;
 
-    while let None = errors_opt {
-        errors_opt = compile_code();
+    while let None = errors {
+        errors = compile_code();
 
         compteur += 1;
         println!("nb loop: {}", compteur);
     }
 
-    let result = errors_opt.map(|errors| {
-        for (error, _) in errors {
-            println!("Error: {:?}", error);
-        }
-    });
+    for error in &errors {
+        println!("{:?}", error);
+    }
 
 }

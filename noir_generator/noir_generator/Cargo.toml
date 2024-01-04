@@ -11,3 +11,7 @@ rand_core = "*"
 rand_xorshift = "*"
 lazy_static = "*"
 noirc_frontend = { path = "../noir/compiler/noirc_frontend" }
+noirc_errors = { path = "../noir/compiler/noirc_errors" }
+arena = { path = "../noir/compiler/utils/arena" }
+iter-extended = { path = "../noir/compiler/utils/iter-extended" }
+fm = { path = "../noir/compiler/fm" }

@@ -1,8 +1,6 @@
 use rand::{SeedableRng, Rng, seq::SliceRandom};
 use rand_xorshift::XorShiftRng;
 
-const STR_SIZE_MAX: usize = 100;
-
 static mut RNG: Option<XorShiftRng> = None;
 
 pub fn initialize_rng(seed: Option<u8>) {
@@ -101,7 +99,8 @@ pub fn gen_i64() -> i64 {
 pub fn gen_i127() -> i128 {
     let rng = unsafe { RNG.as_mut().expect("RNG is not initialized") };
     let random_i128: i128 = rng.gen();
-    random_i128 & ((1u128 << 127) - 1) as i128
+    let random_i127: i128 = random_i128 & ((1i128 << 126) - 1);
+    random_i127
 }
 
 pub fn gen_bool() -> bool {
@@ -109,12 +108,11 @@ pub fn gen_bool() -> bool {
     rng.gen()
 }
 
-pub fn gen_str() -> String {
+pub fn gen_str(size: usize) -> String {
     let rng = unsafe { RNG.as_mut().expect("RNG is not initialized") };
-    let name_length = rng.gen_range(0..STR_SIZE_MAX);
-    let mut name = String::with_capacity(name_length);
+    let mut name = String::with_capacity(size);
 
-    for _ in 0..name_length {
+    for _ in 0..size {
         let random_char = rng.gen_range(b'a'..=b'z') as char;
         name.push(random_char);
     }

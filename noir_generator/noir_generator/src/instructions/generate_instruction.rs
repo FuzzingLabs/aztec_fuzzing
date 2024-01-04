@@ -36,7 +36,7 @@ pub fn fill_bloc_variables(bloc_variables: &mut BlocVariables, variables_used: &
 pub fn generate_random_instruction(bloc_variables: &mut BlocVariables) -> String {
     let mut instruction: String = String::new();
 
-    match random::gen_range(0, 3) {
+    match random::gen_range(2, 3) {
         0 => instruction = format!("{}{}", instruction, generate_operation::generate_operation_instruction(bloc_variables)),
         1 => instruction = format!("{}{}", instruction, generate_assert::generate_assert_instruction(bloc_variables)),
         2 => instruction = format!("{}{}", instruction, generate_variable_declaration::generate_variable_declaration(bloc_variables)),

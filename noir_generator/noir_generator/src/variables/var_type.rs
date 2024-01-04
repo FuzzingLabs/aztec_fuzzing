@@ -19,7 +19,7 @@ pub(crate) enum VarType {
     i64,
     i127,
     bool,
-    str,
+    str(usize),
     Array(Box<VarType>, usize),
     Slice(Box<VarType>),
     // Vec(Box<VarType>),
@@ -32,7 +32,8 @@ impl std::fmt::Display for VarType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             VarType::Field | VarType::u8 | VarType::u16 | VarType::u32 | VarType::u64 | VarType::u127 | VarType::i8 | VarType::i16 
-            | VarType::i32 | VarType::i64 | VarType::i127 | VarType::bool | VarType::str => write!(f, "{:?}", self),
+            | VarType::i32 | VarType::i64 | VarType::i127 | VarType::bool => write!(f, "{:?}", self),
+            VarType::str(size) => write!(f, "str<{}>", size),
 
             VarType::Array(type_param, size) => write!(f, "[{}; {}]", type_param, size),
             VarType::Slice(type_param) => write!(f, "[{}]", type_param),
@@ -65,12 +66,11 @@ pub fn basic_types() -> Vec<VarType> {
         VarType::i64,
         VarType::i127,
         VarType::bool,
-        VarType::str,
     ]
 }
 
 pub fn random_basic_type() -> VarType {
-    match random::gen_range(0, 12) {
+    match random::gen_range(0, 11) {
         0 => VarType::Field,
         1 => VarType::u8,
         2 => VarType::u16,
@@ -83,7 +83,6 @@ pub fn random_basic_type() -> VarType {
         9 => VarType::i64,
         10 => VarType::i127,
         11 => VarType::bool,
-        12 => VarType::str,
         _ => VarType::Field,
     }
 }
@@ -102,7 +101,7 @@ pub fn random_type() -> VarType {
         9 => VarType::i64,
         10 => VarType::i127,
         11 => VarType::bool,
-        12 => VarType::str,
+        12 => VarType::str(random::gen_range(0, MAX_COMPOSITE_SIZE)),
         13 => VarType::Array(Box::new(random_type_with_depth(MAX_COMPOSITE_DEPTH)), random::gen_range(0, MAX_COMPOSITE_SIZE)),
         14 => VarType::Slice(Box::new(random_type_with_depth(MAX_COMPOSITE_DEPTH))),
         15 => {
@@ -134,7 +133,7 @@ fn random_type_with_depth(depth: usize) -> VarType {
             9 => VarType::i64,
             10 => VarType::i127,
             11 => VarType::bool,
-            12 => VarType::str,
+            12 => VarType::str(random::gen_range(0, MAX_COMPOSITE_SIZE)),
             13 => VarType::Array(Box::new(random_type_with_depth(depth -1)), random::gen_range(0, MAX_COMPOSITE_SIZE)),
             14 => VarType::Slice(Box::new(random_type_with_depth(depth -1))),
             15 => {
@@ -155,7 +154,7 @@ pub fn supported_operations_by_type(var_type: VarType) -> Vec<&'static str> {
         VarType::Field | VarType::u8 | VarType::u16 | VarType::u32 | VarType::u64 | VarType::u127 | VarType::i8 | VarType::i16 | VarType::i32 | VarType::i64 | VarType::i127 
             => vec!["+","-","*","/","^","&","|","<<",">>"],
         VarType::bool => vec!["==","!=","|","&"],
-        VarType::str => vec!["+"],
+        VarType::str(_) => vec!["+"],
         _ => vec![], // Handle unknown types
     }
 }
@@ -165,7 +164,7 @@ pub fn supported_operations_for_assertion(var_type: VarType) -> Vec<&'static str
         VarType::Field | VarType::u8 | VarType::u16 | VarType::u32 | VarType::u64 | VarType::u127 | VarType::i8 | VarType::i16 | VarType::i32 | VarType::i64 | VarType::i127
             => vec!["==", "!=", "<", ">", "<=", ">="],
         VarType::bool => vec!["==", "!=", "|", "&"],
-        VarType::str | VarType::Slice(_) | VarType::Array(_,_) => vec!["==", "!="],
+        VarType::str(_) | VarType::Slice(_) | VarType::Array(_,_) => vec!["==", "!="],
         _ => vec![], // Handle unknown types
     }
 }

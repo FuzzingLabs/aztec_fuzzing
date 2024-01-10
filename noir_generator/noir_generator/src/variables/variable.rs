@@ -33,6 +33,14 @@ impl Variable {
             value,
         }
     }
+
+    pub fn value(&self) -> Value {
+        self.value.clone()
+    }
+
+    pub fn var_type(&self) -> VarType {
+        self.var_type.clone()
+    }
     
     pub fn is_mutable(&self) -> bool {
         self.mutable
@@ -42,13 +50,6 @@ impl Variable {
         &self.name
     }
     
-    pub fn var_type(&self) -> &VarType {
-        &self.var_type
-    }
-    
-    pub fn value(&self) -> &Value {
-        &self.value
-    }
 
     pub fn initialise(&self) -> String{
         format!("let{} {}: {} = {};\n", if self.is_mutable() { " mut" } else { "" }, self.name(), self.var_type(), self.value())

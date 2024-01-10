@@ -10,8 +10,13 @@ rand = "*"
 rand_core = "*"
 rand_xorshift = "*"
 lazy_static = "*"
+backtrace = "0.3.54"
 noirc_frontend = { path = "../noir/compiler/noirc_frontend" }
-noirc_errors = { path = "../noir/compiler/noirc_errors" }
-arena = { path = "../noir/compiler/utils/arena" }
-iter-extended = { path = "../noir/compiler/utils/iter-extended" }
 fm = { path = "../noir/compiler/fm" }
+
+[profile.dev]
+debug = true
+
+[profile.release]
+debug = true
+

@@ -31,6 +31,7 @@ impl Eq for VarType {}
 impl std::fmt::Display for VarType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            
             VarType::Field | VarType::u8 | VarType::u16 | VarType::u32 | VarType::u64 | VarType::u127 | VarType::i8 | VarType::i16 
             | VarType::i32 | VarType::i64 | VarType::i127 | VarType::bool => write!(f, "{:?}", self),
             VarType::str(size) => write!(f, "str<{}>", size),
@@ -151,7 +152,9 @@ fn random_type_with_depth(depth: usize) -> VarType {
 
 pub fn supported_operations_by_type(var_type: VarType) -> Vec<&'static str> {
     match var_type {
-        VarType::Field | VarType::u8 | VarType::u16 | VarType::u32 | VarType::u64 | VarType::u127 | VarType::i8 | VarType::i16 | VarType::i32 | VarType::i64 | VarType::i127 
+        VarType::Field | VarType::i8 | VarType::i16 | VarType::i32 | VarType::i64 | VarType::i127
+            => vec!["+","-","*","/"],
+        VarType::u8 | VarType::u16 | VarType::u32 | VarType::u64 | VarType::u127
             => vec!["+","-","*","/","^","&","|","<<",">>"],
         VarType::bool => vec!["==","!=","|","&"],
         VarType::str(_) => vec!["+"],

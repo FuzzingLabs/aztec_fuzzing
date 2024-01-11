@@ -1,10 +1,7 @@
 use std::vec;
 
-use crate::random;
+use crate::{random, constants::MAX_COMPOSITE_SIZE, constants::MAX_COMPOSITE_DEPTH};
 use super::operator::Operator;
-
-const MAX_COMPOSITE_DEPTH: usize = 10;
-pub const MAX_COMPOSITE_SIZE: usize = 10;
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) enum VarType {
@@ -52,7 +49,6 @@ impl std::fmt::Display for VarType {
         }
     }
 }
-
 
 pub fn basic_types() -> Vec<VarType> {
     vec![

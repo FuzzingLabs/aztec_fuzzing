@@ -5,8 +5,8 @@ pub fn generate_operation_instruction(bloc_variables: &mut BlocVariables) -> Str
     let mut instruction: String = String::new();
     
     let chosen_type = var_type::random_basic_type();
-    
-    let variables_used = bloc_variables.get_variables_by_types([chosen_type.clone()].to_vec());
+
+    let instr_string = generate_type_instruction(bloc_variables, chosen_type.clone());
 
     match bloc_variables.get_random_variable([chosen_type.clone()].to_vec(), Some(true)) {
         Some(assigned_var) => instruction = format!("{}{} = ", instruction, assigned_var.name()),
@@ -16,6 +16,6 @@ pub fn generate_operation_instruction(bloc_variables: &mut BlocVariables) -> Str
         },
     }
 
-    format!("{}{};\n", instruction, generate_type_instruction(&variables_used, chosen_type))
+    format!("{}{};\n", instruction, instr_string)
 
 }

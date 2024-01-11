@@ -3,6 +3,7 @@ mod generate_function;
 mod instructions;
 mod variables;
 mod statements;
+mod constants;
 
 use noirc_frontend::hir::def_collector::dc_crate::CompilationError;
 use noirc_frontend::hir::resolution::errors::ResolverError;
@@ -10,12 +11,9 @@ use fm::FileId;
 
 use noirc_frontend::tests::test::get_program_errors;
 
-
-const NB_MAX_FUNCTION: u32 = 10;
-
 fn fuzz() -> Option<Vec<(CompilationError, FileId)>> {
     let mut code_generated = String::new();
-    for _ in 0..random::gen_range(0, NB_MAX_FUNCTION) {
+    for _ in 0..random::gen_range(0, constants::NB_MAX_FUNCTION) {
         code_generated = format!("{}{}\n", code_generated, generate_function::generate_function(random::gen_name()));
     }
     code_generated = format!("{}{}", code_generated, generate_function::generate_function("main".to_string()));

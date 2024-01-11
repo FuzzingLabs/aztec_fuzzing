@@ -6,8 +6,8 @@ pub fn generate_variable_declaration(bloc_variables: &mut BlocVariables) -> Stri
 
     let chosen_type = var_type::random_type();
 
-    let variables_used = bloc_variables.get_variables_by_types([chosen_type.clone()].to_vec());
+    let instr_string = generate_type_instruction(bloc_variables, chosen_type.clone());
 
     let new_variable = bloc_variables.new_variable([chosen_type.clone()].to_vec(), None);
-    format!("{} = {};\n", new_variable.initialise(), generate_type_instruction(&variables_used, chosen_type))
+    format!("{} = {};\n", new_variable.initialise(), instr_string)
 }

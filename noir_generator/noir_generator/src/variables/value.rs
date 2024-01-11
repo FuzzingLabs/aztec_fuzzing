@@ -1,5 +1,5 @@
 use crate::variables::var_type::VarType;
-use crate::variables::var_type::MAX_COMPOSITE_SIZE;
+use crate::constants::MAX_COMPOSITE_SIZE;
 use crate::random;
 
 #[derive(Debug, Clone, PartialEq)]

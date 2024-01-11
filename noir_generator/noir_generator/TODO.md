@@ -1,28 +1,28 @@
 ## TODO list
 
-- [ ] Main function
-- [ ] Fields
+- [x] Main function
+- [x] Fields
 - [ ] Constants
-- [ ] Basic & Basic Shorthand operations
-- [ ] Booleans
+- [x] Basic & Basic Shorthand operations
+- [x] Booleans
 - [ ] Assertions & Constrain
-- [ ] Integers
-- [ ] Predicate / Comparison operators
-- [ ] Bitwise & Bitwise Shorthand operations
+- [x] Integers
+- [x] Predicate / Comparison operators
+- [x] Bitwise & Bitwise Shorthand operations
 - [ ] If expressions
 - [ ] If / Else expressions
-- [ ] Logical operators
+- [x] Logical operators
 - [ ] Data type visibility
-- [ ] Mutability
+- [x] Mutability
 - [ ] For loops
-- [ ] Strings
+- [x] Strings
 - [ ] Basic loggings & Assertions
-- [ ] Formatted strings & loggings 
+- [ ] Formatted strings & loggings
 - [ ] Arrays, Inferred & Explicitly array types 
 - [ ] Array instantiation with a repeated value
 - [ ] Multidimensional arrays
 - [ ] Standard arrays methods
-- [ ] Tuples
+- [x] Tuples
 - [ ] Basic structs & instances
 - [ ] Basic functions & function calls
 - [ ] Noir standard library functions calls

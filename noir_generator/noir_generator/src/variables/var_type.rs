@@ -1,6 +1,7 @@
 use std::vec;
 
 use crate::random;
+use super::operator::Operator;
 
 const MAX_COMPOSITE_DEPTH: usize = 10;
 pub const MAX_COMPOSITE_SIZE: usize = 10;
@@ -150,24 +151,23 @@ fn random_type_with_depth(depth: usize) -> VarType {
     }
 }
 
-pub fn supported_operations_by_type(var_type: VarType) -> Vec<&'static str> {
+pub fn supported_arithmetic_operator_by_type(var_type: VarType) -> Vec<Operator> {
     match var_type {
         VarType::Field | VarType::i8 | VarType::i16 | VarType::i32 | VarType::i64 | VarType::i127
-            => vec!["+","-","*","/"],
+            => vec![Operator::Add, Operator::Subtract, Operator::Multiply, Operator::Divide],
         VarType::u8 | VarType::u16 | VarType::u32 | VarType::u64 | VarType::u127
-            => vec!["+","-","*","/","^","&","|","<<",">>"],
-        VarType::bool => vec!["==","!=","|","&"],
-        VarType::str(_) => vec!["+"],
+            => vec![Operator::Add, Operator::Subtract, Operator::Multiply, Operator::Divide, Operator::Xor, Operator::And, Operator::Or, Operator::Lshift, Operator::Rshift],
+        VarType::bool => vec![Operator::Equal, Operator::NotEqual, Operator::Or, Operator::And],
         _ => vec![], // Handle unknown types
     }
 }
 
-pub fn supported_operations_for_assertion(var_type: VarType) -> Vec<&'static str> {
+pub fn supported_comparator_operator_by_type(var_type: VarType) -> Vec<Operator> {
     match var_type {
         VarType::Field | VarType::u8 | VarType::u16 | VarType::u32 | VarType::u64 | VarType::u127 | VarType::i8 | VarType::i16 | VarType::i32 | VarType::i64 | VarType::i127
-            => vec!["==", "!=", "<", ">", "<=", ">="],
-        VarType::bool => vec!["==", "!=", "|", "&"],
-        VarType::str(_) | VarType::Slice(_) | VarType::Array(_,_) => vec!["==", "!="],
+            => vec![Operator::Equal, Operator::NotEqual, Operator::Lesser, Operator::Greater, Operator::LesserOrEqual, Operator::GreaterOrEqual],
+        VarType::bool => vec![Operator::Equal, Operator::NotEqual, Operator::Or, Operator::And],
+        VarType::str(_) | VarType::Slice(_) | VarType::Array(_,_) => vec![Operator::Equal, Operator::NotEqual],
         _ => vec![], // Handle unknown types
     }
 }

@@ -17,7 +17,7 @@ fn get_leaf(bloc_variables: &mut BlocVariables) -> Operation {
     let elem1 = Operand::Variable(var.clone());
 
     let elem2 = if random::gen_bool() {
-        match bloc_variables.get_random_variable(var_type::basic_types(), None){
+        match bloc_variables.get_random_variable([chosen_type.clone()].to_vec(), None){
             Some(v) => Operand::Variable(v.clone()),
             //Should never happen
             None => panic!("get_leaf() with no avaible variable"),
@@ -27,37 +27,39 @@ fn get_leaf(bloc_variables: &mut BlocVariables) -> Operation {
     };
 
     Operation::new(
-        Some(random::choose_random_item_from_vec(&var_type::supported_arithmetic_operator_by_type(chosen_type))),
+        chosen_type.clone(),
+        Some(random::choose_random_item_from_vec(&var_type::supported_comparator_operator_by_type(chosen_type))),
         elem1,
         elem2,
     )
 }
 
-fn comparison_operation_rec(bloc_variables: &mut BlocVariables, depth: usize) -> Operation {
+fn comparison_rec(bloc_variables: &mut BlocVariables, depth: usize) -> Operation {
 
     let element1 = if depth ==  0 || random::gen_bool() {
         Operand::Operation(Box::new(get_leaf(bloc_variables)))
     } else {
-        Operand::Operation(Box::new(comparison_operation_rec(bloc_variables, depth - 1)))
+        Operand::Operation(Box::new(comparison_rec(bloc_variables, depth - 1)))
     };
 
     let element2 = if depth ==  0 || random::gen_bool() {
         Operand::Operation(Box::new(get_leaf(bloc_variables)))
     } else {
-        Operand::Operation(Box::new(comparison_operation_rec(bloc_variables, depth - 1)))
+        Operand::Operation(Box::new(comparison_rec(bloc_variables, depth - 1)))
     };
 
     Operation::new(
-        Some(random::choose_random_item_from_vec(&var_type::supported_arithmetic_operator_by_type(VarType::bool))),
+        VarType::bool,
+        Some(random::choose_random_item_from_vec(&var_type::supported_comparator_operator_by_type(VarType::bool))),
         element1,
         element2,
     )
 }
 
-pub fn generate_type_instruction(bloc_variables: &mut BlocVariables) -> String {
+pub fn generate_comparison_instruction(bloc_variables: &mut BlocVariables) -> String {
     if bloc_variables.is_empty() {
         return value::random_value(&VarType::bool).to_string();
     }
 
-    comparison_operation_rec(bloc_variables, MAX_OPERATION_DEPTH).to_string()
+    comparison_rec(bloc_variables, MAX_OPERATION_DEPTH).to_string()
 }

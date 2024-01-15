@@ -1,5 +1,4 @@
 use crate::variables::var_type::VarType;
-use crate::variables::value::Value;
 use crate::variables::operand::Operand;
 use crate::random;
 
@@ -9,7 +8,7 @@ use super::operator::{self, Operator};
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct Operation {
-    interaction_type: VarType,
+    operation_type: VarType,
     operator: Operator,
     first_element: Operand,
     second_element: Operand,
@@ -18,7 +17,7 @@ pub(crate) struct Operation {
 impl std::fmt::Display for Operation {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match &self.first_element {
-            Operand::Variable(variable) => write!(f, "({}", variable.name())?,
+            Operand::Variable(variable) => write!(f, "({}",variable.name_and_way(self.interaction_type()))?,
             Operand::Operation(interaction) => write!(f, "({}", interaction)?,
             Operand::Value(value,_) => write!(f, "({}", value)?,
         };
@@ -26,7 +25,7 @@ impl std::fmt::Display for Operation {
         write!(f, " {} ", self.operator)?;
 
         match &self.second_element {
-            Operand::Variable(variable) => write!(f, "{})", variable.name())?,
+            Operand::Variable(variable) =>  write!(f, "{})",variable.name_and_way(self.interaction_type()))?,
             Operand::Operation(interaction) => write!(f, "{})", interaction)?,
             Operand::Value(value,_) => write!(f, "{})", value)?,
         };
@@ -37,21 +36,15 @@ impl std::fmt::Display for Operation {
 }
 
 impl Operation {
-    pub fn new(operator: Option<Operator>, first_element: Operand, second_element: Operand) -> Self {
-
-        let interaction_type = match &first_element {
-            Operand::Variable(variable) => variable.var_type(),
-            Operand::Operation(interaction) => interaction.interaction_type(),
-            Operand::Value(_,var_type) => var_type.clone(),
-        };
+    pub fn new(operation_type: VarType, operator: Option<Operator>, first_element: Operand, second_element: Operand) -> Self {
 
         let operator = match operator {
             Some(v) => v,
-            None => random::choose_random_item_from_vec(&var_type::supported_arithmetic_operator_by_type(interaction_type.clone())),
+            None => random::choose_random_item_from_vec(&var_type::supported_arithmetic_operator_by_type(operation_type.clone())),
         };
 
         Operation {
-            interaction_type,
+            operation_type,
             operator,
             first_element,
             second_element,
@@ -59,6 +52,6 @@ impl Operation {
     }
 
     pub fn interaction_type(&self) -> VarType {
-        self.interaction_type.clone()
+        self.operation_type.clone()
     }
 }

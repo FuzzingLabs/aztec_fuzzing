@@ -1,6 +1,8 @@
 use crate::variables::var_type::VarType;
 use crate::random;
 
+use super::var_type;
+
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct Variable {
     name: String,
@@ -40,4 +42,15 @@ impl Variable {
     pub fn initialise(&self) -> String{
         format!("let{} {}: {}", if self.is_mutable() { " mut" } else { "" }, self.name(), self.var_type())
     }
+
+    pub fn name_and_way(&self, aim_type: VarType) -> String {
+        if let Some(str) = var_type::way_to_type(&self.var_type(), &aim_type) {
+            return format!("{}{}", self.name(), str);
+        } else {
+            panic!("No way to type in name_and_way");
+        }
+        
+    }
+
+    
 }

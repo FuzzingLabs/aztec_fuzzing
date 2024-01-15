@@ -34,10 +34,11 @@ fn type_operation_rec(bloc_variables: &mut BlocVariables, chosen_type:VarType, d
             Operand::Value(value::random_value(&chosen_type), chosen_type.clone())
         }
     } else {
-        Operand::Operation(Box::new(type_operation_rec(bloc_variables, chosen_type, depth - 1)))
+        Operand::Operation(Box::new(type_operation_rec(bloc_variables, chosen_type.clone(), depth - 1)))
     };
 
     Operation::new(
+        chosen_type,
         None,
         element1,
         element2,

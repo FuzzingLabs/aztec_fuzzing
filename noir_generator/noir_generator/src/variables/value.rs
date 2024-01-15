@@ -111,10 +111,9 @@ pub fn random_value(var_type: &VarType) -> Value {
             }
             Value::Array(random_vec)
         },
-        VarType::Slice(type_param) => {
-            let size = random::gen_range(0, MAX_COMPOSITE_SIZE);
-            let mut random_vec = Vec::with_capacity(size);
-            for _ in 0..size {
+        VarType::Slice(type_param, size) => {
+            let mut random_vec = Vec::with_capacity(*size);
+            for _ in 0..*size {
                 random_vec.push(random_value(&type_param))
             }
             Value::Slice(random_vec)

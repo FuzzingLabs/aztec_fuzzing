@@ -23,7 +23,7 @@ impl BlocVariables {
         self.variables.is_empty()
     }
 
-    pub fn new_variable(&mut self, allowed_types: Vec<VarType>, mutable: Option<bool>) -> Variable{
+    pub fn new_variable(&mut self, allowed_types: Vec<&VarType>, mutable: Option<bool>) -> Variable{
         let new_var = Variable::new(
             format!("var{}", self.next_id()),
             mutable,
@@ -35,7 +35,7 @@ impl BlocVariables {
         new_var
     }
 
-    pub fn get_random_variable(&mut self, allowed_types: Vec<VarType>, mutable: Option<bool>) -> Option<&Variable> {
+    pub fn get_random_variable(&self, allowed_types: Vec<VarType>, mutable: Option<bool>) -> Option<&Variable> {
         let filtered_variables: Vec<&Variable> = self.variables
             .iter()
             .filter(|v| {

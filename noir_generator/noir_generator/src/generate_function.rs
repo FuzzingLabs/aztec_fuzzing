@@ -1,8 +1,7 @@
+use crate::constants::NB_MAX_INSTRUCTION;
 use crate::statements::random_statement;
 use crate::variables::bloc_variables::BlocVariables;
 use crate::random;
-
-const NB_MAX_INSTRUCTION: u32 = 100;
 
 pub fn generate_function(function_name: String) -> String{
     let mut function: String = format!("fn {}() {{\n", function_name);

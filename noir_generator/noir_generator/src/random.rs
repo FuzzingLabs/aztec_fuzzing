@@ -25,7 +25,7 @@ where
 {
     let mut binding = RNG_INSTANCE.lock().expect("RNG is not initialized");
     let rng = binding.as_mut().unwrap();
-    rng.gen_range(min..=max)
+    rng.gen_range(min..max)
 }
 
 pub fn choose_random_item_from_vec<T: Clone>(items: &Vec<T>) -> T {
@@ -60,67 +60,26 @@ pub fn gen_field() -> u128 {
     rng.gen()
 }
 
-pub fn gen_u8() -> u8 {
-    let mut binding = RNG_INSTANCE.lock().expect("RNG is not initialized");
-    let rng = binding.as_mut().unwrap();
-    rng.gen()
-}
+pub fn gen_random_uint(bit_size: usize) -> u128{
+    assert!(bit_size > 0 && bit_size <= 128,
+        "Invalid bit size for u128");
 
-pub fn gen_u16() -> u16 {
     let mut binding = RNG_INSTANCE.lock().expect("RNG is not initialized");
     let rng = binding.as_mut().unwrap();
-    rng.gen()
-}
 
-pub fn gen_u32() -> u32 {
-    let mut binding = RNG_INSTANCE.lock().expect("RNG is not initialized");
-    let rng = binding.as_mut().unwrap();
-    rng.gen()
-}
-
-pub fn gen_u64() -> u64 {
-    let mut binding = RNG_INSTANCE.lock().expect("RNG is not initialized");
-    let rng = binding.as_mut().unwrap();
-    rng.gen()
-}
-
-pub fn gen_u127() -> u128 {
-    let mut binding = RNG_INSTANCE.lock().expect("RNG is not initialized");
-    let rng = binding.as_mut().unwrap();
     let random_u128: u128 = rng.gen();
-    random_u128 & ((1u128 << 127) - 1) as u128
+    random_u128 & ((1u128 << bit_size) - 1) as u128
 }
 
-pub fn gen_i8() -> i8 {
-    let mut binding = RNG_INSTANCE.lock().expect("RNG is not initialized");
-    let rng = binding.as_mut().unwrap();
-    rng.gen()
-}
+pub fn gen_random_int(bit_size: usize) -> i128{
+    assert!(bit_size > 0 && bit_size <= 128,
+        "Invalid bit size for i128");
 
-pub fn gen_i16() -> i16 {
     let mut binding = RNG_INSTANCE.lock().expect("RNG is not initialized");
     let rng = binding.as_mut().unwrap();
-    rng.gen()
-}
 
-pub fn gen_i32() -> i32 {
-    let mut binding = RNG_INSTANCE.lock().expect("RNG is not initialized");
-    let rng = binding.as_mut().unwrap();
-    rng.gen()
-}
-
-pub fn gen_i64() -> i64 {
-    let mut binding = RNG_INSTANCE.lock().expect("RNG is not initialized");
-    let rng = binding.as_mut().unwrap();
-    rng.gen()
-}
-
-pub fn gen_i127() -> i128 {
-    let mut binding = RNG_INSTANCE.lock().expect("RNG is not initialized");
-    let rng = binding.as_mut().unwrap();
     let random_i128: i128 = rng.gen();
-    let random_i127: i128 = random_i128 & ((1i128 << 126) - 1);
-    random_i127
+    random_i128 & ((1i128 << (bit_size - 1)) - 1) as i128
 }
 
 pub fn gen_bool() -> bool {

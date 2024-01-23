@@ -11,8 +11,6 @@ rand_core = "*"
 rand_xorshift = "*"
 lazy_static = "*"
 backtrace = "0.3.54"
-noirc_frontend = { path = "../noir/compiler/noirc_frontend" }
-fm = { path = "../noir/compiler/fm" }
 
 [profile.dev]
 debug = true

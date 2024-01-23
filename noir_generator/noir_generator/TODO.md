@@ -2,25 +2,23 @@
 
 - [x] Main function
 - [x] Fields
-- [ ] Constants
 - [x] Basic & Basic Shorthand operations
 - [x] Booleans
-- [ ] Assertions & Constrain
+- [x] Assertions & Constrain
 - [x] Integers
 - [x] Predicate / Comparison operators
 - [x] Bitwise & Bitwise Shorthand operations
-- [ ] If expressions
-- [ ] If / Else expressions
+- [x] If / Else expressions
 - [x] Logical operators
-- [ ] Data type visibility
+- [x] Data type visibility
 - [x] Mutability
 - [ ] For loops
 - [x] Strings
 - [ ] Basic loggings & Assertions
 - [ ] Formatted strings & loggings
-- [ ] Arrays, Inferred & Explicitly array types 
-- [ ] Array instantiation with a repeated value
-- [ ] Multidimensional arrays
+- [x] Arrays, Inferred & Explicitly array types 
+- [x] Array instantiation with a repeated value
+- [x] Multidimensional arrays
 - [ ] Standard arrays methods
 - [x] Tuples
 - [ ] Basic structs & instances

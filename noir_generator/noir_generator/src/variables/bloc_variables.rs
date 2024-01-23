@@ -4,6 +4,7 @@ use crate::random;
 
 use super::var_type;
 
+#[derive(Clone)]
 pub struct BlocVariables{
     variables: Vec<Variable>
 }

@@ -23,6 +23,10 @@ pub fn gen_range<T>(min: T, max: T) -> T
 where
     T: PartialOrd + rand::distributions::uniform::SampleUniform,
 {
+    if min >= max{
+        return min;
+    }
+    
     let mut binding = RNG_INSTANCE.lock().expect("RNG is not initialized");
     let rng = binding.as_mut().unwrap();
     rng.gen_range(min..max)

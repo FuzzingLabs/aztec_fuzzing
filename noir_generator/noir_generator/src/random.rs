@@ -7,9 +7,17 @@ lazy_static::lazy_static! {
     static ref RNG_INSTANCE: std::sync::Mutex<Option<XorShiftRng>> = std::sync::Mutex::new(None);
 }
 
-pub fn initialize_rng(seed: Option<u8>) {
-    let seed_value = match seed {
-        Some(s) => s as u64,
+pub fn initialize_rng(data: Option<&[u8]>) {
+    let seed_value = match data {
+        Some(s) 
+            =>  ((s[0] as u64) << 56) |
+                ((s[1] as u64) << 48) |
+                ((s[2] as u64) << 40) |
+                ((s[3] as u64) << 32) |
+                ((s[4] as u64) << 24) |
+                ((s[5] as u64) << 16) |
+                ((s[6] as u64) << 8) |
+                (s[7] as u64),
         None => rand::thread_rng().gen(),
     };
 

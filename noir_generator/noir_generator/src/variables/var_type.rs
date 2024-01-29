@@ -55,8 +55,17 @@ pub fn basic_types() -> Vec<VarType> {
     vec
 }
 
-pub fn random_basic_type() -> VarType {
+pub fn random_int_type() -> VarType {
     match random::gen_range(0, 3) {
+        0 => VarType::Field,
+        1 => VarType::uint(random::gen_range(1, 128)),
+        2 => VarType::int(random::gen_range(1, 128)),
+        _ => VarType::Field,
+    }
+}
+
+pub fn random_basic_type() -> VarType {
+    match random::gen_range(0, 4) {
         0 => VarType::Field,
         1 => VarType::uint(random::gen_range(1, 128)),
         2 => VarType::int(random::gen_range(1, 128)),
@@ -97,15 +106,14 @@ fn random_type_with_depth(depth: usize) -> VarType {
             _ => VarType::Field,
         }
     } else {
-        match random::gen_range(0, 8) {
+        match random::gen_range(0, 7) {
             0 => VarType::Field,
             1 => VarType::uint(random::gen_range(1, 128)),
             2 => VarType::int(random::gen_range(1, 128)),
             3 => VarType::bool,
             4 => VarType::str(random::gen_range(0, MAX_COMPOSITE_SIZE)),
             5 => VarType::Array(Box::new(random_type_with_depth(depth -1).clone()), random::gen_range(0, MAX_COMPOSITE_SIZE)),
-            6 => VarType::Slice(Box::new(random_type_with_depth(depth -1).clone()), random::gen_range(0, MAX_COMPOSITE_SIZE)),
-            7 => {
+            6 => {
                 let size = random::gen_range(MIN_TUP_SIZE, MAX_COMPOSITE_SIZE);
                 let mut vec_tup = Vec::with_capacity(size);
                 for _ in 0..size {
@@ -120,7 +128,12 @@ fn random_type_with_depth(depth: usize) -> VarType {
 
 pub fn supported_arithmetic_operator_by_type(var_type: &VarType) -> Vec<Operator> {
     match var_type {
-        VarType::Field | VarType::int(_) => vec![Operator::Add, Operator::Subtract, Operator::Multiply, Operator::Divide],
+        VarType::Field => vec![Operator::Add, Operator::Subtract, Operator::Multiply, Operator::Divide],
+        VarType::int(size) => if *size == 127 { 
+            vec![Operator::Add, Operator::Subtract, Operator::Divide]
+        } else {
+            vec![Operator::Add, Operator::Subtract, Operator::Multiply, Operator::Divide]
+        },
         VarType::uint(_) => vec![Operator::Add, Operator::Subtract, Operator::Multiply, Operator::Divide, Operator::Xor, Operator::And, Operator::Or, Operator::Lshift, Operator::Rshift],
         VarType::bool => vec![Operator::Equal, Operator::NotEqual, Operator::Or, Operator::And],
         _ => vec![], // Handle unknown types

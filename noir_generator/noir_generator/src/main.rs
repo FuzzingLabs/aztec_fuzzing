@@ -6,8 +6,13 @@ mod statements;
 mod constants;
 
 use std::process::Command;
+use std::sync::{Arc, Mutex};
+use std::thread;
+extern crate honggfuzz;
 
-fn fuzz_by_command_line() -> Option<String> {
+fn fuzz_by_command_line(data: Option<&[u8]>) -> Option<String> {
+    random::initialize_rng(data);
+    
     let mut code_generated = String::new();
     for _ in 0..random::gen_range(0, constants::NB_MAX_FUNCTION) {
         code_generated = format!("{}{}\n", code_generated, generate_function::generate_function(random::gen_name()));
@@ -36,24 +41,45 @@ fn fuzz_by_command_line() -> Option<String> {
     }
 }
 
+fn ignored_error(err: &String) -> bool{
+    err.contains("attempt to divide by zero")
+}
+
 
 fn main() {
+    let num_threads = 4;
 
-    random::initialize_rng(None);
+    // Utilisez Arc (Atomic Reference Counter) pour partager les données entre les threads
+    let mut loop_count = 1;
+    let mut crash_count = 1;
+
+    let _ = std::fs::remove_dir_all("/home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/crash_found/");
+    std::fs::create_dir("/home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/crash_found/");
+
+    loop {
+        match fuzz_by_command_line(None) {
+            Some(err) => {
+                if !ignored_error(&err) {
+                    let src = "/home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/testNoir/test/src/main.nr";
+                    let dest = format!("/home/afredefon/FuzzingLabs/aztec_fuzzing/noir_generator/noir_generator/crash_found/crash{}.nr", crash_count.to_string());
+                    let _ = std::fs::copy(src, dest);
     
-    let mut errors_cmd: Option<String> = None;
-    let mut compteur = 0;
-
-    while errors_cmd.is_none() {
-
-        errors_cmd = fuzz_by_command_line();
-        compteur += 1;
-        println!("nb loop: {}", compteur);
+                    println!("CRASH N°{} FOUND AFTER {} LOOP", crash_count, loop_count);
+                    println!("{}", err);
+                    crash_count += 1;
+                }
+            }
+            None => {}
+        }
+        loop_count += 1;
     }
 
-    match errors_cmd {
-        Some(err) => eprintln!("CMD Error: {}", err),
-        None => println!("NO CMD Error"),
-    }
+    // honggfuzz::fuzz!(|data: &[u8]| {
+    //     if let Some(err) = fuzz_by_command_line(Some(data)) {
+    //         if !ignored_error(&err) {
+    //             println!("CMD Error: {}", err);
+    //         }
+    //     }
+    // });
 
 }

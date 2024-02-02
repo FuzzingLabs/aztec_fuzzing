@@ -8,9 +8,6 @@ mod constants;
 use std::process::Command;
 use std::io::{self, Write};
 
-extern crate honggfuzz;
-
-
 fn ignored_error(err: &String) -> bool{
     err.contains("attempt to divide by zero")
     || err.contains("Comparisons are invalid on Field types.")

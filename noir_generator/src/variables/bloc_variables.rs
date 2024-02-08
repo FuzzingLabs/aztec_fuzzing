@@ -20,11 +20,15 @@ impl BlocVariables {
         self.variables.push(variable)
     }
 
-    pub fn is_empty(&self) -> bool{
+    pub fn variables(&self) -> Vec<Variable> {
+        self.variables.clone()
+    }
+
+    pub fn is_empty(&self) -> bool {
         self.variables.is_empty()
     }
 
-    pub fn new_variable(&mut self, allowed_types: Vec<&VarType>, mutable: Option<bool>) -> Variable{
+    pub fn new_variable(&mut self, allowed_types: &VarType, mutable: Option<bool>) -> Variable{
         let new_var = Variable::new(
             format!("var{}", self.next_id()),
             mutable,

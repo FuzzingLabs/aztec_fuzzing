@@ -11,19 +11,18 @@ pub(crate) struct Variable {
 }
 
 impl Variable {
-    pub fn new(name: String, mutable: Option<bool>, allowed_types: Vec<&VarType>) -> Self {
+    pub fn new(name: String, mutable: Option<bool>, allowed_types: &VarType) -> Self {
 
         let mutable = match mutable {
             Some(v) => v,
             None => random::gen_bool(),
         };
 
-        let var_type = random::choose_random_item_from_vec(&allowed_types);
         
         Self {
             name,
             mutable,
-            var_type: var_type.clone(),
+            var_type: allowed_types.clone(),
         }
     }
 
@@ -39,12 +38,7 @@ impl Variable {
         &self.name
     }
 
-    pub fn initialise(&self) -> String{
-        // if random::gen_bool() {
-        //     format!("let{} {}: {}", if self.is_mutable() { " mut" } else { "" }, self.name(), self.var_type())
-        // } else {
-        //     format!("let{} {}", if self.is_mutable() { " mut" } else { "" }, self.name())
-        // }
+    pub fn initialize(&self) -> String{
         format!("let{} {}: {}", if self.is_mutable() { " mut" } else { "" }, self.name(), self.var_type())
         
     }

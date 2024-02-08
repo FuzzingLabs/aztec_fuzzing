@@ -11,6 +11,9 @@ rand_core = "*"
 rand_xorshift = "*"
 lazy_static = "*"
 backtrace = "0.3.54"
+timeout-readwrite = "*"
+tokio = { version = "1", features = ["full"] }
+regex = "1.5.4"
 
 [profile.dev]
 debug = true

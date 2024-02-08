@@ -12,7 +12,7 @@
 - [x] Logical operators
 - [x] Data type visibility
 - [x] Mutability
-- [ ] For loops
+- [x] For loops
 - [x] Strings
 - [ ] Basic loggings & Assertions
 - [ ] Formatted strings & loggings
@@ -22,10 +22,10 @@
 - [ ] Standard arrays methods
 - [x] Tuples
 - [ ] Basic structs & instances
-- [ ] Basic functions & function calls
+- [x] Basic functions & function calls
 - [ ] Noir standard library functions calls
-- [ ] Function visibility, parameters & return type
-- [ ] Function calls & call expressions
+- [x] Function visibility, parameters & return type
+- [x] Function calls & call expressions
 - [ ] Lambda expressions
 - [ ] Function types
 - [ ] Distinct Witnesses

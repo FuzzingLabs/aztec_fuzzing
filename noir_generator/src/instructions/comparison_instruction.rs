@@ -6,7 +6,7 @@ use crate::variables::operation::Operation;
 use crate::variables::operand::Operand;
 use crate::random;
 
-fn get_leaf(bloc_variables: &mut BlocVariables) -> Option<Operation> {
+fn get_leaf(bloc_variables: &BlocVariables) -> Option<Operation> {
     let var = match bloc_variables.get_random_variable(var_type::basic_types(), None){
         Some(v) => v,
         None => return None,
@@ -43,7 +43,7 @@ fn get_leaf(bloc_variables: &mut BlocVariables) -> Option<Operation> {
     ))
 }
 
-fn comparison_rec(bloc_variables: &mut BlocVariables, depth: usize) -> Operation {
+fn comparison_rec(bloc_variables: &BlocVariables, depth: usize) -> Operation {
 
     let element1 = if depth ==  0 || random::gen_bool() {
         match get_leaf(bloc_variables) {
@@ -71,7 +71,7 @@ fn comparison_rec(bloc_variables: &mut BlocVariables, depth: usize) -> Operation
     )
 }
 
-pub fn generate_comparison_instruction(bloc_variables: &mut BlocVariables) -> String {
+pub fn generate_comparison_instruction(bloc_variables: &BlocVariables) -> String {
     if bloc_variables.is_empty() {
         return value::random_value(&VarType::bool).to_string();
     }

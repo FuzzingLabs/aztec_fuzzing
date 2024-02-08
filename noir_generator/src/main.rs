@@ -1,16 +1,35 @@
 mod random;
-mod generate_function;
+mod generate_code;
 mod instructions;
 mod variables;
 mod statements;
 mod constants;
+mod functions;
 
 use std::process::Command;
 use std::io::{self, Write};
 
-fn ignored_error(err: &String) -> bool{
-    err.contains("attempt to divide by zero")
-    || err.contains("Comparisons are invalid on Field types.")
+fn ignored_error(err: &str) -> bool {
+    let errors = vec![
+        "attempt to divide by zero",
+        "Comparisons are invalid on Field types.",
+        "Either the operand's type or return type should be specified"
+    ];
+
+    for line in err.lines() {
+        if line.contains("error:") {
+            if !errors.iter().any(|&e| line.contains(e)) {
+                return false;
+            }
+        }
+    }
+
+    true
+}
+
+fn clean_ansi_escape_codes(input: &str) -> String {
+    let regex = regex::Regex::new(r"\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]").unwrap();
+    regex.replace_all(input, "").into_owned()
 }
 
 fn main() {
@@ -32,11 +51,7 @@ fn main() {
 
     loop {
         random::initialize_rng(None);
-        let mut code_generated = String::new();
-        for _ in 0..random::gen_range(0, constants::NB_MAX_FUNCTION) {
-            code_generated = format!("{}{}\n", code_generated, generate_function::generate_function(random::gen_name()));
-        }
-        code_generated = format!("{}{}", code_generated, generate_function::generate_function("main".to_string()));
+        let code_generated = generate_code::generate_code();
         
         std::fs::write(&nr_main_path, &code_generated).expect("Failed to write main.nr");
 
@@ -47,7 +62,7 @@ fn main() {
         match compilation_result {
             Ok(output) => {
                 if !output.status.success() {
-                    let err = String::from_utf8_lossy(&output.stderr).to_string();
+                    let err = clean_ansi_escape_codes(&String::from_utf8_lossy(&output.stderr).to_string());
                     if !ignored_error(&err) {
                         crash_count += 1;
 

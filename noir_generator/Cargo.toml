@@ -6,15 +6,30 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+honggfuzz = {git="https://github.com/raefko/honggfuzz-rs.git"}
 rand = "*"
 rand_core = "*"
 rand_xorshift = "*"
 lazy_static = "*"
 backtrace = "0.3.54"
+noirc_frontend = {path="/home/raefko/noir/compiler/noirc_frontend"}
+nargo_cli = {path = "/home/raefko/noir/tooling/nargo_cli"}
+chrono = "0.4"
 
 [profile.dev]
 debug = true
 
 [profile.release]
 debug = true
-
+[[bin]]
+name = "reproducer"
+path = "src/reproducer.rs"
+[[bin]]
+name = "parser_fuzzer"
+path = "src/parser_fuzzer.rs"
+[[bin]]
+name = "compilation_fuzzer"
+path = "src/compilation_fuzzer.rs"
+[[bin]]
+name = "compilation_fuzzer_custom"
+path = "src/compilation_fuzzer_custom.rs"

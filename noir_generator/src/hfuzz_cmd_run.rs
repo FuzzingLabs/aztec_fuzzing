@@ -40,7 +40,6 @@ fn clean_ansi_escape_codes(input: &str) -> String {
 
 fn main() {
 
-
     loop {
         fuzz!(|data: &[u8]| {
             if data.len() < 8 {

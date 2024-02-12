@@ -18,6 +18,7 @@ fn ignored_error(err: &str) -> bool {
         "Comparisons are invalid on Field types.",
         "Either the operand's type or return type should be specified",
         "expected type",
+        "Expected type",
         "The number of bits to use for this bitwise operation is ambiguous."
     ];
 
@@ -60,6 +61,7 @@ fn main() {
                         return;
                     }
                     panic!("Error running program: {:?}", err);
+                    
                 }
             }
 

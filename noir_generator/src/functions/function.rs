@@ -163,7 +163,7 @@ impl Function {
             Operand::Value(value::random_value(chosen_type), chosen_type.clone())
         };
     
-        let var = bloc_variables.new_variable(&VarType::uint(64), Some(false));
+        let var = bloc_variables.new_variable(chosen_type, Some(false));
     
         let mut function_string: String = format!("for {} in {}..{} {{\n", var.name(), 
         match start_for{

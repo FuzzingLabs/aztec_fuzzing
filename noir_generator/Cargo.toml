@@ -6,18 +6,31 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+honggfuzz = {git="https://github.com/raefko/honggfuzz-rs.git"}
 rand = "*"
 rand_core = "*"
 rand_xorshift = "*"
 lazy_static = "*"
 backtrace = "0.3.54"
-timeout-readwrite = "*"
-tokio = { version = "1", features = ["full"] }
 regex = "1.5.4"
-
-[profile.dev]
-debug = true
+chrono = "0.4"
+nargo_cli = {path = "/home/afredefon/FuzzingLabs/aztec_fuzzing/noir/tooling/nargo_cli"}
 
 [profile.release]
-debug = true
+opt-level = 0
 
+[[bin]]
+name = "basic_run"
+path = "src/basic_run.rs"
+[[bin]]
+name = "basic_cmd_run"
+path = "src/basic_cmd_run.rs"
+[[bin]]
+name = "reproducer"
+path = "src/reproducer.rs"
+[[bin]]
+name = "hfuzz_run"
+path = "src/hfuzz_run.rs"
+[[bin]]
+name = "hfuzz_cmd_run"
+path = "src/hfuzz_cmd_run.rs"

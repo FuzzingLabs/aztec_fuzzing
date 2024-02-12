@@ -2,7 +2,6 @@ use crate::constants::MAX_OPERATION_DEPTH;
 use crate::functions::list_functions::ListFunctions;
 use crate::variables::bloc_variables::BlocVariables;
 use crate::variables::value;
-use crate::variables::variable::Variable;
 use crate::variables::var_type::{self, VarType};
 use crate::variables::operation::Operation;
 use crate::variables::operand::Operand;

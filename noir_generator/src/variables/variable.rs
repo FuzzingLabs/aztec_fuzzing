@@ -40,7 +40,6 @@ impl Variable {
 
     pub fn initialize(&self) -> String{
         format!("let{} {}: {}", if self.is_mutable() { " mut" } else { "" }, self.name(), self.var_type())
-        
     }
 
     pub fn name_and_way(&self, aim_type: &VarType) -> String {

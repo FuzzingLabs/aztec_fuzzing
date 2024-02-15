@@ -60,7 +60,7 @@ fn main() {
         std::fs::write(&nr_main_path, &code_generated).expect("Failed to write main.nr");
 
         let compilation_result = Command::new("nargo")
-            .args(&["compile", "--program-dir", noir_project_dir.to_str().unwrap_or_else(|| panic!("Impossible de convertir le chemin en chaîne UTF-8 valide"))])
+            .args(&["compile", "--silence-warnings", "--program-dir", noir_project_dir.to_str().unwrap_or_else(|| panic!("Impossible de convertir le chemin en chaîne UTF-8 valide"))])
             .output();
 
         match compilation_result {

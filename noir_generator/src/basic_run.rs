@@ -59,7 +59,7 @@ fn main() {
         
         std::fs::write(&nr_main_path, &code_generated).expect("Failed to write main.nr");
 
-        let compilation_result = nargo_cli::fuzzinglabs_run();
+        let compilation_result = nargo_cli::fuzzinglabs_run(&noir_project_dir);
 
         match compilation_result {
             Ok(_) => {}

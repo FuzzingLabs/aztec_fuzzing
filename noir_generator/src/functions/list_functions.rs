@@ -1,6 +1,6 @@
 use std::fmt::format;
 
-use crate::{constants::{self, NB_MAX_INSTRUCTION_BY_FUNCTION}, functions::{function, list_functions}, instructions::comparison_instruction::generate_comparison_instruction, random, statements::random_statement, variables::{bloc_variables::{self, BlocVariables}, operand::Operand, value, var_type::{self, VarType}}};
+use crate::{constants::{self, NB_MAX_INSTRUCTION_BY_FUNCTION}, functions::{function, list_functions}, instructions::comparison_instruction::generate_comparison_instruction, random, statements::random_statement, variables::{bloc_variables::{self, BlocVariables}, list_structs::ListStructs, operand::Operand, value, var_type::{self, VarType}}};
 use super::function::Function;
 
 #[derive(Clone)]
@@ -35,7 +35,7 @@ impl ListFunctions {
         Some(random::choose_random_item_from_vec(&valid_function).call())
     }
 
-    pub fn add_function(&mut self, is_main: bool) {
+    pub fn add_function(&mut self, list_structs: &ListStructs, is_main: bool) {
         let mut bloc_variables = BlocVariables::new();
 
         let mut function;
@@ -47,17 +47,17 @@ impl ListFunctions {
             function = Function::new("main".to_string(), Some(false), bloc_variables, None);
         } else {
             for _ in 0..constants::NB_MAX_ARGUMENTS{
-                bloc_variables.new_variable(&var_type::random_type(), Some(false));
+                bloc_variables.new_variable(&var_type::random_type(list_structs), Some(false));
             }
-            function = Function::new(random::gen_name(), None, bloc_variables, Some(var_type::random_type()));
+            function = Function::new(random::gen_name(), None, bloc_variables, Some(var_type::random_type(list_structs)));
         }
         self.functions.push(function);
     }
 
-    pub fn generate_all_functions_core(&self) -> String {
+    pub fn generate_functions_code(&self, list_structs: &ListStructs) -> String {
         let mut ret = String::new();
         for i in &self.functions {
-            ret = format!("{}{}", ret, i.generate_core(self));
+            ret = format!("{}{}", ret, i.generate_function_code(self, list_structs));
         }
         ret
     }

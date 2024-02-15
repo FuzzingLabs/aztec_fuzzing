@@ -51,7 +51,7 @@ fn main() {
             let code_generated = generate_code::generate_code();
             std::fs::write(&nr_main_path, &code_generated).expect("Failed to write main.nr");
 
-            match nargo_cli::fuzzinglabs_run() {
+            match nargo_cli::fuzzinglabs_run(&noir_project_dir) {
                 Ok(_) => {
                     return;
                 }

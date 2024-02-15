@@ -14,7 +14,7 @@ lazy_static = "*"
 backtrace = "0.3.54"
 regex = "1.5.4"
 chrono = "0.4"
-nargo_cli = {path = "/home/afredefon/FuzzingLabs/aztec_fuzzing/noir/tooling/nargo_cli"}
+nargo_cli = {path = "$CARGO_MANIFEST_DIR/../../noir/tooling/nargo_cli"}
 
 [profile.release]
 opt-level = 0

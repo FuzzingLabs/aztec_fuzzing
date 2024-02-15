@@ -5,3 +5,5 @@ pub mod variable;
 pub mod operation;
 pub mod operand;
 pub mod operator;
+pub mod struct_type;
+pub mod list_structs;

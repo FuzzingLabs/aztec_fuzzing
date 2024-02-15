@@ -1,5 +1,4 @@
 use crate::variables::var_type::VarType;
-use crate::constants::MAX_COMPOSITE_SIZE;
 use crate::random;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -13,6 +12,7 @@ pub(crate) enum Value {
     Slice(Vec<Value>),
     // Vec(Vec<Value>),
     Tup(Vec<Value>),
+    Strct(Vec<(Value, String)>, String),
 }
 
 impl std::fmt::Display for Value {
@@ -26,7 +26,7 @@ impl std::fmt::Display for Value {
             Value::Array(value) => {
                 write!(f, "[")?;
                 for (i, item) in value.iter().enumerate() {
-                    if i > 0 {
+                    if i != 0 {
                         write!(f, ", ")?;
                     }
                     write!(f, "{}", item)?;
@@ -39,7 +39,7 @@ impl std::fmt::Display for Value {
                     write!(f, "{}; {}", value[0], value.len())?;
                 } else {
                     for (i, item) in value.iter().enumerate() {
-                        if i > 0 {
+                        if i != 0 {
                             write!(f, ", ")?;
                         }
                         write!(f, "{}", item)?;
@@ -48,26 +48,25 @@ impl std::fmt::Display for Value {
                 write!(f, "]")
             },
 
-            // Value::Vec(value) => {
-            //     write!(f, "(")?;
-            //     for (i, item) in value.iter().enumerate() {
-            //         if i > 0 {
-            //             write!(f, ", ")?;
-            //         }
-            //         write!(f, "{}", item)?;
-            //     }
-            //     write!(f, ")")
-            // },
-
             Value::Tup(value) => {
                 write!(f, "(")?;
                 for (i, item) in value.iter().enumerate() {
-                    if i > 0 {
+                    if i != 0 {
                         write!(f, ", ")?;
                     }
                     write!(f, "{}", item)?;
                 }
                 write!(f, ")")
+            },
+            Value::Strct(key_val, name) => {
+                write!(f, "{} {{", name)?;
+                for (i, item) in key_val.iter().enumerate() {
+                    if i != 0 {
+                        write!(f, ", ")?;
+                    }
+                    write!(f, "{}: {}", item.1, item.0)?;
+                }
+                write!(f, "}}")
             },
         }
     }
@@ -75,34 +74,25 @@ impl std::fmt::Display for Value {
 
 pub fn random_value(var_type: &VarType) -> Value {
     match var_type {
-        VarType::Field => Value::Field(random::gen_field()),
+        VarType::field => Value::Field(random::gen_field()),
         VarType::uint(size) => Value::Uint(random::gen_random_uint(*size)),
         VarType::int(size) => Value::Int(random::gen_random_int(*size)),
         VarType::bool => Value::Bool(random::gen_bool()),
         VarType::str(size) => Value::Str(random::gen_str(*size)),
-        VarType::Array(type_param, size) => {
+        VarType::array(type_param, size) => {
             let mut random_vec = Vec::with_capacity(*size);
             for _ in 0..*size {
                 random_vec.push(random_value(&type_param))
             }
             Value::Array(random_vec)
         },
-        VarType::Slice(type_param, size) => {
+        VarType::slice(type_param, size) => {
             let mut random_vec = Vec::with_capacity(*size);
             for _ in 0..*size {
                 random_vec.push(random_value(&type_param))
             }
             Value::Slice(random_vec)
         },
-
-        // VarType::Vec(value) => {
-        //     let size = random::gen_range(0, MAX_COMPOSITE_SIZE);
-        //     let mut random_vec = Vec::with_capacity(size);
-        //     for _ in 0..size {
-        //         random_vec.push(random_value(&value))
-        //     }
-        //     Value::Vec(random_vec)
-        // },
 
         VarType::tup(vec_type_param) => {
             let size = vec_type_param.len();
@@ -111,6 +101,16 @@ pub fn random_value(var_type: &VarType) -> Value {
                 random_vec.push(random_value(&vec_type_param[i]))
             }
             Value::Tup(random_vec)
+        },
+
+        VarType::strct(strct) => {
+            let vec_type_param = strct.key_types();
+            let size = vec_type_param.len();
+            let mut random_vec = Vec::with_capacity(size);
+            for i in 0..size {
+                random_vec.push((random_value(&vec_type_param[i].0), vec_type_param[i].1.clone()))
+            }
+            Value::Strct(random_vec, strct.name().clone())
         },
 
         _ => unimplemented!("Type not yet supported"),

@@ -1,0 +1,3 @@
+[submodule "noir"]
+	path = noir
+	url = https://github.com/noir-lang/noir

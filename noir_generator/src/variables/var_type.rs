@@ -1,6 +1,6 @@
 use std::vec;
 
-use crate::{random, constants::{MAX_COMPOSITE_SIZE, MIN_TUP_SIZE}, constants::MAX_COMPOSITE_DEPTH};
+use crate::{constants::{MAX_COMPOSITE_DEPTH, MAX_COMPOSITE_SIZE, MIN_TUP_SIZE}, random::Random};
 use super::{list_structs::ListStructs, operator::Operator, struct_type::StructType};
 
 #[derive(Debug, Clone, PartialEq)]
@@ -58,84 +58,84 @@ pub fn basic_types() -> Vec<VarType> {
     vec
 }
 
-pub fn random_int_type() -> VarType {
-    match random::gen_range(0, 3) {
+pub fn random_int_type(random: &mut Random) -> VarType {
+    match random.gen_range(0, 3) {
         0 => VarType::field,
-        1 => VarType::uint(random::gen_range(1, 128)),
-        2 => VarType::int(random::gen_range(1, 128)),
+        1 => VarType::uint(random.gen_range(1, 128)),
+        2 => VarType::int(random.gen_range(1, 128)),
         _ => VarType::field,
     }
 }
 
-pub fn random_basic_type() -> VarType {
-    match random::gen_range(0, 4) {
+pub fn random_basic_type(random: &mut Random) -> VarType {
+    match random.gen_range(0, 4) {
         0 => VarType::field,
-        1 => VarType::uint(random::gen_range(1, 128)),
-        2 => VarType::int(random::gen_range(1, 128)),
+        1 => VarType::uint(random.gen_range(1, 128)),
+        2 => VarType::int(random.gen_range(1, 128)),
         3 => VarType::bool,
         _ => VarType::field,
     }
 }
 
-pub fn random_type(list_structs: &ListStructs) -> VarType {
-    match random::gen_range(0, 9) {
+pub fn random_type(random: &mut Random, list_structs: &ListStructs) -> VarType {
+    match random.gen_range(0, 9) {
         0 => VarType::field,
-        1 => VarType::uint(random::gen_range(1, 128)),
-        2 => VarType::int(random::gen_range(1, 128)),
+        1 => VarType::uint(random.gen_range(1, 128)),
+        2 => VarType::int(random.gen_range(1, 128)),
         3 => VarType::bool,
-        4 => VarType::str(random::gen_range(0, MAX_COMPOSITE_SIZE)),
-        5 => VarType::array(Box::new(random_type_with_depth(list_structs, MAX_COMPOSITE_DEPTH).clone()), random::gen_range(0, MAX_COMPOSITE_SIZE)),
-        6 => VarType::slice(Box::new(random_type_with_depth(list_structs, MAX_COMPOSITE_DEPTH).clone()), random::gen_range(0, MAX_COMPOSITE_SIZE)),
+        4 => VarType::str(random.gen_range(0, MAX_COMPOSITE_SIZE)),
+        5 => VarType::array(Box::new(random_type_with_depth(random, list_structs, MAX_COMPOSITE_DEPTH).clone()), random.gen_range(0, MAX_COMPOSITE_SIZE)),
+        6 => VarType::slice(Box::new(random_type_with_depth(random, list_structs, MAX_COMPOSITE_DEPTH).clone()), random.gen_range(0, MAX_COMPOSITE_SIZE)),
         7 => {
-            let size = random::gen_range(MIN_TUP_SIZE, MAX_COMPOSITE_SIZE);
+            let size = random.gen_range(MIN_TUP_SIZE, MAX_COMPOSITE_SIZE);
             let mut vec_tup = Vec::with_capacity(size);
             for _ in 0..size {
-                vec_tup.push(Box::new(random_type_with_depth(list_structs, MAX_COMPOSITE_DEPTH).clone()));
+                vec_tup.push(Box::new(random_type_with_depth(random, list_structs, MAX_COMPOSITE_DEPTH).clone()));
             }
             VarType::tup(vec_tup)
         },
         8 => {
             if list_structs.is_empty(){
-                random_type_with_depth(list_structs, MAX_COMPOSITE_DEPTH)
+                random_type_with_depth(random, list_structs, MAX_COMPOSITE_DEPTH)
             } else {
-                VarType::strct(list_structs.get_random())
+                VarType::strct(list_structs.get_random(random))
             }
         },
         _ => VarType::field,
     }
 }
 
-pub fn random_type_with_depth(list_structs: &ListStructs, depth: usize) -> VarType {
+pub fn random_type_with_depth(random: &mut Random, list_structs: &ListStructs, depth: usize) -> VarType {
     if depth == 0 {
-        match random::gen_range(0, 5) {
+        match random.gen_range(0, 5) {
             0 => VarType::field,
-            1 => VarType::uint(random::gen_range(1, 128)),
-            2 => VarType::int(random::gen_range(1, 128)),
+            1 => VarType::uint(random.gen_range(1, 128)),
+            2 => VarType::int(random.gen_range(1, 128)),
             3 => VarType::bool,
-            4 => VarType::str(random::gen_range(0, MAX_COMPOSITE_SIZE)),
+            4 => VarType::str(random.gen_range(0, MAX_COMPOSITE_SIZE)),
             _ => VarType::field,
         }
     } else {
-        match random::gen_range(0, 8) {
+        match random.gen_range(0, 8) {
             0 => VarType::field,
-            1 => VarType::uint(random::gen_range(1, 128)),
-            2 => VarType::int(random::gen_range(1, 128)),
+            1 => VarType::uint(random.gen_range(1, 128)),
+            2 => VarType::int(random.gen_range(1, 128)),
             3 => VarType::bool,
-            4 => VarType::str(random::gen_range(0, MAX_COMPOSITE_SIZE)),
-            5 => VarType::array(Box::new(random_type_with_depth(list_structs, depth -1).clone()), random::gen_range(0, MAX_COMPOSITE_SIZE)),
+            4 => VarType::str(random.gen_range(0, MAX_COMPOSITE_SIZE)),
+            5 => VarType::array(Box::new(random_type_with_depth(random, list_structs, depth -1).clone()), random.gen_range(0, MAX_COMPOSITE_SIZE)),
             6 => {
-                let size = random::gen_range(MIN_TUP_SIZE, MAX_COMPOSITE_SIZE);
+                let size = random.gen_range(MIN_TUP_SIZE, MAX_COMPOSITE_SIZE);
                 let mut vec_tup = Vec::with_capacity(size);
                 for _ in 0..size {
-                    vec_tup.push(Box::new(random_type_with_depth(list_structs, depth -1).clone()));
+                    vec_tup.push(Box::new(random_type_with_depth(random, list_structs, depth -1).clone()));
                 }
                 VarType::tup(vec_tup)
             },
             7 => {
                 if list_structs.is_empty() || depth != MAX_COMPOSITE_DEPTH {
-                    random_type_with_depth(list_structs, depth -1)
+                    random_type_with_depth(random, list_structs, depth -1)
                 } else {
-                    VarType::strct(list_structs.get_random())
+                    VarType::strct(list_structs.get_random(random))
                 }
             },
             _ => VarType::field,
@@ -166,7 +166,7 @@ pub fn supported_comparator_operator_by_type(var_type: &VarType) -> Vec<Operator
     }
 }
 
-pub fn way_to_type(source_type: &VarType, aim_type: &VarType) -> Option<String> {
+pub fn way_to_type(random: &mut Random, source_type: &VarType, aim_type: &VarType) -> Option<String> {
     match source_type {
         VarType::field | VarType::bool | VarType::str(_)
             => if source_type == aim_type {
@@ -194,25 +194,25 @@ pub fn way_to_type(source_type: &VarType, aim_type: &VarType) -> Option<String> 
                     },
                 _ => None,
         },
-        VarType::array(type_param, size) => match way_to_type(type_param, aim_type) {
+        VarType::array(type_param, size) => match way_to_type(random, type_param, aim_type) {
             Some(str) => if *size == 0 {
                     return None;
                 } else {
-                    return Some(format!("[{}]{}", random::gen_range(0, *size), str));
+                    return Some(format!("[{}]{}", random.gen_range(0, *size), str));
                 },
             None => return None,
         },
-        VarType::slice(type_param, size) => match way_to_type(type_param, aim_type) {
+        VarType::slice(type_param, size) => match way_to_type(random, type_param, aim_type) {
             Some(str) => if *size == 0 {
                     return None;
                 } else {
-                    return Some(format!("[{}]{}", random::gen_range(0, *size), str));
+                    return Some(format!("[{}]{}", random.gen_range(0, *size), str));
                 },
             None => return None,
         },
         VarType::tup(vec_type_param) => {
             for (ind,type_param) in vec_type_param.iter().enumerate() {
-                if let Some(str) = way_to_type(type_param, aim_type) {
+                if let Some(str) = way_to_type(random, type_param, aim_type) {
                     return Some(format!(".{}{}", ind, str));
                 }
             }
@@ -220,7 +220,7 @@ pub fn way_to_type(source_type: &VarType, aim_type: &VarType) -> Option<String> 
         },
         VarType::strct(strct) => {
             for (_,type_param) in strct.key_types().iter().enumerate() {
-                if let Some(str) = way_to_type(&type_param.0, aim_type) {
+                if let Some(str) = way_to_type(random, &type_param.0, aim_type) {
                     return Some(format!(".{}{}", type_param.1, str));
                 }
             }

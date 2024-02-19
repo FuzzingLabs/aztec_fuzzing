@@ -12,6 +12,8 @@ mod functions;
 use std::process::Command;
 use std::thread;
 
+use crate::constants::{MAX_DATA_LENGTH, MIN_DATA_LENGTH};
+
 fn ignored_error(err: &str) -> bool {
     let errors = vec![
         "attempt to divide by zero",
@@ -42,15 +44,15 @@ fn main() {
 
     loop {
         fuzz!(|data: &[u8]| {
-            if data.len() < 8 {
+            if data.len() < MIN_DATA_LENGTH || data.len() > MAX_DATA_LENGTH {
                 return;
             }
+            
             let noir_project_name = format!("noir_project{:?}", thread::current().id());
             let noir_project_dir = std::env::current_dir().unwrap().join(noir_project_name);
             let nr_main_path = noir_project_dir.join("src/main.nr");
 
-            random::initialize_rng(Some(data));
-            let code_generated = generate_code::generate_code();
+            let code_generated = generate_code::generate_code(data);
             std::fs::write(&nr_main_path, &code_generated).expect("Failed to write main.nr");
 
             match Command::new("nargo")

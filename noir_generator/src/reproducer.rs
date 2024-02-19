@@ -47,8 +47,8 @@ fn main() {
     let noir_project_dir = std::env::current_dir().unwrap().join("noir_project");
     let nr_main_path = noir_project_dir.join("src/main.nr");
 
-    random::initialize_rng(Some(&data));
-    let code_generated = generate_code::generate_code();
+
+    let code_generated = generate_code::generate_code(&data);
 
     std::fs::write(&nr_main_path, &code_generated).expect("Failed to write main.nr");
     

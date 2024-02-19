@@ -47,8 +47,8 @@ fn main() {
             if data.len() < 8 {
                 return;
             }
-            random::initialize_rng(Some(data));
-            let code_generated = generate_code::generate_code();
+
+            let code_generated = generate_code::generate_code(data);
             std::fs::write(&nr_main_path, &code_generated).expect("Failed to write main.nr");
 
             match nargo_cli::fuzzinglabs_run(&noir_project_dir) {

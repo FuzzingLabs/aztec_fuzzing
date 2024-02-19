@@ -1,4 +1,4 @@
-use crate::variables::var_type::VarType;
+use crate::{random::Random, variables::var_type::VarType};
 use crate::variables::operand::Operand;
 use crate::random;
 
@@ -14,34 +14,8 @@ pub(crate) struct Operation {
     second_element: Operand,
 }
 
-impl std::fmt::Display for Operation {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match &self.first_element {
-            Operand::Variable(variable) => write!(f, "({}",variable.name_and_way(&self.interaction_type()))?,
-            Operand::Operation(interaction) => write!(f, "({}", interaction)?,
-            Operand::Value(value,_) => write!(f, "({}", value)?,
-        };
-
-        write!(f, " {} ", self.operator)?;
-
-        match &self.second_element {
-            Operand::Variable(variable) =>  write!(f, "{})",variable.name_and_way(&self.interaction_type()))?,
-            Operand::Operation(interaction) => write!(f, "{})", interaction)?,
-            Operand::Value(value,_) => write!(f, "{})", value)?,
-        };
-
-        write!(f,"")
-
-    }
-}
-
 impl Operation {
-    pub fn new(operation_type: &VarType, operator: Option<Operator>, first_element: Operand, second_element: Operand) -> Self {
-
-        let operator = match operator {
-            Some(v) => v,
-            None => random::choose_random_item_from_vec(&var_type::supported_arithmetic_operator_by_type(operation_type)),
-        };
+    pub fn new(operation_type: &VarType, operator: Operator, first_element: Operand, second_element: Operand) -> Self {
 
         Operation {
             operation_type: operation_type.clone(),
@@ -53,5 +27,25 @@ impl Operation {
 
     pub fn interaction_type(&self) -> VarType {
         self.operation_type.clone()
+    }
+
+    pub fn to_string(&self, random: &mut Random) -> String {
+        let mut ret = String::new();
+
+        match &self.first_element {
+            Operand::Variable(variable) => ret = format!("{}({}", ret, variable.name_and_way(random, &self.interaction_type())),
+            Operand::Operation(interaction) => ret = format!("{}({}", ret, interaction.to_string(random)),
+            Operand::Value(value,_) => ret = format!("{}({}", ret, value),
+        };
+
+        ret = format!("{} {} ", ret, self.operator);
+
+        match &self.second_element {
+            Operand::Variable(variable) => ret = format!("{}{})", ret, variable.name_and_way(random, &self.interaction_type())),
+            Operand::Operation(interaction) => ret = format!("{}{})", ret, interaction.to_string(random)),
+            Operand::Value(value,_) => ret = format!("{}{})", ret, value),
+        };
+
+        ret
     }
 }

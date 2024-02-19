@@ -1,6 +1,6 @@
 use crate::variables::variable::Variable;
 use crate::variables::var_type::VarType;
-use crate::random;
+use crate::random::{self, Random};
 
 use super::var_type;
 
@@ -28,7 +28,7 @@ impl BlocVariables {
         self.variables.is_empty()
     }
 
-    pub fn new_variable(&mut self, allowed_types: &VarType, mutable: Option<bool>) -> Variable{
+    pub fn new_variable(&mut self, allowed_types: &VarType, mutable: bool) -> Variable{
         let new_var = Variable::new(
             format!("var{}", self.next_id()),
             mutable,
@@ -40,14 +40,14 @@ impl BlocVariables {
         new_var
     }
 
-    pub fn get_random_variable(&self, allowed_types: Vec<VarType>, mutable: Option<bool>) -> Option<&Variable> {
+    pub fn get_random_variable(&self, random: &mut Random, allowed_types: Vec<VarType>, mutable: bool) -> Option<&Variable> {
         let filtered_variables: Vec<&Variable> = self.variables
             .iter()
             .filter(|v| {
                 let type_condition = allowed_types.iter().any(|allowed_type| {
-                    var_type::way_to_type(&v.var_type(), &allowed_type).is_some()
+                    var_type::way_to_type(random, &v.var_type(), &allowed_type).is_some()
                 });
-                let mutable_condition = mutable.map_or(true, |value| v.is_mutable() == value);
+                let mutable_condition = mutable == v.is_mutable();
         
                 type_condition && mutable_condition
             })
@@ -57,7 +57,7 @@ impl BlocVariables {
             return None;
         }
     
-        Some(random::choose_random_item_from_vec(&filtered_variables))
+        Some(random.choose_random_item_from_vec(&filtered_variables))
     }
 
     fn next_id(&self) -> usize {

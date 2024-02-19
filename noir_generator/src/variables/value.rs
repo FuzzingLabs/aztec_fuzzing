@@ -1,5 +1,5 @@
 use crate::variables::var_type::VarType;
-use crate::random;
+use crate::random::Random;
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) enum Value {
@@ -72,24 +72,24 @@ impl std::fmt::Display for Value {
     }
 }
 
-pub fn random_value(var_type: &VarType) -> Value {
+pub fn random_value(random: &mut Random, var_type: &VarType) -> Value {
     match var_type {
-        VarType::field => Value::Field(random::gen_field()),
-        VarType::uint(size) => Value::Uint(random::gen_random_uint(*size)),
-        VarType::int(size) => Value::Int(random::gen_random_int(*size)),
-        VarType::bool => Value::Bool(random::gen_bool()),
-        VarType::str(size) => Value::Str(random::gen_str(*size)),
+        VarType::field => Value::Field(random.gen_field()),
+        VarType::uint(size) => Value::Uint(random.gen_random_uint(*size)),
+        VarType::int(size) => Value::Int(random.gen_random_int(*size)),
+        VarType::bool => Value::Bool(random.gen_bool()),
+        VarType::str(size) => Value::Str(random.gen_str(*size)),
         VarType::array(type_param, size) => {
             let mut random_vec = Vec::with_capacity(*size);
             for _ in 0..*size {
-                random_vec.push(random_value(&type_param))
+                random_vec.push(random_value(random, &type_param))
             }
             Value::Array(random_vec)
         },
         VarType::slice(type_param, size) => {
             let mut random_vec = Vec::with_capacity(*size);
             for _ in 0..*size {
-                random_vec.push(random_value(&type_param))
+                random_vec.push(random_value(random, &type_param))
             }
             Value::Slice(random_vec)
         },
@@ -98,7 +98,7 @@ pub fn random_value(var_type: &VarType) -> Value {
             let size = vec_type_param.len();
             let mut random_vec = Vec::with_capacity(size);
             for i in 0..size {
-                random_vec.push(random_value(&vec_type_param[i]))
+                random_vec.push(random_value(random, &vec_type_param[i]))
             }
             Value::Tup(random_vec)
         },
@@ -108,7 +108,7 @@ pub fn random_value(var_type: &VarType) -> Value {
             let size = vec_type_param.len();
             let mut random_vec = Vec::with_capacity(size);
             for i in 0..size {
-                random_vec.push((random_value(&vec_type_param[i].0), vec_type_param[i].1.clone()))
+                random_vec.push((random_value(random, &vec_type_param[i].0), vec_type_param[i].1.clone()))
             }
             Value::Strct(random_vec, strct.name().clone())
         },

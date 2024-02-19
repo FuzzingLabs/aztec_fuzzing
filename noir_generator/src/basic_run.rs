@@ -9,6 +9,9 @@ mod functions;
 use std::io::{self, Write};
 use std::thread;
 use nargo_cli;
+use rand::Rng;
+
+use crate::constants::{MAX_DATA_LENGTH, MIN_DATA_LENGTH};
 
 fn ignored_error(err: &String) -> bool {
     let errors = vec![
@@ -54,8 +57,10 @@ fn main() {
     let mut crash_count = 0;
 
     loop {
-        random::initialize_rng(None);
-        let code_generated = generate_code::generate_code();
+        let mut rng = rand::thread_rng();
+        let size = rng.gen_range(MIN_DATA_LENGTH..=MAX_DATA_LENGTH);
+        let vec: Vec<u8> = (0..size).map(|_| rng.gen::<u8>()).collect();
+        let code_generated = generate_code::generate_code(&vec);
         
         std::fs::write(&nr_main_path, &code_generated).expect("Failed to write main.nr");
 

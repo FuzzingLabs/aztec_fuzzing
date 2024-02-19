@@ -1,4 +1,4 @@
-use crate::{constants::{MAX_COMPOSITE_DEPTH, MAX_COMPOSITE_SIZE}, random};
+use crate::{constants::{MAX_COMPOSITE_DEPTH, MAX_COMPOSITE_SIZE}, random::Random};
 
 use super::{struct_type::StructType, var_type::random_type_with_depth};
 
@@ -17,19 +17,19 @@ impl ListStructs {
         self.structs.is_empty()
     }
 
-    pub fn get_random(&self) -> StructType {
-        random::choose_random_item_from_vec(&self.structs)
+    pub fn get_random(&self, random: &mut Random) -> StructType {
+        random.choose_random_item_from_vec(&self.structs)
     }
 
-    pub fn add_struct(&mut self) {
+    pub fn add_struct(&mut self, random: &mut Random) {
 
-        let size = random::gen_range(1, MAX_COMPOSITE_SIZE);
+        let size = random.gen_range(1, MAX_COMPOSITE_SIZE);
         let mut key_types = Vec::with_capacity(size);
         for _ in 0..size {
-            key_types.push((random_type_with_depth(self, MAX_COMPOSITE_DEPTH).clone(), random::gen_name()));
+            key_types.push((random_type_with_depth(random, self, MAX_COMPOSITE_DEPTH).clone(), random.gen_name()));
         }
 
-        self.structs.push(StructType::new(key_types, random::gen_name()))
+        self.structs.push(StructType::new(key_types, random.gen_name()))
     }
 
     pub fn generate_structs_code(&self) -> String {

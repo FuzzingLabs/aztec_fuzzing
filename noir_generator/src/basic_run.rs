@@ -6,10 +6,11 @@ mod statements;
 mod constants;
 mod functions;
 
-use std::io::{self, Write};
+use std::io::{self, Read, Write};
 use std::thread;
 use nargo_cli;
 use rand::Rng;
+use gag::{BufferRedirect, Gag};
 
 use crate::constants::{MAX_DATA_LENGTH, MIN_DATA_LENGTH};
 
@@ -64,12 +65,16 @@ fn main() {
         
         std::fs::write(&nr_main_path, &code_generated).expect("Failed to write main.nr");
 
+        let mut buf = BufferRedirect::stderr().unwrap();
         let compilation_result = nargo_cli::fuzzinglabs_run(&noir_project_dir);
+        let mut err = String::new();
+        buf.read_to_string(&mut err).unwrap();
+        drop(buf);
 
         match compilation_result {
             Ok(_) => {}
-            Err(e) => {
-                let err = clean_ansi_escape_codes(&e.to_string());
+            Err(_) => {
+                err = clean_ansi_escape_codes(&err);
                 if !ignored_error(&err) {
                     crash_count += 1;
 

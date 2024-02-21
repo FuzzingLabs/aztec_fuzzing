@@ -25,11 +25,11 @@ impl ListStructs {
 
         let size = random.gen_range(1, MAX_COMPOSITE_SIZE);
         let mut key_types = Vec::with_capacity(size);
-        for _ in 0..size {
-            key_types.push((random_type_with_depth(random, self, MAX_COMPOSITE_DEPTH).clone(), random.gen_name()));
+        for i in 0..size {
+            key_types.push((random_type_with_depth(random, self, MAX_COMPOSITE_DEPTH).clone(), format!("elem{}", i+1)));
         }
 
-        self.structs.push(StructType::new(key_types, random.gen_name()))
+        self.structs.push(StructType::new(key_types, format!("strct{}", self.next_id())))
     }
 
     pub fn generate_structs_code(&self) -> String {
@@ -38,5 +38,9 @@ impl ListStructs {
             ret = format!("{}{}", ret, i.generate_struct_code());
         }
         ret
+    }
+
+    fn next_id(&self) -> usize {
+        self.structs.len()+1
     }
 }

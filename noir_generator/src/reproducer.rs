@@ -6,7 +6,8 @@ mod statements;
 mod constants;
 mod functions;
 
-use std::process::Command;
+use std::{io::Read, process::Command};
+use gag::BufferRedirect;
 use nargo_cli;
 
 fn ignored_error(err: &String) -> bool {
@@ -51,41 +52,44 @@ fn main() {
     let code_generated = generate_code::generate_code(&data);
 
     std::fs::write(&nr_main_path, &code_generated).expect("Failed to write main.nr");
-    
-    let compilation_result = nargo_cli::fuzzinglabs_run(&noir_project_dir);
 
-    match compilation_result {
-        Ok(_) => {
-        }
-        Err(e) => {
-            let err = clean_ansi_escape_codes(&e.to_string());
-            if !ignored_error(&err) {
-                println!("REAL CRASH WITH COMPILATION BY FUNCTION CALL");
-                return;
-            }
-        }
-    }
+    // let mut buf = BufferRedirect::stderr().unwrap();
+    // let compilation_result = nargo_cli::fuzzinglabs_run(&noir_project_dir);
+    // let mut err = String::new();
+    // buf.read_to_string(&mut err).unwrap();
+    // drop(buf);
 
-    let compilation_result = Command::new("nargo")
-            .args(&["compile", "--program-dir", noir_project_dir.to_str().unwrap_or_else(|| panic!("Impossible de convertir le chemin en chaîne UTF-8 valide"))])
-            .output();
+    // match compilation_result {
+    //     Ok(_) => {}
+    //     Err(_) => {
+    //         err = clean_ansi_escape_codes(&err);
+    //         if !ignored_error(&err) {
+    //             println!("REAL CRASH WITH COMPILATION BY FUNCTION CALL");
+    //             return;
+    //         }
+    //     }
+    // }
 
-    match compilation_result {
-        Ok(output) => {
-            if !output.status.success() {
-                let err = clean_ansi_escape_codes(&String::from_utf8_lossy(&output.stderr).to_string());
-                if !ignored_error(&err) {
-                    println!("{}", err);
-                    println!("REAL CRASH WITH COMPILATION BY COMMAND");
-                    return;
-                }
-            }
-        }
-        Err(e) => {
-            eprintln!("Error executing compilation command: {}", e);
-        }
-    }
+    // let compilation_result = Command::new("nargo")
+    //         .args(&["compile", "--program-dir", noir_project_dir.to_str().unwrap_or_else(|| panic!("Impossible de convertir le chemin en chaîne UTF-8 valide"))])
+    //         .output();
 
-    println!("NOT A REAL CRASH");
+    // match compilation_result {
+    //     Ok(output) => {
+    //         if !output.status.success() {
+    //             let err = clean_ansi_escape_codes(&String::from_utf8_lossy(&output.stderr).to_string());
+    //             if !ignored_error(&err) {
+    //                 println!("{}", err);
+    //                 println!("REAL CRASH WITH COMPILATION BY COMMAND");
+    //                 return;
+    //             }
+    //         }
+    //     }
+    //     Err(e) => {
+    //         eprintln!("Error executing compilation command: {}", e);
+    //     }
+    // }
+
+    // println!("NOT A REAL CRASH");
 
 }

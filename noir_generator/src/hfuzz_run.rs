@@ -9,7 +9,13 @@ mod statements;
 mod constants;
 mod functions;
 
+use noirc_frontend::parser;
+
+use std::{fs::File, io::Read};
+use gag::BufferRedirect;
 use nargo_cli;
+
+use crate::constants::{MAX_DATA_LENGTH, MIN_DATA_LENGTH};
 
 
 fn ignored_error(err: &str) -> bool {
@@ -38,33 +44,41 @@ fn clean_ansi_escape_codes(input: &String) -> String {
     regex.replace_all(input, "").into_owned()
 }
 
+
 fn main() {
     let noir_project_dir = std::env::current_dir().unwrap().join("noir_project");
     let nr_main_path = noir_project_dir.join("src/main.nr");
 
+    let mut crash_count = 0;
+
     loop {
         fuzz!(|data: &[u8]| {
-            if data.len() < 8 {
+            if data.len() < MIN_DATA_LENGTH || data.len() > MAX_DATA_LENGTH {
                 return;
             }
 
             let code_generated = generate_code::generate_code(data);
             std::fs::write(&nr_main_path, &code_generated).expect("Failed to write main.nr");
 
-            match nargo_cli::fuzzinglabs_run(&noir_project_dir) {
+            let mut buf = BufferRedirect::stderr().unwrap();
+            let compilation_result = nargo_cli::fuzzinglabs_run(&noir_project_dir);
+            let mut err = String::new();
+            buf.read_to_string(&mut err).unwrap();
+            drop(buf);
+
+            match compilation_result {
                 Ok(_) => {
                     return;
                 }
-                Err(e) => {
-                    let err = clean_ansi_escape_codes(&e.to_string());
-                    if ignored_error(&err) {
+                Err(_) => {
+                    if ignored_error(&clean_ansi_escape_codes(&err)) {
                         return;
                     }
                     panic!("Error running program: {:?}", err);
-                    
                 }
             }
 
         });
     }
 }
+

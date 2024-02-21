@@ -47,7 +47,7 @@ impl ListFunctions {
             for _ in 0..constants::NB_MAX_ARGUMENTS{
                 bloc_variables.new_variable(&var_type::random_type(random, list_structs), false);
             }
-            function = Function::new(random.gen_name(), random.gen_bool(), bloc_variables, Some(var_type::random_type(random, list_structs)));
+            function = Function::new(format!("func{}", self.next_id()), random.gen_bool(), bloc_variables, Some(var_type::random_type(random, list_structs)));
         }
         self.functions.push(function);
     }
@@ -59,5 +59,8 @@ impl ListFunctions {
         }
         ret
     }
-    
+
+    fn next_id(&self) -> usize {
+        self.functions.len()+1
+    }
 }

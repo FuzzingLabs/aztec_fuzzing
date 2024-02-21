@@ -58,11 +58,21 @@ pub fn basic_types() -> Vec<VarType> {
     vec
 }
 
+fn random_bit_size(random: &mut Random) -> usize {
+    match random.gen_range(0, 4) {
+        0 => 1,
+        1 => 8,
+        2 => 32,
+        3 => 64,
+        _ => panic!("Impossible case"),
+    }
+}
+
 pub fn random_int_type(random: &mut Random) -> VarType {
     match random.gen_range(0, 3) {
         0 => VarType::field,
-        1 => VarType::uint(random.gen_range(1, 128)),
-        2 => VarType::int(random.gen_range(1, 128)),
+        1 => VarType::uint(random_bit_size(random)),
+        2 => VarType::int(random_bit_size(random)),
         _ => VarType::field,
     }
 }
@@ -70,8 +80,8 @@ pub fn random_int_type(random: &mut Random) -> VarType {
 pub fn random_basic_type(random: &mut Random) -> VarType {
     match random.gen_range(0, 4) {
         0 => VarType::field,
-        1 => VarType::uint(random.gen_range(1, 128)),
-        2 => VarType::int(random.gen_range(1, 128)),
+        1 => VarType::uint(random_bit_size(random)),
+        2 => VarType::int(random_bit_size(random)),
         3 => VarType::bool,
         _ => VarType::field,
     }
@@ -80,8 +90,8 @@ pub fn random_basic_type(random: &mut Random) -> VarType {
 pub fn random_type(random: &mut Random, list_structs: &ListStructs) -> VarType {
     match random.gen_range(0, 9) {
         0 => VarType::field,
-        1 => VarType::uint(random.gen_range(1, 128)),
-        2 => VarType::int(random.gen_range(1, 128)),
+        1 => VarType::uint(random_bit_size(random)),
+        2 => VarType::int(random_bit_size(random)),
         3 => VarType::bool,
         4 => VarType::str(random.gen_range(0, MAX_COMPOSITE_SIZE)),
         5 => VarType::array(Box::new(random_type_with_depth(random, list_structs, MAX_COMPOSITE_DEPTH).clone()), random.gen_range(0, MAX_COMPOSITE_SIZE)),
@@ -109,8 +119,8 @@ pub fn random_type_with_depth(random: &mut Random, list_structs: &ListStructs, d
     if depth == 0 {
         match random.gen_range(0, 5) {
             0 => VarType::field,
-            1 => VarType::uint(random.gen_range(1, 128)),
-            2 => VarType::int(random.gen_range(1, 128)),
+            1 => VarType::uint(random_bit_size(random)),
+            2 => VarType::int(random_bit_size(random)),
             3 => VarType::bool,
             4 => VarType::str(random.gen_range(0, MAX_COMPOSITE_SIZE)),
             _ => VarType::field,
@@ -118,8 +128,8 @@ pub fn random_type_with_depth(random: &mut Random, list_structs: &ListStructs, d
     } else {
         match random.gen_range(0, 8) {
             0 => VarType::field,
-            1 => VarType::uint(random.gen_range(1, 128)),
-            2 => VarType::int(random.gen_range(1, 128)),
+            1 => VarType::uint(random_bit_size(random)),
+            2 => VarType::int(random_bit_size(random)),
             3 => VarType::bool,
             4 => VarType::str(random.gen_range(0, MAX_COMPOSITE_SIZE)),
             5 => VarType::array(Box::new(random_type_with_depth(random, list_structs, depth -1).clone()), random.gen_range(0, MAX_COMPOSITE_SIZE)),

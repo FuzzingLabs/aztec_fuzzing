@@ -9,8 +9,6 @@ mod statements;
 mod constants;
 mod functions;
 
-use noirc_frontend::parser;
-
 use std::{fs::File, io::Read};
 use gag::BufferRedirect;
 use nargo_cli;

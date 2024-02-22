@@ -60,7 +60,7 @@ pub fn basic_types() -> Vec<VarType> {
 
 fn random_bit_size(random: &mut Random) -> usize {
     match random.gen_range(0, 4) {
-        0 => 1,
+        0 => 2,
         1 => 8,
         2 => 32,
         3 => 64,

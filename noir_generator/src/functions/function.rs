@@ -35,10 +35,10 @@ impl Function {
         let vars = self.arguments.variables();
         let mut init = format!("{}fn {}(", if self.public { "pub " } else { "" }, self.name());
 
-        for i in 0..vars.len()-1{
-            init = format!("{}{}: {}, ", init, vars[i].name(), vars[i].var_type());
-        }
         if vars.len() != 0 {
+            for i in 0..vars.len()-1{
+                init = format!("{}{}: {}, ", init, vars[i].name(), vars[i].var_type());
+            }
             init = format!("{}{}: {}", init, vars[vars.len()-1].name(), vars[vars.len()-1].var_type());
         }
 

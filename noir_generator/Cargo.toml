@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-honggfuzz = {git="https://github.com/raefko/honggfuzz-rs.git"}
+honggfuzz = "*"
 rand = "*"
 rand_core = "*"
 rand_xorshift = "*"
@@ -14,7 +14,12 @@ lazy_static = "*"
 backtrace = "0.3.54"
 regex = "1.5.4"
 chrono = "0.4"
-nargo_cli = {path = "/home/afredefon/FuzzingLabs/aztec_fuzzing/noir/tooling/nargo_cli"}
+gag = "1.0.0"
+noirc_frontend = { path = "$CARGO_MANIFEST_DIR/../../noir/compiler/noirc_frontend" }
+nargo_cli = { path = "$CARGO_MANIFEST_DIR/../../noir/tooling/nargo_cli" }
+noirc_driver = { path = "$CARGO_MANIFEST_DIR/../../noir/compiler/noirc_driver" }
+fm = { path = "$CARGO_MANIFEST_DIR/../../noir/compiler/fm" }
+noirc_errors = { path = "$CARGO_MANIFEST_DIR/../../noir/compiler/noirc_errors" }
 
 [profile.release]
 opt-level = 0
@@ -34,3 +39,9 @@ path = "src/hfuzz_run.rs"
 [[bin]]
 name = "hfuzz_cmd_run"
 path = "src/hfuzz_cmd_run.rs"
+[[bin]]
+name = "hfuzz_run_parser"
+path = "src/hfuzz_run_parser.rs"
+[[bin]]
+name = "benchmark"
+path = "src/benchmark.rs"

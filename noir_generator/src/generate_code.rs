@@ -1,12 +1,26 @@
-use crate::{constants, functions::list_functions::ListFunctions, random};
+use crate::{constants, functions::list_functions::ListFunctions, random::Random, variables::{bloc_data::BlocData, list_structs::ListStructs, value::random_value, var_type::random_type, variable::Variable}};
 
-pub fn generate_code() -> String {
+pub fn generate_code(data: &[u8]) -> String {
+    let mut random = Random::new(data);
+    let mut code_generated: String = String::new();
 
+    let mut list_global = BlocData::new();
     let mut list_functions = ListFunctions::new();
+    let mut list_structs = ListStructs::new();
 
-    for _ in 0..random::gen_range(0, constants::NB_MAX_FUNCTION) {
-        list_functions.add_function(false);
+    for i in 0..random.gen_range(0, constants::MAX_GLOBAL_VARIABLES) {
+        let var_type = random_type(&mut random, &list_structs);
+        let var = Variable::new(format!("global{}", i+1), false, &var_type);
+        code_generated = format!("{}{} = {};\n", code_generated, var.initialize_as_global(), random_value(&mut random, &var_type));
+        list_global.add_variable(var);
     }
-    list_functions.add_function(true);
-    list_functions.generate_all_functions_core()
+
+    for _ in 0..random.gen_range(0, constants::MAX_STRUCT) {
+        code_generated = format!("{}{}", code_generated, list_structs.add_struct(&mut random));
+    }
+
+    for _ in 0..random.gen_range(0, constants::MAX_FUNCTION) {
+        code_generated = format!("{}{}", code_generated, list_functions.add_function(&mut random, &list_global, &list_structs, false));
+    }
+    format!("{}{}", code_generated, list_functions.add_function(&mut random, &list_global, &list_structs, true))
 }

@@ -5,40 +5,18 @@ mod variables;
 mod statements;
 mod constants;
 mod functions;
+mod tools;
 
-use std::io::{self, Write};
-use std::thread;
+use std::io::{self, Read, Write};
 use nargo_cli;
+use rand::Rng;
+use gag::BufferRedirect;
 
-fn ignored_error(err: &String) -> bool {
-    let errors = vec![
-        "attempt to divide by zero",
-        "Comparisons are invalid on Field types.",
-        "Either the operand's type or return type should be specified",
-        "expected type",
-        "Expected type",
-        "The number of bits to use for this bitwise operation is ambiguous."
-    ];
-
-    for line in err.lines() {
-        if line.contains("error:") {
-            if !errors.iter().any(|&e| line.contains(e)) {
-                return false;
-            }
-        }
-    }
-
-    true
-}
-
-fn clean_ansi_escape_codes(input: &String) -> String {
-    let regex = regex::Regex::new(r"\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]").unwrap();
-    regex.replace_all(input, "").into_owned()
-}
+use crate::constants::{MAX_DATA_LENGTH, MIN_DATA_LENGTH};
+use crate::tools::{clean_ansi_escape_codes, ignored_error};
 
 fn main() {
-    let noir_project_name = format!("noir_project{:?}", thread::current().id());
-    let noir_project_dir = std::env::current_dir().unwrap().join(noir_project_name);
+    let noir_project_dir = std::env::current_dir().unwrap().join("noir_project");
     let nr_main_path = noir_project_dir.join("src/main.nr");
 
     let crash_dir = std::env::current_dir().unwrap().join("crashes_found");
@@ -54,17 +32,23 @@ fn main() {
     let mut crash_count = 0;
 
     loop {
-        random::initialize_rng(None);
-        let code_generated = generate_code::generate_code();
+        let mut rng = rand::thread_rng();
+        let size = rng.gen_range(MIN_DATA_LENGTH..=MAX_DATA_LENGTH);
+        let vec: Vec<u8> = (0..size).map(|_| rng.gen::<u8>()).collect();
+        let code_generated = generate_code::generate_code(&vec);
         
         std::fs::write(&nr_main_path, &code_generated).expect("Failed to write main.nr");
 
-        let compilation_result = nargo_cli::fuzzinglabs_run();
+        let mut buf = BufferRedirect::stderr().unwrap();
+        let compilation_result = nargo_cli::fuzzinglabs_run(&noir_project_dir);
+        let mut err = String::new();
+        buf.read_to_string(&mut err).unwrap();
+        drop(buf);
 
         match compilation_result {
             Ok(_) => {}
-            Err(e) => {
-                let err = clean_ansi_escape_codes(&e.to_string());
+            Err(_) => {
+                err = clean_ansi_escape_codes(&err);
                 if !ignored_error(&err) {
                     crash_count += 1;
 

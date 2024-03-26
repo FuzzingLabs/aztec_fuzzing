@@ -8,53 +8,28 @@ mod variables;
 mod statements;
 mod constants;
 mod functions;
+mod tools;
 
 use std::process::Command;
-use std::thread;
 
-fn ignored_error(err: &str) -> bool {
-    let errors = vec![
-        "attempt to divide by zero",
-        "Comparisons are invalid on Field types.",
-        "Either the operand's type or return type should be specified",
-        "expected type",
-        "Expected type",
-        "The number of bits to use for this bitwise operation is ambiguous."
-    ];
-
-    for line in err.lines() {
-        if line.contains("error:") {
-            if !errors.iter().any(|&e| line.contains(e)) {
-                return false;
-            }
-        }
-    }
-
-    true
-}
-
-fn clean_ansi_escape_codes(input: &str) -> String {
-    let regex = regex::Regex::new(r"\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]").unwrap();
-    regex.replace_all(input, "").into_owned()
-}
+use crate::{constants::{MAX_DATA_LENGTH, MIN_DATA_LENGTH}, tools::{clean_ansi_escape_codes, ignored_error}};
 
 fn main() {
 
     loop {
         fuzz!(|data: &[u8]| {
-            if data.len() < 8 {
+            if data.len() < MIN_DATA_LENGTH || data.len() > MAX_DATA_LENGTH {
                 return;
             }
-            let noir_project_name = format!("noir_project{:?}", thread::current().id());
-            let noir_project_dir = std::env::current_dir().unwrap().join(noir_project_name);
+            
+            let noir_project_dir = std::env::current_dir().unwrap().join("noir_project");
             let nr_main_path = noir_project_dir.join("src/main.nr");
 
-            random::initialize_rng(Some(data));
-            let code_generated = generate_code::generate_code();
+            let code_generated = generate_code::generate_code(data);
             std::fs::write(&nr_main_path, &code_generated).expect("Failed to write main.nr");
 
             match Command::new("nargo")
-            .args(&["compile", "--program-dir", noir_project_dir.to_str().unwrap_or_else(|| panic!("Impossible de convertir le chemin en chaîne UTF-8 valide"))])
+            .args(&["compile", "--silence-warnings", "--program-dir", noir_project_dir.to_str().unwrap_or_else(|| panic!("Impossible de convertir le chemin en chaîne UTF-8 valide"))])
             .output() {
                 Ok(output) => {
                     if !output.status.success() {
@@ -62,7 +37,7 @@ fn main() {
                         if ignored_error(&err) {
                             return;
                         }
-                        panic!("Error running program: {:?}", err);
+                        panic!("Error : {:?}", err);
                     } else {
                         return;
                     }

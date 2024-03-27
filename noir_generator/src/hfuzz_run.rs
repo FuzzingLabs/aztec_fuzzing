@@ -13,13 +13,24 @@ mod tools;
 use std::path::Path;
 
 
+use fm::FileManager;
+use nargo::ops::compile_workspace;
+use nargo_toml::{resolve_workspace_from_toml, PackageSelection};
+use noirc_driver::{file_manager_with_stdlib, CompileOptions, NOIR_ARTIFACT_VERSION_STRING};
+use noirc_frontend::{hir::{def_map::parse_file, ParsedFiles}, parse_program};
+
 use crate::{constants::{MAX_DATA_LENGTH, MIN_DATA_LENGTH}, tools::ignored_error};
 
-fn parse_all(fm: &fm::FileManager) -> noirc_frontend::hir::ParsedFiles {
-    fm.as_file_map().all_file_ids().map(|&file_id| (file_id, noirc_frontend::hir::def_map::parse_file(fm, file_id))).collect()
+fn parse_all(fm: &FileManager) -> ParsedFiles {
+    fm.as_file_map().all_file_ids().map(|&file_id| (file_id, parse_file(fm, file_id))).collect()
 }
 
 fn main() {
+    let noir_project_dir = std::env::current_dir().unwrap().join("noir_project");
+    let nr_main_path = noir_project_dir.join("src/main.nr");
+
+    let fm_stdlib = &file_manager_with_stdlib(Path::new(""));
+    let parsed_files_stdlib = parse_all(&fm_stdlib);
 
     loop {
         fuzz!(|data: &[u8]| {
@@ -29,30 +40,33 @@ fn main() {
 
             let code_generated = generate_code::generate_code(data);
 
-            let mut fm = noirc_driver::file_manager_with_stdlib(Path::new(""));
-            fm.add_file_with_source(Path::new(""), code_generated);
-            let parsed_files = parse_all(&fm);
+            let mut fm = fm_stdlib.clone();
+            let mut parsed_files = parsed_files_stdlib.clone();
+            
+            let parsed = parse_program(&code_generated);
+            let file_id = fm.add_file_with_source(&nr_main_path, code_generated.clone());
+            parsed_files.insert(file_id.expect("No file id"), parsed);
 
-            let mut context = noirc_frontend::hir::Context::new(fm, parsed_files);
-            let crate_id = noirc_driver::prepare_crate(&mut context, Path::new(""));
-            let options = noirc_driver::CompileOptions::default();
 
-            let mut error_msg = String::new();
-            match noirc_driver::compile_main(&mut context, crate_id, &options, None){
+            let options = CompileOptions::default();
+
+            let workspace = match resolve_workspace_from_toml(
+                &noir_project_dir.join("Nargo.toml"),
+                PackageSelection::DefaultOrAll,
+                Some(NOIR_ARTIFACT_VERSION_STRING.to_string()),
+            ) {
+                Ok(w) => w,
+                Err(_) => panic!("Can't resolve workspace from toml"),
+            };
+
+            match compile_workspace(&fm, &parsed_files, &workspace, &options) {
                 Ok(_) => return,
-                Err(e) => for error in e.iter() {
-                    let str_error = format!("{}", error.diagnostic).lines().next().unwrap().to_string(); // To remove the "secondary:"
-                    if error.diagnostic.is_error() && !ignored_error( &str_error) {
-                        error_msg = format!("{}\n{}", error_msg, str_error);
+                Err(errors) => for error in errors.iter() {
+                    if error.diagnostic.is_error() && !ignored_error(&error.diagnostic.message) {
+                        panic!("{}", error.diagnostic.message);
                     }
                 },
             }
-
-            if error_msg.is_empty() {
-                return
-            }
-
-            panic!("{}", error_msg);
         });
     }
 }

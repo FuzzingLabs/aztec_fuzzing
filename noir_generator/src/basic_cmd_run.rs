@@ -13,7 +13,7 @@ use std::io::{self, Write};
 use rand::Rng;
 
 use crate::constants::{MAX_DATA_LENGTH, MIN_DATA_LENGTH};
-use crate::tools::{clean_ansi_escape_codes, ignored_error};
+use crate::tools::{clean_ansi_escape_codes, ignored_error_cmd};
 
 fn main() {
     let noir_project_dir = std::env::current_dir().unwrap().join("noir_project");
@@ -47,7 +47,7 @@ fn main() {
             Ok(output) => {
                 if !output.status.success() {
                     let err = clean_ansi_escape_codes(&String::from_utf8_lossy(&output.stderr).to_string());
-                    if !ignored_error(&err) {
+                    if !ignored_error_cmd(&err) {
                         crash_count += 1;
 
                         let crash = format!("crash{}", crash_count);

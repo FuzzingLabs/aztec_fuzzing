@@ -12,7 +12,7 @@ mod tools;
 
 use std::process::Command;
 
-use crate::{constants::{MAX_DATA_LENGTH, MIN_DATA_LENGTH}, tools::{clean_ansi_escape_codes, ignored_error}};
+use crate::{constants::{MAX_DATA_LENGTH, MIN_DATA_LENGTH}, tools::{clean_ansi_escape_codes, ignored_error_cmd}};
 
 fn main() {
 
@@ -34,7 +34,7 @@ fn main() {
                 Ok(output) => {
                     if !output.status.success() {
                         let err = clean_ansi_escape_codes(&String::from_utf8_lossy(&output.stderr).to_string());
-                        if ignored_error(&err) {
+                        if ignored_error_cmd(&err) {
                             return;
                         }
                         panic!("Error : {:?}", err);

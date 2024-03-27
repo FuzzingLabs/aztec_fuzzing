@@ -16,10 +16,10 @@ regex = "1.5.4"
 chrono = "0.4"
 gag = "1.0.0"
 noirc_frontend = { path = "$CARGO_MANIFEST_DIR/../../noir/compiler/noirc_frontend" }
-nargo_cli = { path = "$CARGO_MANIFEST_DIR/../../noir/tooling/nargo_cli" }
 noirc_driver = { path = "$CARGO_MANIFEST_DIR/../../noir/compiler/noirc_driver" }
 fm = { path = "$CARGO_MANIFEST_DIR/../../noir/compiler/fm" }
-noirc_errors = { path = "$CARGO_MANIFEST_DIR/../../noir/compiler/noirc_errors" }
+nargo_toml = { path = "$CARGO_MANIFEST_DIR/../../noir/tooling/nargo_toml" }
+nargo = { path = "$CARGO_MANIFEST_DIR/../../noir/tooling/nargo" }
 
 [profile.release]
 opt-level = 0

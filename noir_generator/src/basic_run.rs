@@ -7,13 +7,26 @@ mod constants;
 mod functions;
 mod tools;
 
-use std::io::{self, Read, Write};
-use nargo_cli;
+use std::io::{self, Write};
+use fm::FileManager;
+use nargo::ops::compile_workspace;
+use noirc_driver::{file_manager_with_stdlib, NOIR_ARTIFACT_VERSION_STRING};
+use noirc_frontend::hir::def_map::parse_file;
+use noirc_frontend::hir::ParsedFiles;
 use rand::Rng;
-use gag::BufferRedirect;
+
+use std::path::Path;
+use noirc_frontend::parser;
+use nargo_toml::{resolve_workspace_from_toml, PackageSelection};
 
 use crate::constants::{MAX_DATA_LENGTH, MIN_DATA_LENGTH};
-use crate::tools::{clean_ansi_escape_codes, ignored_error};
+use crate::tools::ignored_error;
+
+
+fn parse_all(fm: &FileManager) -> ParsedFiles {
+    let ret = fm.as_file_map().all_file_ids().map(|&file_id| (file_id, parse_file(fm, file_id))).collect();
+    ret
+}
 
 fn main() {
     let noir_project_dir = std::env::current_dir().unwrap().join("noir_project");
@@ -31,32 +44,59 @@ fn main() {
     let mut loop_count = 0;
     let mut crash_count = 0;
 
+    let fm_stdlib = &file_manager_with_stdlib(Path::new(""));
+    let parsed_files_stdlib = parse_all(&fm_stdlib);
+
     loop {
         let mut rng = rand::thread_rng();
         let size = rng.gen_range(MIN_DATA_LENGTH..=MAX_DATA_LENGTH);
         let vec: Vec<u8> = (0..size).map(|_| rng.gen::<u8>()).collect();
         let code_generated = generate_code::generate_code(&vec);
-        
-        std::fs::write(&nr_main_path, &code_generated).expect("Failed to write main.nr");
 
-        let mut buf = BufferRedirect::stderr().unwrap();
-        let compilation_result = nargo_cli::fuzzinglabs_run(&noir_project_dir);
-        let mut err = String::new();
-        buf.read_to_string(&mut err).unwrap();
-        drop(buf);
+        let mut fm = fm_stdlib.clone();
+        let mut parsed_files = parsed_files_stdlib.clone();
+        
+        let parsed = parser::parse_program(&code_generated);
+        let file_id = fm.add_file_with_source(&nr_main_path, code_generated.clone());
+        parsed_files.insert(file_id.expect("No file id"), parsed);
+
+
+        let options = noirc_driver::CompileOptions::default();
+
+        let workspace = match resolve_workspace_from_toml(
+            &noir_project_dir.join("Nargo.toml"),
+            PackageSelection::DefaultOrAll,
+            Some(NOIR_ARTIFACT_VERSION_STRING.to_string()),
+        ) {
+            Ok(w) => w,
+            Err(_) => panic!("Can't resolve workspace from toml"),
+        };
+
+        let compilation_result = compile_workspace(&fm, &parsed_files, &workspace, &options);
 
         match compilation_result {
             Ok(_) => {}
-            Err(_) => {
-                err = clean_ansi_escape_codes(&err);
-                if !ignored_error(&err) {
+            Err(errors) => {
+                let mut is_error = false;
+
+                for error in &errors {
+                    if error.diagnostic.is_error() && !ignored_error(&error.diagnostic.message){
+                        is_error = true;
+                    }
+                }
+
+                if is_error {
                     crash_count += 1;
 
                     let crash = format!("crash{}", crash_count);
 
                     std::fs::create_dir_all(&crash_dir.join(&crash)).expect("Failed to create a crash dir");
-                    std::fs::copy(&nr_main_path, &crash_dir.join(&crash).join("code.nr")).expect("Failed to copy the main.nr");
-                    std::fs::write(&crash_dir.join(&crash).join("err"), &err).expect("Failed to write err");
+                    std::fs::write(&crash_dir.join(&crash).join("code.nr"), &code_generated).expect("Failed to write code");
+                    let mut errors_string = String::new();
+                    for err in &errors {
+                        errors_string = format!("{}\n{}", errors_string, err.diagnostic.message);
+                    }
+                    std::fs::write(&crash_dir.join(&crash).join("err"), &errors_string).expect("Failed to write err");
                 }
             }
         }

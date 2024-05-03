@@ -1,4 +1,4 @@
-use crate::constants::MAX_LAMBDA_ARGUMENTS;
+use crate::constants::CONFIG;
 use crate::functions::lambda::Lambda;
 use crate::variables::variable::Variable;
 use crate::variables::var_type::VarType;
@@ -47,7 +47,7 @@ impl BlocData {
 
     pub fn create_lambda(&mut self, random: &mut Random, list_structs: &ListStructs, ret_type: &VarType) -> Lambda {
         let mut bloc_variables = BlocData::new();
-        for _ in 0..MAX_LAMBDA_ARGUMENTS{
+        for _ in 0..CONFIG.max_lambda_arguments{
 
             bloc_variables.add_variable(Variable::new(bloc_variables.next_variable_name(), false, &var_type::random_type(random, list_structs)));
         }
@@ -61,7 +61,7 @@ impl BlocData {
         new_lambda
     }
 
-    pub fn get_random_variable(&self, random: &mut Random, allowed_types: Vec<VarType>, mutable: bool) -> Option<&Variable> {
+    pub fn get_random_variable(&self, random: &mut Random, allowed_types: Vec<&VarType>, mutable: bool) -> Option<&Variable> {
         let filtered_variables: Vec<&Variable> = self.variables
             .iter()
             .filter(|v| {

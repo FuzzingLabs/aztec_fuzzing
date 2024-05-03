@@ -19,7 +19,7 @@ use std::path::Path;
 use noirc_frontend::parser;
 use nargo_toml::{resolve_workspace_from_toml, PackageSelection};
 
-use crate::constants::{MAX_DATA_LENGTH, MIN_DATA_LENGTH};
+use crate::constants::CONFIG;
 use crate::tools::ignored_error;
 
 
@@ -49,7 +49,7 @@ fn main() {
 
     loop {
         let mut rng = rand::thread_rng();
-        let size = rng.gen_range(MIN_DATA_LENGTH..=MAX_DATA_LENGTH);
+        let size = rng.gen_range(CONFIG.min_data_length..=CONFIG.max_data_length);
         let vec: Vec<u8> = (0..size).map(|_| rng.gen::<u8>()).collect();
         let code_generated = generate_code::generate_code(&vec);
 

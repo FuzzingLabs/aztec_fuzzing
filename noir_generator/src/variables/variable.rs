@@ -3,7 +3,7 @@ use crate::random::Random;
 
 use super::var_type;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Clone)]
 pub(crate) struct Variable {
     name: String,
     var_type: VarType,

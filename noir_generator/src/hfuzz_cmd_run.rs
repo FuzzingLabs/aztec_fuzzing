@@ -12,13 +12,13 @@ mod tools;
 
 use std::process::Command;
 
-use crate::{constants::{MAX_DATA_LENGTH, MIN_DATA_LENGTH}, tools::{clean_ansi_escape_codes, ignored_error_cmd}};
+use crate::{constants::CONFIG, tools::{clean_ansi_escape_codes, ignored_error_cmd}};
 
 fn main() {
 
     loop {
         fuzz!(|data: &[u8]| {
-            if data.len() < MIN_DATA_LENGTH || data.len() > MAX_DATA_LENGTH {
+            if data.len() < CONFIG.min_data_length || data.len() > CONFIG.max_data_length {
                 return;
             }
             

@@ -10,7 +10,7 @@ use std::{path::Path, process::Command};
 use noirc_frontend::parser;
 use std::time::Instant;
 use rand::Rng;
-use crate::constants::{MAX_DATA_LENGTH, MIN_DATA_LENGTH};
+use crate::constants::CONFIG;
 
 fn parse_all(fm: &fm::FileManager) -> noirc_frontend::hir::ParsedFiles {
     let start = Instant::now();
@@ -33,7 +33,7 @@ fn main() {
 
         let start = Instant::now();
         let mut rng = rand::thread_rng();
-        let size = rng.gen_range(MIN_DATA_LENGTH..=MAX_DATA_LENGTH);
+        let size = rng.gen_range(CONFIG.min_data_length..=CONFIG.max_data_length);
         let vec: Vec<u8> = (0..size).map(|_| rng.gen::<u8>()).collect();
         let code_generated = generate_code::generate_code(&vec);
         let gen_code = start.elapsed();

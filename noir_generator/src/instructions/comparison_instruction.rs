@@ -1,4 +1,4 @@
-use crate::constants::MAX_OPERATION_DEPTH;
+use crate::constants::CONFIG;
 use crate::variables::bloc_data::BlocData;
 use crate::variables::value;
 use crate::variables::var_type::{self, VarType};
@@ -28,7 +28,7 @@ fn get_leaf(random: &mut Random, bloc_variables: &BlocData) -> Option<Operation>
 
     let elem2 = if random.gen_bool() {
         let random_bool = random.gen_bool();
-        match bloc_variables.get_random_variable(random, [chosen_type.clone()].to_vec(), random_bool){
+        match bloc_variables.get_random_variable(random, vec![&chosen_type], random_bool){
             Some(v) => Operand::Variable(v.clone()),
             //Should never happen
             None => return None,
@@ -78,5 +78,5 @@ pub fn generate_comparison_instruction(random: &mut Random, bloc_variables: &Blo
         return value::random_value(random, &VarType::bool).to_string();
     }
 
-    comparison_rec(random, bloc_variables, MAX_OPERATION_DEPTH).to_string(random)
+    comparison_rec(random, bloc_variables, CONFIG.max_operation_depth).to_string(random)
 }

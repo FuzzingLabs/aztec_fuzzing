@@ -1,4 +1,4 @@
-use crate::{constants::{MAX_INSTRUCTION_BY_FUNCTION, MAX_LOOP_IN_FOR}, instructions::{comparison_instruction::generate_comparison_instruction, type_instruction::generate_type_instruction}, random::Random, statements::random_statement, variables::{bloc_data::BlocData, list_structs::{self, ListStructs}, var_type::VarType, variable::Variable}};
+use crate::{constants::CONFIG, instructions::{comparison_instruction::generate_comparison_instruction, type_instruction::generate_type_instruction}, random::Random, statements::random_statement, variables::{bloc_data::BlocData, list_structs::{self, ListStructs}, var_type::VarType, variable::Variable}};
 
 use super::list_functions::ListFunctions;
 
@@ -35,6 +35,10 @@ impl Function {
         &self.arguments
     }
 
+    pub fn is_public(&self) -> bool {
+        self.public
+    }
+
     pub fn initialize(&self) -> String {
         let vars = self.arguments.variables();
         let lambdas = self.arguments.lambdas();
@@ -67,7 +71,7 @@ impl Function {
 
     }
 
-    pub fn call(&self, random: &mut Random, bloc_variables: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
+    pub fn call(&self, random: &mut Random, bloc_variables: &BlocData, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs, depth: usize) -> String {
         let vars = self.arguments.variables();
         let lambdas = self.arguments.lambdas();
 
@@ -75,33 +79,33 @@ impl Function {
 
         if vars.len() != 0 {
             for i in 0..vars.len()-1 {
-                call = format!("{}{}, ", call,  generate_type_instruction(random, bloc_variables, list_functions, list_structs, vars[i].var_type()));
+                call = format!("{}{}, ", call,  generate_type_instruction(random, bloc_variables, list_global, list_functions, list_structs, vars[i].var_type(), depth-1));
             }
 
             if lambdas.len() == 0 {
-                call = format!("{}{}", call,  generate_type_instruction(random, bloc_variables, list_functions, list_structs, vars[vars.len() -1].var_type()));
+                call = format!("{}{}", call,  generate_type_instruction(random, bloc_variables, list_global, list_functions, list_structs, vars[vars.len() -1].var_type(), depth-1));
             } else {
-                call = format!("{}{}, ", call,  generate_type_instruction(random, bloc_variables, list_functions, list_structs, vars[vars.len() -1].var_type()));
+                call = format!("{}{}, ", call,  generate_type_instruction(random, bloc_variables, list_global, list_functions, list_structs, vars[vars.len() -1].var_type(), depth-1));
             }
         }
 
         if lambdas.len() != 0 {
             for i in 0..lambdas.len()-1 {
-                call = format!("{}{}, ", call, lambdas[i].initialize_as_argument(random, list_functions, list_structs))
+                call = format!("{}{}, ", call, lambdas[i].initialize_as_argument(random, list_global, list_functions, list_structs))
             }
-            call = format!("{}{}", call, lambdas[lambdas.len()-1].initialize_as_argument(random, list_functions, list_structs))
+            call = format!("{}{}", call, lambdas[lambdas.len()-1].initialize_as_argument(random, list_global, list_functions, list_structs))
         }
 
         format!("{})", call)
     }
 
-    pub fn ret(&self, random: &mut Random, bloc_variables: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
+    pub fn ret(&self, random: &mut Random, bloc_variables: &BlocData, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
         match self.ret_type() {
             Some(v) => {
                 match v {
-                    VarType::tup(_) => format!("{}\n", generate_type_instruction(random, bloc_variables, list_functions, list_structs, v)),
+                    VarType::tup(_) => format!("{}\n", generate_type_instruction(random, bloc_variables, list_global, list_functions, list_structs, v, CONFIG.max_instruction_depth)),
                     _ => {
-                        let mut ret = generate_type_instruction(random, bloc_variables, list_functions, list_structs, v);
+                        let mut ret = generate_type_instruction(random, bloc_variables, list_global, list_functions, list_structs, v, CONFIG.max_instruction_depth);
                         if ret.starts_with("(") && ret.ends_with(")") {
                             ret.remove(0);
                             ret.pop();
@@ -122,73 +126,98 @@ impl Function {
         }
         let mut function_string: String = self.initialize();
 
-        let mut nb_instructions_left: usize = random.gen_range(0, MAX_INSTRUCTION_BY_FUNCTION);
+        let mut nb_instructions_left: usize = random.gen_range(0, CONFIG.max_instruction_by_function);
         while nb_instructions_left != 0 {
             nb_instructions_left  -= 1;
-            match random.gen_range(0, 7){
-                0 | 1 | 2 | 3 | 4 => function_string = format!("{}{}", function_string, random_statement::generate_random_statement(random, &mut bloc_variables, list_functions, list_structs)),
-                5 => function_string = format!("{}{}", function_string, Self::generate_if(random, list_functions, list_structs, &bloc_variables, &mut nb_instructions_left)),
-                6 => function_string = format!("{}{}", function_string, Self::generate_for(random, list_functions, list_structs, &bloc_variables, &mut nb_instructions_left)),
+
+            match random.gen_range(0, 7) {
+                0 | 1 | 2 | 3 | 4 => function_string = format!("{}{}", function_string, random_statement::generate_random_statement(random, &mut bloc_variables, list_global, list_functions, list_structs)),
+                5 => {
+                    let nb_instruction_gived = random.gen_range(0, nb_instructions_left);
+                    nb_instructions_left -= nb_instruction_gived;
+                    function_string = format!("{}{}", function_string, Self::generate_if(random, list_global, list_functions, list_structs, &bloc_variables, nb_instruction_gived));
+                },
+                6 => {
+                    let nb_instruction_gived = random.gen_range(0, nb_instructions_left);
+                    nb_instructions_left -= nb_instruction_gived;
+                    function_string = format!("{}{}", function_string, Self::generate_for(random, list_global, list_functions, list_structs, &bloc_variables, nb_instruction_gived));
+                },
                 // should never happen
-                _ => function_string = format!("{}{}", function_string, random_statement::generate_random_statement(random, &mut bloc_variables, list_functions, list_structs)),
+                _ => function_string = format!("{}{}", function_string, random_statement::generate_random_statement(random, &mut bloc_variables, list_global, list_functions, list_structs)),
             }  
         }
 
-        function_string = format!("{}{}", function_string, self.ret(random, &bloc_variables, list_functions, list_structs));
+        function_string = format!("{}{}", function_string, self.ret(random, &bloc_variables, list_global, list_functions, list_structs));
         
         format!("{}}}\n\n", function_string)
     }
 
-    pub fn generate_else(random: &mut Random, list_functions: &ListFunctions, list_structs: &ListStructs, fun_bloc_variables: &BlocData, nb_instructions_left: &mut usize) -> String {
+    pub fn generate_else(random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs, fun_bloc_variables: &BlocData, mut nb_instructions_left: usize) -> String {
         let mut bloc_variables = fun_bloc_variables.clone();
     
         let mut function_string: String = format!("}} else {{\n");
     
-        while *nb_instructions_left > 0 {
+        while nb_instructions_left > 0 {
+            nb_instructions_left  -= 1;
             match random.gen_range(0, 7){
-                0 | 1 | 2 | 3 | 4 => function_string = format!("{}{}", function_string, random_statement::generate_random_statement(random, &mut bloc_variables, list_functions, list_structs)),
-                5 => function_string = format!("{}{}", function_string, Self::generate_if(random, list_functions, list_structs, &bloc_variables, nb_instructions_left)),
-                6 => function_string = format!("{}{}", function_string, Self::generate_for(random, list_functions, list_structs, &bloc_variables, nb_instructions_left)),
+                0 | 1 | 2 | 3 | 4 => function_string = format!("{}{}", function_string, random_statement::generate_random_statement(random, &mut bloc_variables, list_global, list_functions, list_structs)),
+                5 => {
+                    let nb_instruction_gived = random.gen_range(0, nb_instructions_left);
+                    nb_instructions_left -= nb_instruction_gived;
+                    function_string = format!("{}{}", function_string, Self::generate_if(random, list_global, list_functions, list_structs, &bloc_variables, nb_instruction_gived));
+                },
+                6 => {
+                    let nb_instruction_gived = random.gen_range(0, nb_instructions_left);
+                    nb_instructions_left -= nb_instruction_gived;
+                    function_string = format!("{}{}", function_string, Self::generate_for(random, list_global, list_functions, list_structs, &bloc_variables, nb_instruction_gived));
+                },
                 // should never happen
-                _ => function_string = format!("{}{}", function_string, random_statement::generate_random_statement(random, &mut bloc_variables, list_functions, list_structs)),
+                _ => function_string = format!("{}{}", function_string, random_statement::generate_random_statement(random, &mut bloc_variables, list_global, list_functions, list_structs)),
             }
-            *nb_instructions_left  -= 1;
         }
     
         function_string
     }
     
-    pub fn generate_if(random: &mut Random, list_functions: &ListFunctions, list_structs: &ListStructs, fun_bloc_variables: &BlocData, fun_nb_instructions_left: &mut usize) -> String {
+    pub fn generate_if(random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs, fun_bloc_variables: &BlocData, mut nb_instructions_left: usize) -> String {
         let mut bloc_variables = fun_bloc_variables.clone();
-        let mut nb_instructions_left = random.gen_range(0, *fun_nb_instructions_left);
-        *fun_nb_instructions_left -= nb_instructions_left;
     
         let mut function_string: String = format!("if {}{{\n", generate_comparison_instruction(random, &mut bloc_variables));
     
         while nb_instructions_left > 0 {
             nb_instructions_left  -= 1;
             match random.gen_range(0, 8){
-                0 | 1 | 2 | 3 | 4 => function_string = format!("{}{}", function_string, random_statement::generate_random_statement(random ,&mut bloc_variables, list_functions, list_structs)),
-                5 => function_string = format!("{}{}", function_string, Self::generate_if(random ,list_functions, list_structs, &bloc_variables, &mut nb_instructions_left)),
-                6 => function_string = format!("{}{}", function_string, Self::generate_for(random ,list_functions, list_structs, &bloc_variables, &mut nb_instructions_left)),
-                7 => function_string = format!("{}{}", function_string, Self::generate_else(random ,list_functions, list_structs, fun_bloc_variables, &mut nb_instructions_left)),
+                0 | 1 | 2 | 3 | 4 => function_string = format!("{}{}", function_string, random_statement::generate_random_statement(random, &mut bloc_variables, list_global, list_functions, list_structs)),
+                5 => {
+                    let nb_instruction_gived = random.gen_range(0, nb_instructions_left);
+                    nb_instructions_left -= nb_instruction_gived;
+                    function_string = format!("{}{}", function_string, Self::generate_if(random, list_global ,list_functions, list_structs, &bloc_variables, nb_instruction_gived));
+                },
+                6 => {
+                    let nb_instruction_gived = random.gen_range(0, nb_instructions_left);
+                    nb_instructions_left -= nb_instruction_gived;
+                    function_string = format!("{}{}", function_string, Self::generate_for(random, list_global ,list_functions, list_structs, &bloc_variables, nb_instruction_gived));
+                },
+                7 => {
+                    let nb_instruction_gived = nb_instructions_left;
+                    nb_instructions_left = 0;
+                    function_string = format!("{}{}", function_string, Self::generate_else(random, list_global ,list_functions, list_structs, fun_bloc_variables, nb_instruction_gived));
+                },
                 // should never happen
-                _ => function_string = format!("{}{}", function_string, random_statement::generate_random_statement(random ,&mut bloc_variables, list_functions, list_structs)),
+                _ => function_string = format!("{}{}", function_string, random_statement::generate_random_statement(random, &mut bloc_variables, list_global, list_functions, list_structs)),
             }
         }
     
         format!("{}}}\n", function_string)
     }
     
-    pub fn generate_for(random: &mut Random, list_functions: &ListFunctions, list_structs: &ListStructs, fun_bloc_variables: &BlocData, fun_nb_instructions_left: &mut usize) -> String {
+    pub fn generate_for(random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs, fun_bloc_variables: &BlocData, mut nb_instructions_left: usize) -> String {
         let mut bloc_variables = fun_bloc_variables.clone();
-        let mut nb_instructions_left = random.gen_range(0, *fun_nb_instructions_left);
-        *fun_nb_instructions_left -= nb_instructions_left;
+
         let chosen_type = &VarType::uint(32);
-    
         
         let start_for = random.gen_random_int(32).try_into().unwrap();
-        let end_for = random.gen_range(start_for, start_for+MAX_LOOP_IN_FOR);
+        let end_for = random.gen_range(start_for, start_for+CONFIG.max_loop_in_for);
     
         let var = Variable::new(bloc_variables.next_variable_name(), false, chosen_type);
         bloc_variables.add_variable(var.clone());
@@ -196,12 +225,21 @@ impl Function {
     
         while nb_instructions_left > 0 {
             nb_instructions_left  -= 1;
-            match random.gen_range(0, 6){
-                0 | 1 | 2 | 3 | 4 => function_string = format!("{}{}", function_string, random_statement::generate_random_statement(random ,&mut bloc_variables, list_functions, list_structs)),
-                5 => function_string = format!("{}{}", function_string, Self::generate_if(random ,list_functions, list_structs, &bloc_variables, &mut nb_instructions_left)),
-                6 => function_string = format!("{}{}", function_string, Self::generate_for(random ,list_functions, list_structs, &bloc_variables, &mut nb_instructions_left)),
+
+            match random.gen_range(0, 6) {
+                0 | 1 | 2 | 3 | 4 => function_string = format!("{}{}", function_string, random_statement::generate_random_statement(random, &mut bloc_variables, list_global, list_functions, list_structs)),
+                5 => {
+                    let nb_instruction_gived = random.gen_range(0, nb_instructions_left);
+                    nb_instructions_left -= nb_instruction_gived;
+                    function_string = format!("{}{}", function_string, Self::generate_if(random , list_global,list_functions, list_structs, &bloc_variables, nb_instruction_gived));
+                },
+                6 => {
+                    let nb_instruction_gived = random.gen_range(0, nb_instructions_left);
+                    nb_instructions_left -= nb_instruction_gived;
+                    function_string = format!("{}{}", function_string, Self::generate_for(random, list_global,list_functions, list_structs, &bloc_variables, nb_instruction_gived));
+                },
                 // should never happen
-                _ => function_string = format!("{}{}", function_string, random_statement::generate_random_statement(random ,&mut bloc_variables, list_functions, list_structs)),
+                _ => function_string = format!("{}{}", function_string, random_statement::generate_random_statement(random ,&mut bloc_variables, list_global, list_functions, list_structs)),
             }
         }
     

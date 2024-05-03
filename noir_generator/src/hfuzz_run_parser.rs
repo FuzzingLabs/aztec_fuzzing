@@ -10,12 +10,12 @@ mod constants;
 mod functions;
 
 use noirc_frontend::parser;
-use crate::constants::{MAX_DATA_LENGTH, MIN_DATA_LENGTH};
+use crate::constants::CONFIG;
 
 fn main() {
     loop {
         fuzz!(|data: &[u8]| {
-            if data.len() < MIN_DATA_LENGTH || data.len() > MAX_DATA_LENGTH {
+            if data.len() < CONFIG.min_data_length || data.len() > CONFIG.max_data_length {
                 return;
             }
 

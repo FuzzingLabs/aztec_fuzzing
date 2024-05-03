@@ -4,7 +4,7 @@ use crate::variables::operand::Operand;
 
 use super::operator::Operator;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Clone)]
 pub(crate) struct Operation {
     operation_type: VarType,
     operator: Operator,

@@ -2,22 +2,27 @@ use crate::constants::CONFIG;
 use crate::statements::random_statement;
 use crate::variables::bloc_data::BlocData;
 use crate::variables::list_structs::ListStructs;
-use crate::variables::value;
+use crate::variables::struct_type::StructType;
 use crate::variables::var_type::VarType;
 use crate::random::Random;
+use crate::variables::variable::Variable;
 
 use super::function::Function;
 use super::list_functions::ListFunctions;
 
 #[derive(Clone)]
-pub(crate) struct Lambda {
-    func: Function
+pub(crate) struct Method {
+    func: Function,
+    struct_source_name: String,
+    self_arg: bool,
 }
 
-impl Lambda {
-    pub fn new(name: String, arguments: BlocData, ret_type: Option<VarType>) -> Self {
+impl Method {
+    pub fn new(name: String, arguments: BlocData, ret_type: Option<VarType>, struct_source_name: String, self_arg: bool) -> Self {
         Self {
-            func: Function::new(name, true, arguments, ret_type)
+            func: Function::new(name, true, arguments, ret_type),
+            struct_source_name,
+            self_arg,
         }
     }
 
@@ -29,9 +34,11 @@ impl Lambda {
         &self.func.ret_type()
     }
 
-    pub fn initialize(&self, random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
+    pub fn initialize(&self, random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs, struct_source: &StructType) -> String {
         let vars = self.func.arguments().variables();
-        let mut init = format!("let {} = |", self.name());
+        let mut init = format!("{}fn {}(", if self.func.is_public() { "pub " } else { "" }, self.name());
+
+        init = format!("{}{}", init, if self.self_arg { if vars.len() == 0 {"self"} else {"self, "} } else { "" });
 
         if vars.len() != 0 {
             for i in 0..vars.len()-1{
@@ -40,56 +47,29 @@ impl Lambda {
             init = format!("{}{}: {}", init, vars[vars.len()-1].name(), vars[vars.len()-1].var_type());
         }
 
-        init = format!("{}| {{\n", init);
+        init = match &self.ret_type() {
+            Some(v) => format!("{}) -> {} {{\n", init, v),
+            None => format!("{}) {{\n", init),
+        };
 
-        init = format!("{}{}", init, self.generate_code(random, list_global, list_functions, list_structs));
+        init = format!("{}{}", init, self.generate_code(random, list_global, list_functions, list_structs, struct_source));
         
-        format!("{}}};\n", init)
+        format!("{}}}\n", init)
     }
 
-    pub fn initialize_as_argument(&self, random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
-        let vars = self.func.arguments().variables();
-        let mut init = format!("|");
-
-        if vars.len() != 0 {
-            for i in 0..vars.len()-1{
-                init = format!("{}{}: {}, ", init, vars[i].name(), vars[i].var_type());
-            }
-            init = format!("{}{}: {}", init, vars[vars.len()-1].name(), vars[vars.len()-1].var_type());
-        }
-
-        init = format!("{}| {{\n", init);
-
-        init = format!("{}{}", init, self.generate_code(random, list_global, list_functions, list_structs));
-        
-        format!("{}}}", init)
-    }
-
-    pub fn put_as_argument(&self) -> String {
-        let vars = self.func.arguments().variables();
-        let mut init = format!("{}: fn(", self.name());
-
-        if vars.len() != 0 {
-            for i in 0..vars.len()-1{
-                init = format!("{}{}, ", init, vars[i].var_type());
-            }
-            init = format!("{}{}", init, vars[vars.len()-1].var_type());
-        }
-        match self.ret_type() {
-            Some(t) => format!("{}) -> {}", init, t),
-            None => format!("{})", init),
-        }
-    }
-
-    pub fn generate_code(&self, random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
+    pub fn generate_code(&self, random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs, struct_source: &StructType) -> String {
         let mut code = String::new();
-
         let mut bloc_variables = self.func.arguments().clone();
         for var in list_global.variables() {
             bloc_variables.add_variable(var);
         }
 
-        let mut nb_instructions_left: usize = random.gen_range(0, CONFIG.max_instruction_by_lambda);
+        if self.self_arg {
+            let var = Variable::new("self".to_string(), false, &VarType::strct(struct_source.clone()));
+            bloc_variables.add_variable(var);
+        }
+
+        let mut nb_instructions_left: usize = random.gen_range(0, CONFIG.max_instruction_by_method);
         while nb_instructions_left != 0 {
             nb_instructions_left  -= 1;
             match random.gen_range(0, 7) {
@@ -112,8 +92,12 @@ impl Lambda {
         format!("{}{}", code, self.func.ret(random, &bloc_variables, list_global, list_functions, list_structs))
     }
 
-    pub fn call(&self, random: &mut Random, bloc_variables: &BlocData, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs, depth: usize) -> String {
-        self.func.call(random, bloc_variables, list_global, list_functions, list_structs, depth)
+    pub fn call(&self, random: &mut Random, bloc_variables: &BlocData, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs, depth: usize, self_var: Option<String>) -> String {
+        if self.self_arg {
+            return format!("{}.{}", self_var.expect("No self_var in a method call"), self.func.call(random, list_global, bloc_variables, list_functions, list_structs, depth));
+        }
+
+        format!("{}::{}", self.struct_source_name, self.func.call(random, list_global, bloc_variables, list_functions, list_structs, depth))
     }
     
 }

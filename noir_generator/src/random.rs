@@ -21,6 +21,7 @@ impl Random {
         let size: usize = (usize::BITS /8).try_into().unwrap();
 
         if self.indice + size > self.length {
+            // panic!("data too small")
             self.indice = 0;
         }
 

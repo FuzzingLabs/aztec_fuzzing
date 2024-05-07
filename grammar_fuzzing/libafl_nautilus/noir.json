@@ -1,0 +1,138 @@
+[
+    [
+        "START",
+        "{PROGRAM}"
+    ],
+    [
+        "PROGRAM",
+        "{STATEMENT} {PROGRAM}"
+    ],
+    [
+        "PROGRAM",
+        ""
+    ],
+    [
+        "STATEMENT",
+        "{VAR_DECLARATION}"
+    ],
+    [
+        "STATEMENT",
+        "{FUNCTION_DEFINITION}"
+    ],
+    [
+        "STATEMENT",
+        "{STRUCT_DEFINITION}"
+    ],
+    [
+        "STATEMENT",
+        "{LOOP}"
+    ],
+    [
+        "VAR_DECLARATION",
+        "let {VAR_NAME}: {TYPE} = {EXPR};"
+    ],
+    [
+        "VAR_DECLARATION",
+        "let {VAR_NAME}: {TYPE};"
+    ],
+    [
+        "VAR_DECLARATION",
+        "let mut {VAR_NAME}: {TYPE} = {EXPR};"
+    ],
+    [
+        "FUNCTION_DEFINITION",
+        "fn {FUNC_NAME}({PARAM_LIST}) -> {TYPE} {BLOCK}"
+    ],
+    [
+        "STRUCT_DEFINITION",
+        "struct {STRUCT_NAME} \\{ {FIELD_NAME} : {TYPE}; \\}"
+    ],
+    [
+        "LOOP",
+        "for {VAR_NAME} in {EXPR} {BLOCK}"
+    ],
+    [
+        "LOOP",
+        "while ({EXPR}) {BLOCK}"
+    ],
+    [
+        "BLOCK",
+        "{PROGRAM}"
+    ],
+    [
+        "EXPR",
+        "{VAR_NAME} + {NUMBER}"
+    ],
+    [
+        "EXPR",
+        "{VAR_NAME} * {NUMBER}"
+    ],
+    [
+        "TYPE",
+        "int"
+    ],
+    [
+        "TYPE",
+        "float"
+    ],
+    [
+        "TYPE",
+        "string"
+    ],
+    [
+        "PARAM_LIST",
+        "{VAR_NAME}: {TYPE}, {PARAM_LIST}"
+    ],
+    [
+        "PARAM_LIST",
+        "{VAR_NAME}: {TYPE}"
+    ],
+    [
+        "VAR_NAME",
+        "AlphaOne"
+    ],
+    [
+        "VAR_NAME",
+        "BetaTwo"
+    ],
+    [
+        "VAR_NAME",
+        "GammaThree"
+    ],
+    [
+        "VAR_NAME",
+        "DeltaFour"
+    ],
+    [
+        "VAR_NAME",
+        "EpsilonFive"
+    ],
+    [
+        "FUNC_NAME",
+        "ComputeValue"
+    ],
+    [
+        "FUNC_NAME",
+        "UpdateStatus"
+    ],
+    [
+        "STRUCT_NAME",
+        "DataRecord"
+    ],
+    [
+        "FIELD_NAME",
+        "age"
+    ],
+    [
+        "FIELD_NAME",
+        "salary"
+    ],
+    [
+        "NUMBER",
+        "42"
+    ],
+    [
+        "NUMBER",
+        "100"
+    ]
+]

@@ -1,0 +1,16 @@
+[package]
+name = "libafl_nautilus"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+libafl = { version = "0.11.2", features = ["default", "nautilus"]}
+libafl_bolts = "0.11.2"
+# Noir dependencies
+noirc_frontend = { path = "../noir/compiler/noirc_frontend" }
+noirc_driver = { path = "../noir/compiler/noirc_driver" }
+fm = { path = "../noir/compiler/fm" }
+nargo_toml = { path = "../noir/tooling/nargo_toml" }
+nargo = { path = "../noir/tooling/nargo" }

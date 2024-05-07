@@ -1,0 +1,10 @@
+[package]
+name = "tree-splicer-noir"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1"
+tree-sitter-noir = "0.0.1"
+tree-splicer = { version = "0.5.0", path = "../tree-splicer", features = ["cli"] }
+

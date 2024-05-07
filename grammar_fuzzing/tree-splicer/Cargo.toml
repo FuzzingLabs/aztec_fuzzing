@@ -1,0 +1,12 @@
+[workspace] 
+members = [
+    "crates/tree-splicer",
+    "crates/tree-splicer-javascript", "crates/tree-splicer-noir",
+    "crates/tree-splicer-rust",
+    "crates/tree-splicer-typescript",
+    "crates/tree-splicer-noir",
+]
+
+# https://nnethercote.github.io/perf-book/build-configuration.html
+[profile.release]
+lto = true

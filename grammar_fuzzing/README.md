@@ -38,7 +38,7 @@ nargo = { path = "../noir/tooling/nargo" } // Here
 
 Since *Nautilus* was not really successful we tried generating code using (tree-splicer)[https://github.com/langston-barrett/tree-splicer]. It uses tree-sitter grammar to mutate a given code.
 
-You can tried it using the following command:
+You can try it using the following command:
 
 ```bash
 $ ./target/release/tree-splicer-noir --on-parse-error ignore -c 10 -m 30 examples/main.nr

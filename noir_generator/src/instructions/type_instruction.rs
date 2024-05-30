@@ -53,7 +53,7 @@ pub fn generate_type_instruction(random: &mut Random, bloc_data: &BlocData, list
     if depth == 0 {
         match random.gen_range(0, 2) {
             0 => {
-                match bloc_data.get_random_variable(random, vec!(&instruction_type), false){
+                match bloc_data.get_random_variable(random, vec!(&instruction_type), matches!(instruction_type, VarType::reference(_))){
                     Some(v) => return v.name_and_way(random, instruction_type),
                     None => return value::random_value(random, instruction_type).to_string(),
                 }
@@ -64,7 +64,7 @@ pub fn generate_type_instruction(random: &mut Random, bloc_data: &BlocData, list
     } else {
         match random.gen_range(0, 5) {
             0 => {
-                match bloc_data.get_random_variable(random, vec!(&instruction_type), false){
+                match bloc_data.get_random_variable(random, vec!(&instruction_type), matches!(instruction_type, VarType::reference(_))){
                     Some(v) => return v.name_and_way(random, instruction_type),
                     None => return value::random_value(random, instruction_type).to_string(),
                 }
@@ -91,7 +91,7 @@ pub fn generate_type_instruction(random: &mut Random, bloc_data: &BlocData, list
 
                 let random_struct = list_structs.get_random(random);
                 let struct_type = VarType::strct(random_struct.clone());
-                if let Some(var) = bloc_data.get_random_variable(random, vec![&struct_type], false){
+                if let Some(var) = bloc_data.get_random_variable(random, vec![&struct_type], matches!(instruction_type, VarType::reference(_))){
                     let name_and_way = var.name_and_way(random, &struct_type);
                     if let Some(s) = random_struct.call_by_type(random, bloc_data, list_global, list_functions, list_structs, instruction_type, depth, Some(name_and_way)) {
                         return s;
@@ -105,8 +105,12 @@ pub fn generate_type_instruction(random: &mut Random, bloc_data: &BlocData, list
                     return value::random_value(random, instruction_type).to_string();
                 }
                 match bloc_data.get_random_lambda(random, vec!(instruction_type.clone())){
-                    Some(l) => format!("{}{}", l.call(random, bloc_data, list_global, list_functions, list_structs, depth), var_type::way_to_type(random, 
-                        &l.ret_type().clone().expect("lambda with no ret type"), instruction_type).expect("no way to type")),
+                    Some(l) => {
+                        let mut is_a_ref = false;
+                        let call = l.call(random, bloc_data, list_global, list_functions, list_structs, depth);
+                        let way = var_type::way_to_type(random, &l.ret_type().clone().expect("lambda with no ret type"), instruction_type, &mut is_a_ref).expect("no way to type");
+                        format!("{}{}{}", if is_a_ref { "*" } else { "" }, call, way)
+                    },
                     None => return value::random_value(random, instruction_type).to_string(),
                 }
             }

@@ -26,6 +26,7 @@ pub fn load_config() -> LimitsConfig {
         max_loop_in_for: config["limits"]["MAX_LOOP_IN_FOR"].as_integer().unwrap() as usize,
         min_data_length: config["limits"]["MIN_DATA_LENGTH"].as_integer().unwrap() as usize,
         max_data_length: config["limits"]["MAX_DATA_LENGTH"].as_integer().unwrap() as usize,
+        use_of_slice: config["limits"]["USE_OF_SLICE"].as_integer().unwrap() as usize,
     }
 }
 
@@ -47,4 +48,5 @@ pub struct LimitsConfig {
     pub max_loop_in_for: usize,
     pub min_data_length: usize,
     pub max_data_length: usize,
+    pub use_of_slice: usize,
 }

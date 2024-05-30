@@ -13,6 +13,8 @@ pub(crate) enum Value {
     // Vec(Vec<Value>),
     Tup(Vec<Value>),
     Strct(Vec<(Value, String)>, String),
+    Reference(Box<Value>),
+
 }
 
 impl std::fmt::Display for Value {
@@ -68,6 +70,9 @@ impl std::fmt::Display for Value {
                 }
                 write!(f, "}}")
             },
+            Value::Reference(value) => {
+                write!(f, "&mut {}", value)
+            },
         }
     }
 }
@@ -112,6 +117,8 @@ pub fn random_value(random: &mut Random, var_type: &VarType) -> Value {
             }
             Value::Strct(random_vec, strct.name().clone())
         },
+
+        VarType::reference(type_param) => Value::Reference(Box::new(random_value(random, &type_param))),
 
         _ => unimplemented!("Type not yet supported"),
     }

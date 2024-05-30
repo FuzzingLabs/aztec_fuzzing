@@ -66,7 +66,7 @@ impl BlocData {
             .iter()
             .filter(|v| {
                 let type_condition = allowed_types.iter().any(|allowed_type| {
-                    var_type::way_to_type(random, &v.var_type(), &allowed_type).is_some()
+                    var_type::way_to_type(random, &v.var_type(), &allowed_type, &mut false).is_some()
                 });
                 let mutable_condition = !mutable | v.is_mutable();
         
@@ -87,7 +87,7 @@ impl BlocData {
             .filter(|l| {
                 match l.ret_type() {
                     Some(t) => allowed_types.iter().any(|allowed_type| {
-                            var_type::way_to_type(random, t, &allowed_type).is_some()
+                            var_type::way_to_type(random, t, &allowed_type, &mut false).is_some()
                         }),
                     None => false,
                 }

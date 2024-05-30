@@ -16,7 +16,7 @@ fn get_leaf(random: &mut Random, bloc_variables: &BlocData) -> Option<Operation>
     let chosen_type = {
         let mut vec_type = Vec::new();
         for var_type in var_type::basic_types() {
-            if var_type::way_to_type(random, var.var_type(), &var_type).is_some() {
+            if var_type::way_to_type(random, var.var_type(), &var_type, &mut false).is_some() {
                 vec_type.push(var_type);
             }
         }

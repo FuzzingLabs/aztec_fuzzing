@@ -1,4 +1,4 @@
-use crate::{constants::CONFIG, random::Random, variables::{bloc_data::BlocData, list_structs::ListStructs, var_type::{self, is_same_type, VarType}, variable::Variable}};
+use crate::{constants::CONFIG, random::Random, variables::{bloc_data::BlocData, list_structs::ListStructs, var_type::{self, is_same_type, Trait, VarType}, variable::Variable}};
 use super::function::Function;
 
 #[derive(Clone)]
@@ -36,22 +36,48 @@ impl ListFunctions {
     pub fn add_function(&mut self, random: &mut Random, list_global: &BlocData, list_structs: &ListStructs, is_main: bool) -> String {
         let mut bloc_variables = BlocData::new();
         let function;
+
         if is_main{
             for _ in 0..CONFIG.max_function_arguments{
                 bloc_variables.add_variable(Variable::new(bloc_variables.next_variable_name(), false, &var_type::random_basic_type(random)));
             }
             function = Function::new("main".to_string(), false, bloc_variables, None);
+        
         } else {
+            let mut use_generic = false;
+            let mut vec_trait = Vec::new();
+
+            for t in Trait::iterator() {
+                if random.gen_bool() {
+                    vec_trait.push(t);
+                }
+            }
+
             for _ in 0..CONFIG.max_function_arguments{
                 let var_type = var_type::random_type(random, list_structs);
-                if random.gen_range(0, 10) == 0 {
+                let rand = random.gen_range(0, 10);
+                if rand == 0 {
                     let lambda = bloc_variables.create_lambda(random, list_structs, &var_type);
                     bloc_variables.add_lambda(lambda);
-                } else {
+                } else if rand == 1 {
+                    use_generic = true;
+                    bloc_variables.add_variable(Variable::new(bloc_variables.next_variable_name(), false, &VarType::generic(vec_trait.clone())));
+                }
+                else {
                     bloc_variables.add_variable(Variable::new(bloc_variables.next_variable_name(), false, &var_type));
                 }
             }
-            function = Function::new(format!("func{}", self.next_id()), random.gen_bool(), bloc_variables, Some(var_type::random_type(random, list_structs)));
+
+            let rand = random.gen_range(0, 10);
+            let ret_type = if rand == 0 {
+                None
+            // } else if rand == 1 && use_generic {
+            //     Some(VarType::generic(vec_trait.clone()))
+            } else {
+                Some(var_type::random_type(random, list_structs))
+            };
+
+            function = Function::new(format!("func{}", self.next_id()), random.gen_bool(), bloc_variables, ret_type);
         }
 
         let ret = function.generate_function_code(random, list_global, self, list_structs);

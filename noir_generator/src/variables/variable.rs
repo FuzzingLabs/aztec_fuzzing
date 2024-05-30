@@ -31,6 +31,10 @@ impl Variable {
         &self.name
     }
 
+    pub fn set_type(&mut self, type_to_set: &VarType) {
+        self.var_type = type_to_set.clone();
+    }
+
     pub fn initialize(&self) -> String{
         format!("let{} {}: {}", if self.is_mutable() { " mut" } else { "" }, self.name(), self.var_type())
     }
@@ -40,8 +44,9 @@ impl Variable {
     }
 
     pub fn name_and_way(&self, random: &mut Random, aim_type: &VarType) -> String {
-        if let Some(str) = var_type::way_to_type(random, &self.var_type(), &aim_type) {
-            return format!("{}{}", self.name(), str);
+        let mut is_a_ref = false;
+        if let Some(str) = var_type::way_to_type(random, &self.var_type(), &aim_type, &mut is_a_ref) {
+            return format!("{}{}{}", if is_a_ref { "*" } else { "" }, self.name(), str);
         } else {
             panic!("No way to type in name_and_way");
         }

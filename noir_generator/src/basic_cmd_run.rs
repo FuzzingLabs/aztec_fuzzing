@@ -36,8 +36,8 @@ fn main() {
         let size = rng.gen_range(CONFIG.min_data_length..=CONFIG.max_data_length);
         let vec: Vec<u8> = (0..size).map(|_| rng.gen::<u8>()).collect();
 
-        let input = format!("random_data_input/input{}", loop_count);
-        std::fs::write(std::env::current_dir().unwrap().join(input), &vec).expect("");
+        // let input = format!("random_data_input/input{}", loop_count);
+        // std::fs::write(std::env::current_dir().unwrap().join(input), &vec).expect("");
 
         let code_generated = generate_code::generate_code(&vec);
         std::fs::write(&nr_main_path, &code_generated).expect("Failed to write main.nr");

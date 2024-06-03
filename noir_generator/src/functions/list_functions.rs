@@ -62,6 +62,9 @@ impl ListFunctions {
                 } else if rand == 1 {
                     use_generic = true;
                     bloc_variables.add_variable(Variable::new(bloc_variables.next_variable_name(), false, &VarType::generic(vec_trait.clone())));
+                } else if rand == 2 {
+                    use_generic = true;
+                    bloc_variables.add_variable(Variable::new(bloc_variables.next_variable_name(), false, &VarType::array(Box::new(VarType::generic(vec_trait.clone())), usize::max_value())));
                 }
                 else {
                     bloc_variables.add_variable(Variable::new(bloc_variables.next_variable_name(), false, &var_type));

@@ -45,16 +45,33 @@ impl Function {
         let lambdas = self.arguments.lambdas();
 
         let mut is_generic = false;
+        let mut is_composite_generic = false;
         let mut vec_trait = Vec::new();
         for var in &vars {
-            if let VarType::generic(vec) = var.var_type() {
-                vec_trait = vec.clone();
-                is_generic = true;
-                break;
+            match var.var_type() {
+                VarType::array(v_type, _) => {
+                    if !is_composite_generic {
+                        match *v_type.clone() {
+                            VarType::generic(vec) => {
+                                vec_trait = vec.clone();
+                                is_generic = true;
+                                is_composite_generic = true;
+                            },
+                            _ => {}
+                        }
+                    }
+                },
+                VarType::generic(vec) => {
+                    if !is_generic {
+                        vec_trait = vec.clone();
+                        is_generic = true;
+                    }
+                },
+                _ => {}
             }
         }
 
-        let mut init = format!("{}fn {}{}(", if self.public { "pub " } else { "" }, self.name(), if is_generic { "<T>" } else { "" });
+        let mut init = format!("{}fn {}{}(", if self.public { "pub " } else { "" }, self.name(), if is_composite_generic { "<T, N>" } else if is_generic { "<T>" } else { "" });
 
         if vars.len() != 0 {
             for i in 0..vars.len()-1 {
@@ -98,9 +115,15 @@ impl Function {
         let lambdas = self.arguments.lambdas();
 
         let generic_type = var_type::random_basic_type(random);
+        let composite_generic_size = random.gen_range(0, CONFIG.max_composite_size);
         for i in 0..vars.len() {
-            if var_type::is_same_type(vars[i].var_type(), &VarType::generic(Vec::new())) {
-                vars[i].set_type(&generic_type);
+            match vars[i].var_type() {
+                VarType::array(v_type, _) => 
+                    if var_type::is_same_type(v_type, &VarType::generic(Vec::new())) {
+                        vars[i].set_type(&VarType::array(Box::new(generic_type.clone()), composite_generic_size));
+                    },
+                VarType::generic(_) => vars[i].set_type(&generic_type),
+                _ => {}
             }
         }
 
@@ -150,11 +173,19 @@ impl Function {
 
     pub fn generate_function_code(&self, random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
         let mut bloc_variables = BlocData::new();
+        
         for var in self.arguments.variables() {
-            if !var_type::is_same_type(var.var_type(), &VarType::generic(Vec::new())) {
-                bloc_variables.add_variable(var);
+            match var.var_type() {
+                VarType::array(v_type, _) => {
+                    if !var_type::is_same_type(v_type, &VarType::generic(Vec::new())) {
+                        bloc_variables.add_variable(var);
+                    }
+                },
+                VarType::generic(_) => {},
+                _ => bloc_variables.add_variable(var),
             }
         }
+
         for var in list_global.variables() {
             bloc_variables.add_variable(var);
         }

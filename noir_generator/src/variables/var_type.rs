@@ -47,7 +47,12 @@ impl std::fmt::Display for VarType {
             VarType::uint(size) => write!(f, "u{}", size),
             VarType::int(size) => write!(f, "i{}", size),
             VarType::str(size) => write!(f, "str<{}>", size),
-            VarType::array(type_param, size) => write!(f, "[{}; {}]", type_param, size),
+            VarType::array(type_param, size) =>  { 
+                if *size == usize::max_value() {
+                    return write!(f, "[{}; N]", type_param);
+                }
+                write!(f, "[{}; {}]", type_param, size)
+            },
             VarType::slice(type_param, _) => write!(f, "[{}]", type_param),
             VarType::tup(vec_type_param) => {
                 write!(f, "(")?;

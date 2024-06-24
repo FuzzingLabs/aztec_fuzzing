@@ -1,0 +1,148 @@
+%const% MAX_REPEAT_POWER := 2
+
+%const% VARIANCE_MIN := 1
+%const% VARIANCE_MAX := 3
+
+%const% VARIABLE_MIN := 1
+%const% VARIABLE_MAX := 3
+
+
+%section% := value
+
+return :=
+    +get_i8_+
+
+instruction :=
+    +variable_modification+;\n
+    +variable_modification+;\n
+    +variable_modification+;\n
+    +variable_modification+;\n
+    +variable_modification+;\n
+    +if_block+\n
+    +for_block+\n
+
+variable_modification :=
+    !i8_! = +get_i8_+
+    !i8_! = !lambda_!()
+    +array_i8_modification+
+    !u8_! = +get_u8_+
+    !str5_! = +get_str5_+
+    !bool! = +get_bool_+
+    +tup_modification+
+
+array_i8_modification :=
+    !array_i8_! = +get_array_i8_+
+    !array_i8_! = !tup_!.1
+    !array_i8_![%range%(0-2)] = +get_i8_+
+    !array_i8_![%range%(0-2)] = !array_i8_![%range%(0-2)]
+
+tup_modification :=
+    !tup_! = +get_tup_+
+    !tup_!.0 = +get_i8_+
+    !tup_!.1 = +get_array_i8_+
+    !tup_!.2 = +get_u8_+
+    !tup_!.3 = +get_str5_+
+    !tup_!.4 = +get_bool_+
+
+if_block :=
+    if +get_bool_+ {\n%repeat%(+instruction+)};
+
+for_block :=
+    for i in 0..3 {\n%repeat%(+instruction+)}
+
+get_i8_ :=
+    !i8_!
+    %range%(-127-127)
+    +get_i8_+ +get_operator+ +get_i8_+
+    func_%range%(1-3)()
+
+get_array_i8_ :=
+    !array_i8_!
+    [+get_i8_+, +get_i8_+, +get_i8_+]
+
+get_u8_ :=
+    !u8_!
+    %range%(0-255)
+    +get_u8_+ +get_operator+ +get_u8_+
+
+
+get_str5_ :=
+    !str5_!
+    "+get_char++get_char++get_char++get_char++get_char+"
+
+get_bool_ :=
+    !bool!
+    true
+    false
+    (+get_i8_+ +get_comparator+ +get_i8_+)
+    (+get_u8_+ +get_comparator+ +get_u8_+)
+    (+get_str5_+ +get_str_comparator+ +get_str5_+)
+    (+get_bool_+ +get_bool_comparator+ +get_bool_+)
+
+get_tup_ :=
+    !tup_!
+    (+get_i8_+, +get_array_i8_+, +get_u8_+, +get_str5_+, +get_bool_+)
+
+get_operator :=
+    +
+    -
+    *
+    /
+
+get_comparator :=
+    ==
+    !=
+    <
+    >
+    <=
+    >=
+
+get_str_comparator :=
+    ==
+    !=
+
+get_bool_comparator :=
+    &
+    |
+
+get_char :=
+	%range%(a-z)
+	%range%(A-Z)
+
+%%% ####################################################
+%%% ####################################################
+%%% ####### VARIABLE  SECTION
+%%% ####################################################
+%%% ####################################################
+%section% := variable
+
+i8_ :=
+    let mut @i8_@: i8 = +get_i8_+;
+
+array_i8_ :=
+    let mut @array_i8_@: [i8; 3] = +get_array_i8_+;
+
+u8_ :=
+    let mut @u8_@: u8 = +get_u8_+;
+
+str5_ :=
+    let mut @str5_@: str<5> = +get_str5_+;
+
+bool :=
+    let mut @bool@: bool = +get_bool_+;
+
+tup_ :=
+    let mut @tup_@: (i8, [i8; 3], u8, str<5>, bool) = +get_tup_+;
+
+lambda_ :=
+    let @lambda_@ = || {\n %repeat%(+instruction+)+return+\n};
+
+%%% ####################################################
+%%% ####################################################
+%%% ####### VARIANCE  SECTION
+%%% ####################################################
+%%% ####################################################
+%section% := variance
+
+main :=
+	+instruction+

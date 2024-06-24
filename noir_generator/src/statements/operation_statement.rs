@@ -6,6 +6,7 @@ use crate::variables::variable::Variable;
 use crate::variables::{bloc_data::BlocData, var_type};
 use crate::instructions::type_instruction::generate_type_instruction;
 
+// Return a string that represents the assignment of a random operation to a randomly chosen variable
 pub fn generate_operation_instruction(random: &mut Random, bloc_variables: &mut BlocData, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
     let mut instruction: String = String::new();
     
@@ -13,6 +14,7 @@ pub fn generate_operation_instruction(random: &mut Random, bloc_variables: &mut 
 
     let instr_string = generate_type_instruction(random, bloc_variables, list_global, list_functions, list_structs, &chosen_type, CONFIG.max_instruction_depth);
 
+    // ry to find a variable of type equal to chosen_type, or declare a new one if none exists
     match bloc_variables.get_random_variable(random, vec![&chosen_type], true) {
         Some(assigned_var) => instruction = format!("{}{} = ", instruction, assigned_var.name_and_way(random, &chosen_type)),
         None => {

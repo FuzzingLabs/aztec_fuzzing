@@ -1,6 +1,7 @@
 use crate::variables::var_type::VarType;
 use crate::random::Random;
 
+// Represent a value depending on the type
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) enum Value {
     Field(u128),
@@ -10,7 +11,6 @@ pub(crate) enum Value {
     Str(String),
     Array(Vec<Value>),
     Slice(Vec<Value>),
-    // Vec(Vec<Value>),
     Tup(Vec<Value>),
     Strct(Vec<(Value, String)>, String),
     Reference(Box<Value>),
@@ -77,6 +77,7 @@ impl std::fmt::Display for Value {
     }
 }
 
+// Return a random value of a type given in the parameter
 pub fn random_value(random: &mut Random, var_type: &VarType) -> Value {
     match var_type {
         VarType::field => Value::Field(random.gen_field()),

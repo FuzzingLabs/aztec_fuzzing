@@ -1,3 +1,5 @@
+// This program loads values from a config.toml file
+// These values set limits for the generator on various parameters
 lazy_static::lazy_static! {
     pub static ref CONFIG: LimitsConfig = load_config();
 }

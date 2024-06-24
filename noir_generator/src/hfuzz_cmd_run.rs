@@ -14,6 +14,8 @@ use std::process::Command;
 
 use crate::{constants::CONFIG, tools::{clean_ansi_escape_codes, ignored_error_cmd}};
 
+// This program will run Hongfuzz, calling by command line the compiler
+// with code that is randomly generated using the data provided by Hongfuzz as a source of randomness
 fn main() {
 
     loop {

@@ -7,6 +7,7 @@ use crate::random::Random;
 use super::list_structs::ListStructs;
 use super::var_type;
 
+// Represent all data (every declared variable and lambda function) from a specific code block
 #[derive(Clone)]
 pub struct BlocData{
     variables: Vec<Variable>,
@@ -45,6 +46,7 @@ impl BlocData {
         self.lambdas.is_empty()
     }
 
+    // Add a randomly generated new lambda function with a specified return type to this list
     pub fn create_lambda(&mut self, random: &mut Random, list_structs: &ListStructs, ret_type: &VarType) -> Lambda {
         let mut bloc_variables = BlocData::new();
         for _ in 0..CONFIG.max_lambda_arguments{
@@ -61,6 +63,8 @@ impl BlocData {
         new_lambda
     }
 
+    // Return a randomly chosen variable that has a type matching one of the list of types given as parameter
+    // Return None if there is none
     pub fn get_random_variable(&self, random: &mut Random, allowed_types: Vec<&VarType>, mutable: bool) -> Option<&Variable> {
         let filtered_variables: Vec<&Variable> = self.variables
             .iter()
@@ -81,6 +85,8 @@ impl BlocData {
         Some(random.choose_random_item_from_vec(&filtered_variables))
     }
 
+    // Return a randomly chosen lambda function that has a return type matching one of the list of types given as parameter
+    // Return None if there is none
     pub fn get_random_lambda(&self, random: &mut Random, allowed_types: Vec<VarType>) -> Option<&Lambda> {
         let filtered_lambdas: Vec<&Lambda> = self.lambdas
             .iter()

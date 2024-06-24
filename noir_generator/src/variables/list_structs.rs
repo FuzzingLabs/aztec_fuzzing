@@ -1,9 +1,8 @@
 use std::cmp::min;
-
 use crate::{constants::CONFIG, functions::list_functions::ListFunctions, random::Random};
+use super::{bloc_data::BlocData, struct_type::StructType, var_type::random_type_with_depth};
 
-use super::{bloc_data::BlocData, struct_type::StructType, var_type::{random_type_with_depth, VarType}, variable::Variable};
-
+// Represent a list of structures
 pub struct ListStructs{
     structs: Vec<StructType>
 }
@@ -23,8 +22,8 @@ impl ListStructs {
         random.choose_random_item_from_vec(&self.structs)
     }
 
+    // Add a randomly generated new structure to this list
     pub fn add_struct(&mut self, random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions) -> String {
-
         let size = random.gen_range(1, CONFIG.max_composite_size);
         let mut key_types = Vec::with_capacity(size);
         for i in 0..size {
@@ -37,20 +36,8 @@ impl ListStructs {
 
         ret
     }
-
-    pub fn get_struct_variables(&self, random: &mut Random, bloc_data: &BlocData) -> Vec<Variable> {
-        let mut ret_vec = Vec::new();
-    
-        for s in &self.structs {
-            if let Some(v) = bloc_data.get_random_variable(random, vec![&VarType::strct(s.clone())], false) {
-                ret_vec.push(v.clone());
-            }
-        }
-    
-        ret_vec
-    }
-    
-
+ 
+    // Only used in the name of the structures
     fn next_id(&self) -> usize {
         self.structs.len()+1
     }

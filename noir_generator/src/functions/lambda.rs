@@ -2,13 +2,13 @@ use crate::constants::CONFIG;
 use crate::statements::random_statement;
 use crate::variables::bloc_data::BlocData;
 use crate::variables::list_structs::ListStructs;
-use crate::variables::value;
 use crate::variables::var_type::VarType;
 use crate::random::Random;
 
 use super::function::Function;
 use super::list_functions::ListFunctions;
 
+// Represent a lambda function
 #[derive(Clone)]
 pub(crate) struct Lambda {
     func: Function
@@ -29,6 +29,7 @@ impl Lambda {
         &self.func.ret_type()
     }
 
+    // Return a string that represents the code needed for this lambda function
     pub fn initialize(&self, random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
         let vars = self.func.arguments().variables();
         let mut init = format!("let {} = |", self.name());
@@ -47,6 +48,7 @@ impl Lambda {
         format!("{}}};\n", init)
     }
 
+    // Return a string that represents the code needed to initialize this lambda function as argument
     pub fn initialize_as_argument(&self, random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
         let vars = self.func.arguments().variables();
         let mut init = format!("|");
@@ -65,6 +67,7 @@ impl Lambda {
         format!("{}}}", init)
     }
 
+    // Return a string that represents the code needed to use this lambda function as argument
     pub fn put_as_argument(&self) -> String {
         let vars = self.func.arguments().variables();
         let mut init = format!("{}: fn(", self.name());
@@ -81,6 +84,7 @@ impl Lambda {
         }
     }
 
+    // Replace generate_code of function.rs to match the core structure of a lambda function
     pub fn generate_code(&self, random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
         let mut code = String::new();
 

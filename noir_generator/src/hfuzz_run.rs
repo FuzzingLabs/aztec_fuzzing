@@ -11,7 +11,6 @@ mod constants;
 mod functions;
 mod tools;
 
-
 use fm::FileManager;
 use nargo::ops::compile_workspace;
 use nargo_toml::{resolve_workspace_from_toml, PackageSelection};
@@ -25,6 +24,8 @@ fn parse_all(fm: &FileManager) -> ParsedFiles {
     fm.as_file_map().all_file_ids().map(|&file_id| (file_id, parse_file(fm, file_id))).collect()
 }
 
+// This program will run Hongfuzz, calling the compiler
+// with code that is randomly generated using the data provided by Hongfuzz as a source of randomness
 fn main() {
     let noir_project_dir = std::env::current_dir().unwrap().join("noir_project");
     let nr_main_path = noir_project_dir.join("src/main.nr");

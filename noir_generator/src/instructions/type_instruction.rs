@@ -8,7 +8,7 @@ use crate::variables::operation::Operation;
 use crate::variables::operand::Operand;
 use crate::random::Random;
 
-// OVERFLOW
+// Function to generate nested instructions with recursive calls. The max depth is specified in config
 fn type_operation_rec(random: &mut Random, bloc_data: &BlocData, chosen_type: &VarType, depth: usize) -> Operation {
 
     let element1: Operand = if depth ==  0 || random.gen_bool() {
@@ -49,6 +49,13 @@ fn type_operation_rec(random: &mut Random, bloc_data: &BlocData, chosen_type: &V
     )
 }
 
+// Return a string that represents a randomly generated instruction of the type given in the parameter
+// List all possible instructions, each of which can be nested:
+    // Raw value
+    // Variable
+    // Function call
+    // Structure method call
+    // Lambda function call
 pub fn generate_type_instruction(random: &mut Random, bloc_data: &BlocData, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs, instruction_type: &VarType, depth: usize) -> String {
     if depth == 0 {
         match random.gen_range(0, 2) {

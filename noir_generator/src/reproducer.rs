@@ -8,6 +8,10 @@ mod statements;
 mod constants;
 mod functions;
 
+// This program takes a folder as a parameter and generates a unique code for each file in the folder by using the file's contents as a source of randomness.
+// the codes generated are placed in a folder named 'crashes_found'
+
+// This tool is used to provide a honggfuzz workspace folder as a parameter and generate codes for the inputs that triggered unique crashes
 fn main() -> io::Result<()> {
     let args: Vec<String> = std::env::args().collect();
     if args.len() < 2 {

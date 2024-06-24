@@ -1,27 +1,7 @@
 use crate::{constants::CONFIG, random::Random};
-use super::{list_structs::ListStructs, operator::Operator, struct_type::StructType};
+use super::{basic_trait::BasicTrait, list_structs::ListStructs, operator::Operator, struct_type::StructType};
 
-#[derive(Clone, PartialEq)]
-pub enum Trait {
-    Eq,
-    Ord,
-}
-
-impl Trait {
-    pub fn iterator() -> impl Iterator<Item = Trait> {
-        [Trait::Eq, Trait::Ord].iter().cloned()
-    }
-}
-
-impl std::fmt::Display for Trait {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Trait::Eq => write!(f, "Eq"),
-            Trait::Ord => write!(f, "Ord"),
-        }
-    }
-}
-
+// List of every types avalaible
 #[derive(Clone)]
 pub enum VarType {
     field,
@@ -31,11 +11,10 @@ pub enum VarType {
     str(usize),
     array(Box<VarType>, usize),
     slice(Box<VarType>, usize),
-    // Vec(Box<VarType>),
     tup(Vec<Box<VarType>>),
     strct(StructType),
     reference(Box<VarType>),
-    generic(Vec<Trait>),
+    generic(Vec<BasicTrait>),
 }
 
 impl std::fmt::Display for VarType {
@@ -71,6 +50,7 @@ impl std::fmt::Display for VarType {
     }
 }
 
+// Returns a list of basic non-composite types
 pub fn basic_types() -> Vec<&'static VarType> {
     vec![
         &VarType::field,
@@ -87,6 +67,7 @@ pub fn basic_types() -> Vec<&'static VarType> {
 
 }
 
+// Returns a random bit size for integer and unsigned integer types
 fn random_bit_size(random: &mut Random) -> usize {
     match random.gen_range(0, 4) {
         0 => 1,
@@ -97,15 +78,7 @@ fn random_bit_size(random: &mut Random) -> usize {
     }
 }
 
-pub fn random_int_type(random: &mut Random) -> VarType {
-    match random.gen_range(0, 3) {
-        0 => VarType::field,
-        1 => VarType::uint(random_bit_size(random)),
-        2 => VarType::int(random_bit_size(random)),
-        _ => VarType::field,
-    }
-}
-
+// Returns a randomly selected basic non-composite type
 pub fn random_basic_type(random: &mut Random) -> VarType {
     match random.gen_range(0, 5) {
         0 => VarType::field,
@@ -117,6 +90,7 @@ pub fn random_basic_type(random: &mut Random) -> VarType {
     }
 }
 
+// Return a random selected type
 pub fn random_type(random: &mut Random, list_structs: &ListStructs) -> VarType {
     match random.gen_range(0, 9 + CONFIG.use_of_slice) {
         0 => VarType::field,
@@ -146,6 +120,7 @@ pub fn random_type(random: &mut Random, list_structs: &ListStructs) -> VarType {
     }
 }
 
+// Used to limit the depth of composite types randomly generated
 pub fn random_type_with_depth(random: &mut Random, list_structs: &ListStructs, depth: usize) -> VarType {
     if depth == 0 {
         match random.gen_range(0, 5) {
@@ -185,6 +160,7 @@ pub fn random_type_with_depth(random: &mut Random, list_structs: &ListStructs, d
     }
 }
 
+// Returns the list of comparison operators supported by the given variable type
 pub fn supported_arithmetic_operator_by_type(var_type: &VarType) -> Vec<Operator> {
     match var_type {
         VarType::field => vec![Operator::Add, Operator::Subtract, Operator::Multiply, Operator::Divide],
@@ -199,6 +175,7 @@ pub fn supported_arithmetic_operator_by_type(var_type: &VarType) -> Vec<Operator
     }
 }
 
+// Returns the list of comparison operators supported by the given variable type
 pub fn supported_comparator_operator_by_type(var_type: &VarType) -> Vec<Operator> {
     match var_type {
         VarType::uint(_) | VarType::int(_) => vec![Operator::Equal, Operator::NotEqual, Operator::Lesser, Operator::Greater, Operator::LesserOrEqual, Operator::GreaterOrEqual],
@@ -206,11 +183,11 @@ pub fn supported_comparator_operator_by_type(var_type: &VarType) -> Vec<Operator
         VarType::field | VarType::str(_) | VarType::slice(_,_) | VarType::array(_,_) => vec![Operator::Equal, Operator::NotEqual],
         VarType::generic(vec_trait) => {
             let mut ret = Vec::new();
-            if vec_trait.contains(&Trait::Eq) {
+            if vec_trait.contains(&BasicTrait::Eq) {
                 ret.push(Operator::Equal);
                 ret.push(Operator::NotEqual);
             }
-            if vec_trait.contains(&Trait::Ord) {
+            if vec_trait.contains(&BasicTrait::Ord) {
                 ret.push(Operator::Lesser);
                 ret.push(Operator::Greater);
                 ret.push(Operator::LesserOrEqual);
@@ -222,6 +199,7 @@ pub fn supported_comparator_operator_by_type(var_type: &VarType) -> Vec<Operator
     }
 }
 
+// Returns true if both types given in parameters are the same
 pub fn is_same_type(first_type: &VarType, second_type: &VarType) -> bool {
     match (first_type, second_type) {
         (VarType::field, VarType::field) => true,
@@ -253,6 +231,9 @@ pub fn is_same_type(first_type: &VarType, second_type: &VarType) -> bool {
     }
 }
 
+// Returns a string representing a statement of the same type as aim_type using source_type, or None if there is no way
+// # Example
+// The way from [u8; 1] to u8 is [0]
 pub fn way_to_type(random: &mut Random, source_type: &VarType, aim_type: &VarType, is_a_ref: &mut bool) -> Option<String> {
     match source_type {
         VarType::field | VarType::bool | VarType::str(_) | VarType::uint(_) | VarType::int(_) | VarType::generic(_)

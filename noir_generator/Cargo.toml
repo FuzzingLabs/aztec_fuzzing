@@ -46,3 +46,7 @@ path = "src/hfuzz_run_parser.rs"
 [[bin]]
 name = "benchmark"
 path = "src/benchmark.rs"
+[[bin]]
+name = "grammar_run"
+path = "src/grammar_run.rs"
+

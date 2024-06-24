@@ -28,6 +28,8 @@ fn parse_all(fm: &FileManager) -> ParsedFiles {
     ret
 }
 
+// This program will repeatedly call the compiler with randomly generated code
+// If the compiler raises an error or panic, the program will write the code and the error to the crashes_found folder
 fn main() {
     let noir_project_dir = std::env::current_dir().unwrap().join("noir_project");
     let nr_main_path = noir_project_dir.join("src/main.nr");

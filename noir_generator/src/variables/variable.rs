@@ -3,6 +3,7 @@ use crate::random::Random;
 
 use super::var_type;
 
+// Represents a variable by its name, type, and mutability status
 #[derive(Clone)]
 pub(crate) struct Variable {
     name: String,
@@ -35,22 +36,26 @@ impl Variable {
         self.var_type = type_to_set.clone();
     }
 
-    pub fn initialize(&self) -> String{
+    // Returns a string representing the statement that initializes this variable
+    pub fn initialize(&self) -> String {
         format!("let{} {}: {}", if self.is_mutable() { " mut" } else { "" }, self.name(), self.var_type())
     }
 
-    pub fn initialize_as_global(&self) -> String{
+    // Returns a string representing the statement that initializes this variable as a global variable
+    pub fn initialize_as_global(&self) -> String {
         format!("global {}: {}", self.name(), self.var_type())
     }
 
+    // Returns a string representing a statement of the same type as aim_type using this variable
+    // # Example
+    // If var has type [u8; 1] and aim_type is u8, the result might be var[0]
     pub fn name_and_way(&self, random: &mut Random, aim_type: &VarType) -> String {
         let mut is_a_ref = false;
         if let Some(str) = var_type::way_to_type(random, &self.var_type(), &aim_type, &mut is_a_ref) {
             return format!("{}{}{}", if is_a_ref { "*" } else { "" }, self.name(), str);
         } else {
-            panic!("No way to type in name_and_way");
+            panic!("No way to convert type in name_and_way");
         }
-        
     }
 
     

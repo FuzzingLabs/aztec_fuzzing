@@ -1,9 +1,8 @@
 use crate::{random::Random, variables::var_type::VarType};
 use crate::variables::operand::Operand;
-
-
 use super::operator::Operator;
 
+// Represent an operation between two operand
 #[derive(Clone)]
 pub(crate) struct Operation {
     operation_type: VarType,

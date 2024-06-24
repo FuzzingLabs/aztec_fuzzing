@@ -6,6 +6,8 @@ use super::declaration_statement;
 use super::assert_statement;
 use super::operation_statement;
 
+// Return a string that represents the code of a randomly chosen statement
+
 pub fn generate_random_statement(random: &mut Random, bloc_variables: &mut BlocData, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
     // To reduce the chance to generate a lambda function
     if random.gen_range(0, 10) == 0 {

@@ -15,6 +15,8 @@ use rand::Rng;
 use crate::constants::CONFIG;
 use crate::tools::{clean_ansi_escape_codes, ignored_error_cmd};
 
+// This program will repeatedly call by command line the compiler with randomly generated code
+// If the compiler raises an error or panic, the program will write the code and the error to the crashes_found folder
 fn main() {
     let noir_project_dir = std::env::current_dir().unwrap().join("noir_project");
     let nr_main_path = noir_project_dir.join("src/main.nr");

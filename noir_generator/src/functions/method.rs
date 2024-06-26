@@ -1,19 +1,19 @@
-use crate::constants::CONFIG;
+use crate::tools::constants::CONFIG;
 use crate::statements::random_statement;
 use crate::variables::bloc_data::BlocData;
 use crate::variables::list_structs::ListStructs;
 use crate::variables::struct_type::StructType;
 use crate::variables::var_type::VarType;
-use crate::random::Random;
+use crate::tools::random::Random;
 use crate::variables::variable::Variable;
 
 use super::function::Function;
 use super::list_functions::ListFunctions;
 
-// Represent a method of a structure with a function and a boolean to indicate whether the method uses 'self' as an argument
-// The name of the structure implementing this method is used to make calls to this method
+/// Represent a method of a structure with a function and a boolean to indicate whether the method uses 'self' as an argument
+/// The name of the structure implementing this method is used to make calls to this method
 #[derive(Clone)]
-pub(crate) struct Method {
+pub struct Method {
     func: Function,
     struct_source_name: String,
     self_arg: bool,
@@ -36,7 +36,7 @@ impl Method {
         &self.func.ret_type()
     }
 
-    // Return a string that represents the code needed for this method
+    /// Return a string that represents the code needed for this method
     pub fn initialize(&self, random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs, struct_source: &StructType) -> String {
         let vars = self.func.arguments().variables();
         let mut init = format!("{}fn {}(", if self.func.is_public() { "pub " } else { "" }, self.name());
@@ -60,7 +60,7 @@ impl Method {
         format!("{}}}\n", init)
     }
 
-    // Replace generate_code of function.rs to include the presence of 'self' as an argument
+    /// Replace generate_code of function.rs to include the presence of 'self' as an argument
     pub fn generate_code(&self, random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs, struct_source: &StructType) -> String {
         let mut code = String::new();
         let mut bloc_variables = self.func.arguments().clone();
@@ -96,7 +96,7 @@ impl Method {
         format!("{}{}", code, self.func.ret(random, &bloc_variables, list_global, list_functions, list_structs))
     }
 
-    // Replace call of function.rs  to include the presence of 'self' as an argument
+    /// Replace call of function.rs  to include the presence of 'self' as an argument
     pub fn call(&self, random: &mut Random, bloc_variables: &BlocData, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs, depth: usize, self_var: Option<String>) -> String {
         if self.self_arg {
             return format!("{}.{}", self_var.expect("No self_var in a method call"), self.func.call(random, list_global, bloc_variables, list_functions, list_structs, depth));

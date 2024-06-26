@@ -1,9 +1,7 @@
-mod random;
 mod generate_code;
 mod instructions;
 mod variables;
 mod statements;
-mod constants;
 mod functions;
 mod tools;
 
@@ -19,8 +17,8 @@ use std::path::Path;
 use noirc_frontend::parser;
 use nargo_toml::{resolve_workspace_from_toml, PackageSelection};
 
-use crate::constants::CONFIG;
-use crate::tools::ignored_error;
+use crate::tools::constants::CONFIG;
+use crate::tools::error_management::ignored_error;
 
 
 fn parse_all(fm: &FileManager) -> ParsedFiles {
@@ -28,8 +26,8 @@ fn parse_all(fm: &FileManager) -> ParsedFiles {
     ret
 }
 
-// This program will repeatedly call the compiler with randomly generated code
-// If the compiler raises an error or panic, the program will write the code and the error to the crashes_found folder
+/// This program will repeatedly call the compiler with randomly generated code
+/// If the compiler raises an error or panic, the program will write the code and the error to the crashes_found folder
 fn main() {
     let noir_project_dir = std::env::current_dir().unwrap().join("noir_project");
     let nr_main_path = noir_project_dir.join("src/main.nr");

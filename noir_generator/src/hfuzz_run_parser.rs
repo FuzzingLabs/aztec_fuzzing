@@ -1,19 +1,18 @@
 #[macro_use]
 extern crate honggfuzz;
 
-mod random;
 mod generate_code;
 mod instructions;
 mod variables;
 mod statements;
-mod constants;
 mod functions;
+mod tools;
 
 use noirc_frontend::parser;
-use crate::constants::CONFIG;
+use crate::tools::constants::CONFIG;
 
-// This program will run Hongfuzz, only calling the parser
-// with code that is randomly generated using the data provided by Hongfuzz as a source of randomness
+/// This program will run Hongfuzz, only calling the parser
+/// with code that is randomly generated using the data provided by Hongfuzz as a source of randomness
 fn main() {
     loop {
         fuzz!(|data: &[u8]| {

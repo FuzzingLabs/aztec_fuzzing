@@ -2,12 +2,10 @@
 extern crate honggfuzz;
 extern crate toml;
 
-mod random;
 mod generate_code;
 mod instructions;
 mod variables;
 mod statements;
-mod constants;
 mod functions;
 mod tools;
 
@@ -17,15 +15,15 @@ use nargo_toml::{resolve_workspace_from_toml, PackageSelection};
 use noirc_driver::{file_manager_with_stdlib, CompileOptions, NOIR_ARTIFACT_VERSION_STRING};
 use noirc_frontend::{hir::{def_map::parse_file, ParsedFiles}, parse_program};
 
-use crate::constants::CONFIG;
-use crate::tools::ignored_error;
+use crate::tools::constants::CONFIG;
+use crate::tools::error_management::ignored_error;
 
 fn parse_all(fm: &FileManager) -> ParsedFiles {
     fm.as_file_map().all_file_ids().map(|&file_id| (file_id, parse_file(fm, file_id))).collect()
 }
 
-// This program will run Hongfuzz, calling the compiler
-// with code that is randomly generated using the data provided by Hongfuzz as a source of randomness
+/// This program will run Hongfuzz, calling the compiler
+/// with code that is randomly generated using the data provided by Hongfuzz as a source of randomness
 fn main() {
     let noir_project_dir = std::env::current_dir().unwrap().join("noir_project");
     let nr_main_path = noir_project_dir.join("src/main.nr");

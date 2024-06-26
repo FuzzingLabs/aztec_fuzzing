@@ -1,8 +1,8 @@
-use crate::{constants::CONFIG, functions::{list_functions::ListFunctions, method::Method}, random::Random, variables::{var_type, variable::Variable}};
+use crate::{tools::constants::CONFIG, functions::{list_functions::ListFunctions, method::Method}, tools::random::Random, variables::{var_type, variable::Variable}};
 
 use super::{bloc_data::BlocData, list_structs::ListStructs, var_type::{is_same_type, VarType}};
 
-// Represent a structure by its name, the list of the types of its keys, and the list of its methods
+/// Represent a structure by its name, the list of the types of its keys, and the list of its methods
 #[derive(Clone)]
 pub struct StructType{
     key_types: Vec<(VarType, String)>,
@@ -27,7 +27,7 @@ impl StructType {
         &self.name
     }
 
-    // Return a string representing the complete code required for this structure
+    /// Return a string representing the complete code required for this structure
     pub fn generate_struct_code(&mut self, random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
         let mut struct_string = format!("struct {} {{\n", self.name);
         for (_, key_type) in self.key_types.iter().enumerate() {
@@ -38,7 +38,7 @@ impl StructType {
         format!("{}{}", struct_string, self.generate_impl_code(random, list_global, list_functions, list_structs))
     }
 
-    // Return a string representing the code required for the implementation part of this structure
+    /// Return a string representing the code required for the implementation part of this structure
     pub fn generate_impl_code(&mut self, random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
         let mut impl_string = format!("impl {} {{\n", self.name);
         for i in 0..random.gen_range(0, CONFIG.max_method_by_struct) {
@@ -58,8 +58,8 @@ impl StructType {
 
 
 
-    // Return a string representing the code required to call a method of this structure that has the same return type as the type given in the parameter
-    // Return None if it's not possible
+    /// Return a string representing the code required to call a method of this structure that has the same return type as the type given in the parameter
+    /// Return None if it's not possible
     pub fn call_by_type(&self, random: &mut Random, bloc_variables: &BlocData, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs, ret_type: &VarType, depth: usize, self_var: Option<String>) -> Option<String> {
         let valid_method: Vec<&Method> = self.methods.iter().filter(|&e| {
             if let Some(e_ret_type) = e.ret_type() {

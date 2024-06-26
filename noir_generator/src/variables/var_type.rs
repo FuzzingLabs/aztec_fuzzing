@@ -1,7 +1,7 @@
-use crate::{constants::CONFIG, random::Random};
+use crate::{tools::constants::CONFIG, tools::random::Random};
 use super::{basic_trait::BasicTrait, list_structs::ListStructs, operator::Operator, struct_type::StructType};
 
-// List of every types avalaible
+/// List of every types avalaible
 #[derive(Clone)]
 pub enum VarType {
     field,
@@ -50,7 +50,7 @@ impl std::fmt::Display for VarType {
     }
 }
 
-// Returns a list of basic non-composite types
+/// Returns a list of basic non-composite types
 pub fn basic_types() -> Vec<&'static VarType> {
     vec![
         &VarType::field,
@@ -67,7 +67,7 @@ pub fn basic_types() -> Vec<&'static VarType> {
 
 }
 
-// Returns a random bit size for integer and unsigned integer types
+/// Returns a random bit size for integer and unsigned integer types
 fn random_bit_size(random: &mut Random) -> usize {
     match random.gen_range(0, 4) {
         0 => 1,
@@ -78,7 +78,7 @@ fn random_bit_size(random: &mut Random) -> usize {
     }
 }
 
-// Returns a randomly selected basic non-composite type
+/// Returns a randomly selected basic non-composite type
 pub fn random_basic_type(random: &mut Random) -> VarType {
     match random.gen_range(0, 5) {
         0 => VarType::field,
@@ -90,7 +90,7 @@ pub fn random_basic_type(random: &mut Random) -> VarType {
     }
 }
 
-// Return a random selected type
+/// Return a random selected type
 pub fn random_type(random: &mut Random, list_structs: &ListStructs) -> VarType {
     match random.gen_range(0, 9 + CONFIG.use_of_slice) {
         0 => VarType::field,
@@ -120,7 +120,7 @@ pub fn random_type(random: &mut Random, list_structs: &ListStructs) -> VarType {
     }
 }
 
-// Used to limit the depth of composite types randomly generated
+/// Used to limit the depth of composite types randomly generated
 pub fn random_type_with_depth(random: &mut Random, list_structs: &ListStructs, depth: usize) -> VarType {
     if depth == 0 {
         match random.gen_range(0, 5) {
@@ -160,7 +160,7 @@ pub fn random_type_with_depth(random: &mut Random, list_structs: &ListStructs, d
     }
 }
 
-// Returns the list of comparison operators supported by the given variable type
+/// Returns the list of comparison operators supported by the given variable type
 pub fn supported_arithmetic_operator_by_type(var_type: &VarType) -> Vec<Operator> {
     match var_type {
         VarType::field => vec![Operator::Add, Operator::Subtract, Operator::Multiply, Operator::Divide],
@@ -175,7 +175,7 @@ pub fn supported_arithmetic_operator_by_type(var_type: &VarType) -> Vec<Operator
     }
 }
 
-// Returns the list of comparison operators supported by the given variable type
+/// Returns the list of comparison operators supported by the given variable type
 pub fn supported_comparator_operator_by_type(var_type: &VarType) -> Vec<Operator> {
     match var_type {
         VarType::uint(_) | VarType::int(_) => vec![Operator::Equal, Operator::NotEqual, Operator::Lesser, Operator::Greater, Operator::LesserOrEqual, Operator::GreaterOrEqual],
@@ -199,7 +199,7 @@ pub fn supported_comparator_operator_by_type(var_type: &VarType) -> Vec<Operator
     }
 }
 
-// Returns true if both types given in parameters are the same
+/// Returns true if both types given in parameters are the same
 pub fn is_same_type(first_type: &VarType, second_type: &VarType) -> bool {
     match (first_type, second_type) {
         (VarType::field, VarType::field) => true,
@@ -231,9 +231,9 @@ pub fn is_same_type(first_type: &VarType, second_type: &VarType) -> bool {
     }
 }
 
-// Returns a string representing a statement of the same type as aim_type using source_type, or None if there is no way
-// # Example
-// The way from [u8; 1] to u8 is [0]
+/// Returns a string representing a statement of the same type as aim_type using source_type, or None if there is no way
+/// # Example
+/// The way from [u8; 1] to u8 is [0]
 pub fn way_to_type(random: &mut Random, source_type: &VarType, aim_type: &VarType, is_a_ref: &mut bool) -> Option<String> {
     match source_type {
         VarType::field | VarType::bool | VarType::str(_) | VarType::uint(_) | VarType::int(_) | VarType::generic(_)

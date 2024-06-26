@@ -1,4 +1,4 @@
-// Represent an operator
+/// Represent an operator
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) enum Operator {
     Add,

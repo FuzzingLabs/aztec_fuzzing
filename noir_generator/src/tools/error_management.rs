@@ -1,5 +1,5 @@
-// All errors with a message containing one of these strings will be ignored
-// Present to avoid triggering on frequently appearing errors
+/// All errors with a message containing one of these strings will be ignored
+/// Present to avoid triggering on frequently appearing errors
 pub fn list_ignored_errors() -> Vec<&'static str> {
     let errors = vec![
         "attempt to divide by zero",
@@ -33,7 +33,7 @@ pub fn ignored_error(err: &str) -> bool {
     true
 }
 
-// This function removes ANSI escape codes from an error message.
+/// This function removes ANSI escape codes from an error message.
 pub fn clean_ansi_escape_codes(input: &str) -> String {
     let regex = regex::Regex::new(r"\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]").unwrap();
     regex.replace_all(input, "").into_owned()

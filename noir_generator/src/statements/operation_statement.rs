@@ -1,12 +1,12 @@
-use crate::constants::CONFIG;
+use crate::tools::constants::CONFIG;
 use crate::functions::list_functions::ListFunctions;
-use crate::random::Random;
+use crate::tools::random::Random;
 use crate::variables::list_structs::ListStructs;
 use crate::variables::variable::Variable;
 use crate::variables::{bloc_data::BlocData, var_type};
 use crate::instructions::type_instruction::generate_type_instruction;
 
-// Return a string that represents the assignment of a random operation to a randomly chosen variable
+/// Return a string that represents the assignment of a random operation to a randomly chosen variable
 pub fn generate_operation_instruction(random: &mut Random, bloc_variables: &mut BlocData, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
     let mut instruction: String = String::new();
     

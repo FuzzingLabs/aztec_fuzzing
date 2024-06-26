@@ -1,20 +1,18 @@
-mod random;
 mod generate_code;
 mod instructions;
 mod variables;
 mod statements;
-mod constants;
 mod functions;
 mod tools;
 
 use std::process::Command;
 use std::io::{self, Write};
 
-use crate::tools::{clean_ansi_escape_codes, ignored_error_cmd};
+use crate::tools::error_management::{clean_ansi_escape_codes, ignored_error_cmd};
 
 
-// Generate a code by using dharma with the grammars present in dharma_grammars folder
-// The code generated contain 3 function and a main function
+/// Generate a code by using dharma with the grammars present in dharma_grammars folder
+/// The code generated contain 3 function and a main function
 fn generate_code_by_dharma() -> String {
     let mut code_generated = String::new();
 
@@ -44,8 +42,8 @@ fn generate_code_by_dharma() -> String {
     code_generated
 }
 
-// This program will repeatedly call by command line the compiler with randomly generated code using dharma
-// If the compiler raises an error or panic, the program will write the code and the error to the crashes_found folder
+/// This program will repeatedly call by command line the compiler with randomly generated code using dharma
+/// If the compiler raises an error or panic, the program will write the code and the error to the crashes_found folder
 fn main() {
     let noir_project_dir = std::env::current_dir().unwrap().join("noir_project");
     let nr_main_path = noir_project_dir.join("src/main.nr");

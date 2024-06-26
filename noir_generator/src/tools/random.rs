@@ -1,4 +1,4 @@
-// This object uses a Vec<u8> as a source of randomness, drawing each requested data from this vector.
+/// This object uses a Vec<u8> as a source of randomness, drawing each requested data from this vector.
 pub struct Random {
     data: Vec<u8>,
     index: usize,
@@ -14,7 +14,7 @@ impl Random {
         }
     }
 
-    // Generates a random usize within the range [min, max)
+    /// Generates a random usize within the range [min, max)
     pub fn gen_range(&mut self, min: usize, max: usize) -> usize {
         if min >= max {
             return min;
@@ -24,7 +24,6 @@ impl Random {
 
         if self.index + size > self.length {
             // Currently, the code cycles through the data if the Vec<u8> is too small, but this might not be optimal for honggfuzz.
-            // panic!("data too small")
             self.index = 0;
         }
 
@@ -40,7 +39,7 @@ impl Random {
         ret
     }
 
-    // Returns a random element from the given Vec
+    /// Returns a random element from the given Vec
     pub fn choose_random_item_from_vec<T: Clone>(&mut self, items: &Vec<T>) -> T {
         if items.is_empty() {
             panic!("Cannot choose from an empty vector");
@@ -50,7 +49,7 @@ impl Random {
         items[ind].clone()
     }
 
-    // Generates a random u128
+    /// Generates a random u128
     pub fn gen_field(&mut self) -> u128 {
         if self.index + 16 > self.length {
             self.index = 0;
@@ -63,7 +62,7 @@ impl Random {
         u128::from_ne_bytes(sub_slice.try_into().unwrap())
     }
 
-    // Generates a random unsigned integer with the specified bit size
+    /// Generates a random unsigned integer with the specified bit size
     pub fn gen_random_uint(&mut self, bit_size: usize) -> u128 {
         if self.index + 16 > self.length {
             self.index = 0;
@@ -78,7 +77,7 @@ impl Random {
         random_u128 & ((1u128 << bit_size) - 1)
     }
 
-    // Generates a random signed integer with the specified bit size
+    /// Generates a random signed integer with the specified bit size
     pub fn gen_random_int(&mut self, bit_size: usize) -> i128 {
         if self.index + 16 > self.length {
             self.index = 0;
@@ -93,7 +92,7 @@ impl Random {
         random_i128 & ((1i128 << (bit_size - 1)) - 1)
     }
 
-    // Generates a random bool
+    /// Generates a random bool
     pub fn gen_bool(&mut self) -> bool {
         if self.index + 1 > self.length {
             self.index = 0;
@@ -106,7 +105,7 @@ impl Random {
         v % 2 == 0
     }
 
-    // Generates a random String with the specified length
+    /// Generates a random String with the specified length
     pub fn gen_str(&mut self, size: usize) -> String {
         let mut name = String::with_capacity(size);
 

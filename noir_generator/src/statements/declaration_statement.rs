@@ -1,13 +1,13 @@
-use crate::constants::CONFIG;
+use crate::tools::constants::CONFIG;
 use crate::functions::list_functions::ListFunctions;
-use crate::random::Random;
+use crate::tools::random::Random;
 use crate::variables::bloc_data::BlocData;
 use crate::variables::list_structs::ListStructs;
 use crate::variables::var_type;
 use crate::instructions::type_instruction::generate_type_instruction;
 use crate::variables::variable::Variable;
 
-// Return a string that represents the declaration of a new variable with a randomly generated instruction as its value
+/// Return a string that represents the declaration of a new variable with a randomly generated instruction as its value
 pub fn generate_variable_declaration(random: &mut Random, bloc_variables: &mut BlocData, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
     let chosen_type = var_type::random_type(random, list_structs);
 
@@ -20,7 +20,7 @@ pub fn generate_variable_declaration(random: &mut Random, bloc_variables: &mut B
     ret
 }
 
-// Return a string that represents the declaration of a new randomly generated lambda function
+/// Return a string that represents the declaration of a new randomly generated lambda function
 pub fn generate_lambda_declaration(random: &mut Random, bloc_variables: &mut BlocData, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
 
     let chosen_type = var_type::random_type(random, list_structs);

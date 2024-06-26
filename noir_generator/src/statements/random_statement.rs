@@ -1,12 +1,12 @@
 use crate::functions::list_functions::ListFunctions;
-use crate::random::Random;
+use crate::tools::random::Random;
 use crate::variables::bloc_data::BlocData;
 use crate::variables::list_structs::ListStructs;
 use super::declaration_statement;
 use super::assert_statement;
 use super::operation_statement;
 
-// Return a string that represents the code of a randomly chosen statement
+/// Return a string that represents the code of a randomly chosen statement
 
 pub fn generate_random_statement(random: &mut Random, bloc_variables: &mut BlocData, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
     // To reduce the chance to generate a lambda function

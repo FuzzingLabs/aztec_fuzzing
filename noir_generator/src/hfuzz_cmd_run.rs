@@ -1,21 +1,19 @@
 #[macro_use]
 extern crate honggfuzz;
 
-mod random;
 mod generate_code;
 mod instructions;
 mod variables;
 mod statements;
-mod constants;
 mod functions;
 mod tools;
 
 use std::process::Command;
 
-use crate::{constants::CONFIG, tools::{clean_ansi_escape_codes, ignored_error_cmd}};
+use crate::{tools::constants::CONFIG, tools::error_management::{clean_ansi_escape_codes, ignored_error_cmd}};
 
-// This program will run Hongfuzz, calling by command line the compiler
-// with code that is randomly generated using the data provided by Hongfuzz as a source of randomness
+/// This program will run Hongfuzz, calling by command line the compiler
+/// with code that is randomly generated using the data provided by Hongfuzz as a source of randomness
 fn main() {
 
     loop {

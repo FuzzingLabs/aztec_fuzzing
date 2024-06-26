@@ -1,13 +1,13 @@
-use crate::constants::CONFIG;
+use crate::tools::constants::CONFIG;
 use crate::variables::bloc_data::BlocData;
 use crate::variables::value;
 use crate::variables::var_type::{self, VarType};
 use crate::variables::operation::Operation;
 use crate::variables::operand::Operand;
-use crate::random::Random;
+use crate::tools::random::Random;
 
-// Function used to generate a comparison instruction without nesting
-// Return None if there are no variables to compare with
+/// Function used to generate a comparison instruction without nesting
+/// Return None if there are no variables to compare with
 fn get_leaf(random: &mut Random, bloc_variables: &BlocData) -> Option<Operation> {
     let random_bool = random.gen_bool();
     let var = match bloc_variables.get_random_variable(random, var_type::basic_types(), random_bool){
@@ -47,7 +47,7 @@ fn get_leaf(random: &mut Random, bloc_variables: &BlocData) -> Option<Operation>
     ))
 }
 
-// Generate a random comparison instruction by nesting multiple comparisons between variables or raw values
+/// Generate a random comparison instruction by nesting multiple comparisons between variables or raw values
 fn comparison_rec(random: &mut Random, bloc_variables: &BlocData, depth: usize) -> Operation {
 
     let element1 = if depth ==  0 || random.gen_bool() {
@@ -76,7 +76,7 @@ fn comparison_rec(random: &mut Random, bloc_variables: &BlocData, depth: usize) 
     )
 }
 
-// Return a string that represents a randomly generated comparison instruction
+/// Return a string that represents a randomly generated comparison instruction
 pub fn generate_comparison_instruction(random: &mut Random, bloc_variables: &BlocData) -> String {
     if bloc_variables.is_variables_empty() {
         return value::random_value(random, &VarType::bool).to_string();

@@ -1,4 +1,4 @@
-use crate::{constants::CONFIG, functions::list_functions::ListFunctions, random::Random, variables::{bloc_data::BlocData, list_structs::ListStructs, value::random_value, var_type::random_type, variable::Variable}};
+use crate::{tools::constants::CONFIG, functions::list_functions::ListFunctions, tools::random::Random, variables::{bloc_data::BlocData, list_structs::ListStructs, value::random_value, var_type::random_type, variable::Variable}};
 
 /// Returns a string containing all the generated code.
 pub fn generate_code(data: &[u8]) -> String {

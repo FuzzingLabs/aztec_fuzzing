@@ -1,10 +1,10 @@
-use crate::{constants::CONFIG, instructions::{comparison_instruction::generate_comparison_instruction, type_instruction::generate_type_instruction}, random::Random, statements::random_statement, variables::{bloc_data::BlocData, list_structs::ListStructs, var_type::{self, VarType}, variable::Variable}};
+use crate::{tools::constants::CONFIG, instructions::{comparison_instruction::generate_comparison_instruction, type_instruction::generate_type_instruction}, tools::random::Random, statements::random_statement, variables::{bloc_data::BlocData, list_structs::ListStructs, var_type::{self, VarType}, variable::Variable}};
 
 use super::list_functions::ListFunctions;
 
-// Represent a function by its name, its arguments, its return type, and a boolean indicating whether the function is public or not
+/// Represent a function by its name, its arguments, its return type, and a boolean indicating whether the function is public or not
 #[derive(Clone)]
-pub(crate) struct Function {
+pub struct Function {
     name: String,
     public: bool,
     arguments: BlocData,
@@ -37,7 +37,7 @@ impl Function {
         self.public
     }
 
-    // Return a string that represents the code needed for this function
+    /// Return a string that represents the code needed for this function
     pub fn initialize(&self) -> String {
         let vars = self.arguments.variables();
         let lambdas = self.arguments.lambdas();
@@ -108,7 +108,7 @@ impl Function {
 
     }
 
-    // Return a string that represents an instruction that calls this function with randomly chosen arguments
+    /// Return a string that represents an instruction that calls this function with randomly chosen arguments
     pub fn call(&self, random: &mut Random, bloc_variables: &BlocData, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs, depth: usize) -> String {
         let mut vars = self.arguments.variables();
         let lambdas = self.arguments.lambdas();
@@ -150,7 +150,7 @@ impl Function {
         format!("{})", call)
     }
 
-    // Return a string that represents a randomly generated return instruction for this function
+    /// Return a string that represents a randomly generated return instruction for this function
     pub fn ret(&self, random: &mut Random, bloc_variables: &BlocData, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
         match self.ret_type() {
             Some(v) => {
@@ -171,7 +171,7 @@ impl Function {
         }
     }
 
-    // Randomly generate the core structure of this function's code
+    /// Randomly generate the core structure of this function's code
     pub fn generate_function_code(&self, random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs) -> String {
         let mut bloc_variables = BlocData::new();
         
@@ -227,7 +227,7 @@ impl Function {
         format!("{}}}\n\n", function_string)
     }
 
-    // Randomly generate the code of an 'else' statement
+    /// Randomly generate the code of an 'else' statement
     pub fn generate_else(random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs, fun_bloc_variables: &BlocData, mut nb_instructions_left: usize) -> String {
         let mut bloc_variables = fun_bloc_variables.clone();
     
@@ -259,7 +259,7 @@ impl Function {
         function_string
     }
     
-    // Randomly generate the code of an 'if' statement
+    /// Randomly generate the code of an 'if' statement
     pub fn generate_if(random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs, fun_bloc_variables: &BlocData, mut nb_instructions_left: usize) -> String {
         let mut bloc_variables = fun_bloc_variables.clone();
     
@@ -296,7 +296,7 @@ impl Function {
         format!("{}}}\n", function_string)
     }
     
-    // Randomly generate the code of a 'for' statement
+    /// Randomly generate the code of a 'for' statement
     pub fn generate_for(random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions, list_structs: &ListStructs, fun_bloc_variables: &BlocData, mut nb_instructions_left: usize) -> String {
         let mut bloc_variables = fun_bloc_variables.clone();
 

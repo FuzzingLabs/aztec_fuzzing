@@ -1,9 +1,9 @@
-// This program loads values from a config.toml file
-// These values set limits for the generator on various parameters
 lazy_static::lazy_static! {
     pub static ref CONFIG: LimitsConfig = load_config();
 }
 
+/// Function used to loads values from a config.toml file
+/// These values set limits for the generator on various parameters
 pub fn load_config() -> LimitsConfig {
     let mut file = std::fs::File::open("config.toml").expect("Failed to open config file");
     let mut content = String::new();

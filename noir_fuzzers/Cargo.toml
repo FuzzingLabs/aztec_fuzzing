@@ -1,0 +1,47 @@
+[package]
+name = "noir_fuzzers"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+toml = "*"
+honggfuzz = "*"
+rand = "*"
+lazy_static = "*"
+backtrace = "0.3.54"
+regex = "1.5.4"
+
+noirc_frontend = { git = "https://github.com/noir-lang/noir" }
+noirc_driver = { git = "https://github.com/noir-lang/noir" }
+fm = { git = "https://github.com/noir-lang/noir" }
+nargo_toml = { git = "https://github.com/noir-lang/noir" }
+nargo = { git = "https://github.com/noir-lang/noir" }
+noir_smith = { path = "$CARGO_MANIFEST_DIR/../../noir_smith" }
+
+[profile.release]
+opt-level = 0
+
+[[bin]]
+name = "basic_run"
+path = "src/basic_run.rs"
+[[bin]]
+name = "basic_cmd_run"
+path = "src/basic_cmd_run.rs"
+[[bin]]
+name = "reproducer"
+path = "src/reproducer.rs"
+[[bin]]
+name = "hfuzz_run"
+path = "src/hfuzz_run.rs"
+[[bin]]
+name = "hfuzz_cmd_run"
+path = "src/hfuzz_cmd_run.rs"
+[[bin]]
+name = "hfuzz_run_parser"
+path = "src/hfuzz_run_parser.rs"
+[[bin]]
+name = "dharma_grammar_run"
+path = "src/dharma_grammar_run.rs"
+

@@ -1,0 +1,12 @@
+[package]
+name = "noir_smith"
+version = "0.1.0"
+authors = ["Antoine Fredefon <afredefon@fuzzinglabs.com>"]
+edition = "2021"
+
+[dependencies]
+toml = "*"
+lazy_static = "*"
+
+[profile.release]
+opt-level = 0

@@ -12,9 +12,6 @@ pub fn add_structures_and_functions(list_structs: &mut ListStructs, list_functio
     let big_int = StructType::new(vec!((VarType::uint(32), "pointer".to_string()), (VarType::uint(32), "modulus".to_string())), "std::bigint::BigInt".to_string());
     list_structs.add_struct(big_int.clone());
 
-    let big_int = StructType::new(vec!((VarType::field, "age".to_string()), (VarType::field, "height".to_string())), "std::bigint::BigInt".to_string());
-    list_structs.add_struct(big_int.clone());
-
     let mut bloc_data = BlocData::new();
     bloc_data.add_variable(Variable::new("input".to_string(), false, &VarType::array(Box::new(VarType::uint(8)), usize::max_value())));
     bloc_data.add_variable(Variable::new("inv".to_string(), false, &VarType::array(Box::new(VarType::uint(8)), 16)));

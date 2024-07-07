@@ -21,8 +21,10 @@ pub fn generate_code(data: &[u8]) -> String {
     let mut list_structs = ListStructs::new();
     let mut list_functions = ListFunctions::new();
 
-    code_generated = format!("{}{}\n", code_generated, imported_libraries::std_lib::import_statement());
-    imported_libraries::std_lib::add_structures_and_functions(&mut list_structs, &mut list_functions);
+    if CONFIG.use_of_std_lib == 1 {
+        code_generated = format!("{}{}\n", code_generated, imported_libraries::std_lib::import_statement());
+        imported_libraries::std_lib::add_structures_and_functions(&mut list_structs, &mut list_functions);
+    }
 
     for i in 0..random.gen_range(0, CONFIG.max_global_variables) {
         let var_type = random_type_without_reference(&mut random, &list_structs);

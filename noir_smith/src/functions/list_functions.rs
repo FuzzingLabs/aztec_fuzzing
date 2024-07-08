@@ -1,5 +1,5 @@
 use crate::{tools::constants::CONFIG, tools::random::Random, variables::{basic_trait::BasicTrait, bloc_data::BlocData, list_structs::ListStructs, var_type::{self, is_same_type, VarType}, variable::Variable}};
-use super::function::{self, Function};
+use super::function::Function;
 
 /// Represent the list of every function in the generated code
 #[derive(Clone)]

@@ -5,7 +5,7 @@ use super::var_type::VarType;
 
 /// Represent a part of an operation such that it can be a variable, a raw value, or another operation
 #[derive(Clone)]
-pub(crate) enum Operand {
+pub enum Operand {
     Variable(Variable),
     Operation(Box<Operation>),
     Value(Value, VarType),

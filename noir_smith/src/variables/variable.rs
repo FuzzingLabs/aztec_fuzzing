@@ -5,7 +5,7 @@ use super::var_type;
 
 /// Represents a variable by its name, type, and mutability status
 #[derive(Clone)]
-pub(crate) struct Variable {
+pub struct Variable {
     name: String,
     var_type: VarType,
     mutable: bool,

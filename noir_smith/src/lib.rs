@@ -1,13 +1,13 @@
 use functions::list_functions::ListFunctions;
 use tools::{constants::CONFIG, random::Random};
-use variables::{bloc_data::BlocData, list_structs::ListStructs, value::random_value, var_type::{random_type, random_type_without_reference}, variable::Variable};
+use variables::{bloc_data::BlocData, list_structs::ListStructs, value::random_value, var_type::random_type_without_reference, variable::Variable};
 
-mod functions;
-mod instructions;
-mod statements;
-mod tools;
-mod variables;
-mod imported_libraries;
+pub mod functions;
+pub mod instructions;
+pub mod statements;
+pub mod tools;
+pub mod variables;
+pub mod imported_libraries;
 
 /// Returns a string containing all the generated code.
 pub fn generate_code(data: &[u8]) -> String {

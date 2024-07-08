@@ -1,4 +1,4 @@
-use crate::{functions::{function::Function, list_functions::ListFunctions}, variables::{bloc_data::{self, BlocData}, list_structs::ListStructs, struct_type::StructType, var_type::VarType, variable::Variable}};
+use crate::{functions::{function::Function, list_functions::ListFunctions}, variables::{bloc_data::BlocData, list_structs::ListStructs, struct_type::StructType, var_type::VarType, variable::Variable}};
 
 pub fn import_statement() -> String {
     "use dep::std;\n".to_string()

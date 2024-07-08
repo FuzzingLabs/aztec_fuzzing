@@ -4,7 +4,7 @@ use super::operator::Operator;
 
 /// Represent an operation between two operand
 #[derive(Clone)]
-pub(crate) struct Operation {
+pub struct Operation {
     operation_type: VarType,
     operator: Operator,
     first_element: Operand,

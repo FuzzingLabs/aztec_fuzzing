@@ -3,7 +3,7 @@ use crate::tools::random::Random;
 
 /// Represent a value depending on the type
 #[derive(Debug, Clone, PartialEq)]
-pub(crate) enum Value {
+pub enum Value {
     Field(u128),
     Uint(u128),
     Int(i128),

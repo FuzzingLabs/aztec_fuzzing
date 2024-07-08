@@ -1,6 +1,6 @@
 /// Represent an operator
 #[derive(Debug, Clone, PartialEq)]
-pub(crate) enum Operator {
+pub enum Operator {
     Add,
     Subtract,
     Multiply,

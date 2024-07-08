@@ -22,9 +22,11 @@ To build the project, Rust must be installed on your system. Follow these steps:
 
 1. Specify the version of Noir that you want to fuzz by updating the branch in the `Cargo.toml` dependencies. You need to install Noir if you want to use binaries that invoke the compiler via command line. To install Noir see [Noir Documentation](https://noir-lang.org/docs/getting_started/installation/).
 
-2. Install Dharma if you want to use `dharma_grammar_run` and generate code with Dharma [Dharma repository](https://github.com/posidron/dharma)
+2. Install Honggfuzz if you want to use `hfuzz_run`, `hfuzz_cmd_run` or `hfuzz_run_parser` [Honggfuzz repository](https://github.com/google/honggfuzz)
 
-3. Build the entire project using the following command:
+3. Install Dharma if you want to use `dharma_grammar_run` and generate code with Dharma [Dharma repository](https://github.com/posidron/dharma)
+
+4. Build the entire project using the following command:
 ```bash
 cargo build
 ```

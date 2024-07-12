@@ -1,14 +1,14 @@
 #[macro_use]
 extern crate honggfuzz;
 use noirc_frontend::parser;
-use noir_smith::generate_code;
+use noir_smith::{generate_code, tools::constants::CONFIG};
 
 /// This program will run Hongfuzz, only calling the parser
 /// with code that is randomly generated using the data provided by Hongfuzz as a source of randomness
 fn main() {
     loop {
         fuzz!(|data: &[u8]| {
-            if data.len() < 10000 || data.len() > 1000000 {
+            if data.len() < CONFIG.min_data_length || data.len() > CONFIG.max_data_length {
                 return;
             }
 

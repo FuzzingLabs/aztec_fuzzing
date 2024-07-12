@@ -8,7 +8,7 @@ use noirc_frontend::parser;
 use rand::Rng;
 use std::path::Path;
 use nargo_toml::{resolve_workspace_from_toml, PackageSelection};
-use noir_smith::generate_code;
+use noir_smith::{generate_code, generate_code_with_seed};
 mod error_management;
 
 
@@ -40,9 +40,7 @@ fn main() {
 
     loop {
         let mut rng = rand::thread_rng();
-        let size = rng.gen_range(10000..=1000000);
-        let vec: Vec<u8> = (0..size).map(|_| rng.gen::<u8>()).collect();
-        let code_generated = generate_code(&vec);
+        let code_generated = generate_code_with_seed(rng.gen());
 
         let mut fm = fm_stdlib.clone();
         let mut parsed_files = parsed_files_stdlib.clone();

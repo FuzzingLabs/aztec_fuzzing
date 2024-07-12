@@ -1,4 +1,5 @@
 use functions::list_functions::ListFunctions;
+use rand::{rngs::StdRng, Rng, SeedableRng};
 use tools::{constants::CONFIG, random::Random};
 use variables::{bloc_data::BlocData, list_structs::ListStructs, value::random_value, var_type::random_type_without_reference, variable::Variable};
 
@@ -41,4 +42,12 @@ pub fn generate_code(data: &[u8]) -> String {
         code_generated = format!("{}{}", code_generated, list_functions.add_random_function(&mut random, &list_global, &list_structs, false));
     }
     format!("{}{}", code_generated, list_functions.add_random_function(&mut random, &list_global, &list_structs, true))
+}
+
+/// Generates a code string based on the given seed, ensuring reproducible results for the same seed.
+pub fn generate_code_with_seed(seed: u64) -> String {
+    let mut rng = StdRng::seed_from_u64(seed);
+    let size = rng.gen_range(10000..=1000000);
+    let vec: Vec<u8> = (0..size).map(|_| rng.gen::<u8>()).collect();
+    generate_code(&vec)
 }

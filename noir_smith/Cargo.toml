@@ -5,6 +5,7 @@ authors = ["Antoine Fredefon <afredefon@fuzzinglabs.com>"]
 edition = "2021"
 
 [dependencies]
+rand = "*"
 toml = "*"
 lazy_static = "*"
 

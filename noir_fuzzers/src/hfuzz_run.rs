@@ -6,7 +6,7 @@ use nargo::ops::compile_workspace;
 use nargo_toml::{resolve_workspace_from_toml, PackageSelection};
 use noirc_driver::{file_manager_with_stdlib, CompileOptions, NOIR_ARTIFACT_VERSION_STRING};
 use noirc_frontend::{hir::{def_map::parse_file, ParsedFiles}, parse_program};
-use noir_smith::generate_code;
+use noir_smith::{generate_code, tools::constants::CONFIG};
 mod error_management;
 
 fn parse_all(fm: &FileManager) -> ParsedFiles {
@@ -24,7 +24,7 @@ fn main() {
 
     loop {
         fuzz!(|data: &[u8]| {
-            if data.len() < 10000 || data.len() > 1000000 {
+            if data.len() < CONFIG.min_data_length || data.len() > CONFIG.max_data_length {
                 return;
             }
 

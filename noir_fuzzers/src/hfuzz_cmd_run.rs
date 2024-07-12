@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate honggfuzz;
 use std::process::Command;
-use noir_smith::generate_code;
+use noir_smith::{generate_code, tools::constants::CONFIG};
 mod error_management;
 
 /// This program will run Hongfuzz, calling by command line the compiler
@@ -10,7 +10,7 @@ fn main() {
 
     loop {
         fuzz!(|data: &[u8]| {
-            if data.len() < 10000 || data.len() > 1000000 {
+            if data.len() < CONFIG.min_data_length || data.len() > CONFIG.max_data_length {
                 return;
             }
             

@@ -1,7 +1,7 @@
 use std::process::Command;
 use std::io::{self, Write};
 use rand::Rng;
-use noir_smith::generate_code;
+use noir_smith::{generate_code, generate_code_with_seed};
 mod error_management;
 
 /// This program will repeatedly call by command line the compiler with randomly generated code
@@ -24,10 +24,8 @@ fn main() {
 
     loop {
         let mut rng = rand::thread_rng();
-        let size = rng.gen_range(10000..=1000000);
-        let vec: Vec<u8> = (0..size).map(|_| rng.gen::<u8>()).collect();
+        let code_generated = generate_code_with_seed(rng.gen());
 
-        let code_generated = generate_code(&vec);
         std::fs::write(&nr_main_path, &code_generated).expect("Failed to write main.nr");
 
         let compilation_result = Command::new("nargo")

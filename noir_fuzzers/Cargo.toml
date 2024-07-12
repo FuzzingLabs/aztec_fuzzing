@@ -44,4 +44,3 @@ path = "src/hfuzz_run_parser.rs"
 [[bin]]
 name = "dharma_grammar_run"
 path = "src/dharma_grammar_run.rs"
-

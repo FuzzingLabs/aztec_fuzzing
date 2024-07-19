@@ -11,3 +11,5 @@ This Rust library generates random Noir code using a set of predefined rules and
 - **`config.toml`**: This file contains all the constants used. You can modify the values as desired, but be cautious as some values can significantly impact execution speed and RAM usage due to extensive use of recursive calls. USE_OF_SLICE and USE_OF_STD_LIB should only be set to either 1 or 0. Use 1 to enable the slice type or to utilize functions and structures from the standard library.
   
     You can access these values using the `CONFIG` struct.
+
+- *`main.rs`**: In addition to the library, a command-line tool is provided. This tool allows users to generate Noir code either from a seed or from data using the functions described above, and optionally save the output to a specified file.

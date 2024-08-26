@@ -1,2 +1,2 @@
-pub mod random;
 pub mod constants;
+pub mod random;

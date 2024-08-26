@@ -1,5 +1,5 @@
-use crate::variables::var_type::VarType;
 use crate::tools::random::Random;
+use crate::variables::var_type::VarType;
 
 use super::var_type;
 
@@ -12,7 +12,7 @@ pub struct Variable {
 }
 
 impl Variable {
-    pub fn new(name: String, mutable: bool, var_type: &VarType) -> Self { 
+    pub fn new(name: String, mutable: bool, var_type: &VarType) -> Self {
         Self {
             name,
             mutable,
@@ -23,11 +23,11 @@ impl Variable {
     pub fn var_type(&self) -> &VarType {
         &self.var_type
     }
-    
+
     pub fn is_mutable(&self) -> bool {
         self.mutable
     }
-    
+
     pub fn name(&self) -> &String {
         &self.name
     }
@@ -38,7 +38,12 @@ impl Variable {
 
     /// Returns a string representing the statement that initializes this variable
     pub fn initialize(&self) -> String {
-        format!("let{} {}: {}", if self.is_mutable() { " mut" } else { "" }, self.name(), self.var_type())
+        format!(
+            "let{} {}: {}",
+            if self.is_mutable() { " mut" } else { "" },
+            self.name(),
+            self.var_type()
+        )
     }
 
     /// Returns a string representing the statement that initializes this variable as a global variable
@@ -51,12 +56,11 @@ impl Variable {
     /// If var has type [u8; 1] and aim_type is u8, the result might be var[0]
     pub fn name_and_way(&self, random: &mut Random, aim_type: &VarType) -> String {
         let mut is_a_ref = false;
-        if let Some(str) = var_type::way_to_type(random, &self.var_type(), &aim_type, &mut is_a_ref) {
+        if let Some(str) = var_type::way_to_type(random, &self.var_type(), &aim_type, &mut is_a_ref)
+        {
             return format!("{}{}{}", if is_a_ref { "*" } else { "" }, self.name(), str);
         } else {
             panic!("No way to convert type in name_and_way");
         }
     }
-
-    
 }

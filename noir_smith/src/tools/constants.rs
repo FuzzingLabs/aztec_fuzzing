@@ -6,7 +6,12 @@ lazy_static::lazy_static! {
 /// These values set limits for the generator on various parameters
 pub fn load_config() -> LimitsConfig {
     let current_dir = std::path::Path::new(std::file!()).parent().unwrap();
-    let config_path = current_dir.parent().unwrap().parent().unwrap().join("config.toml");
+    let config_path = current_dir
+        .parent()
+        .unwrap()
+        .parent()
+        .unwrap()
+        .join("config.toml");
 
     let mut file = std::fs::File::open(&config_path).expect("Failed to open config file");
     let mut content = String::new();
@@ -15,18 +20,40 @@ pub fn load_config() -> LimitsConfig {
 
     LimitsConfig {
         max_function: config["limits"]["MAX_FUNCTION"].as_integer().unwrap() as usize,
-        max_method_by_struct: config["limits"]["MAX_METHOD_BY_STRUCT"].as_integer().unwrap() as usize,
-        max_global_variables: config["limits"]["MAX_GLOBAL_VARIABLES"].as_integer().unwrap() as usize,
-        max_operation_depth: config["limits"]["MAX_OPERATION_DEPTH"].as_integer().unwrap() as usize,
-        max_composite_depth: config["limits"]["MAX_COMPOSITE_DEPTH"].as_integer().unwrap() as usize,
+        max_method_by_struct: config["limits"]["MAX_METHOD_BY_STRUCT"]
+            .as_integer()
+            .unwrap() as usize,
+        max_global_variables: config["limits"]["MAX_GLOBAL_VARIABLES"]
+            .as_integer()
+            .unwrap() as usize,
+        max_operation_depth: config["limits"]["MAX_OPERATION_DEPTH"]
+            .as_integer()
+            .unwrap() as usize,
+        max_composite_depth: config["limits"]["MAX_COMPOSITE_DEPTH"]
+            .as_integer()
+            .unwrap() as usize,
         max_composite_size: config["limits"]["MAX_COMPOSITE_SIZE"].as_integer().unwrap() as usize,
-        max_instruction_depth: config["limits"]["MAX_INSTRUCTION_DEPTH"].as_integer().unwrap() as usize,
-        max_instruction_by_function: config["limits"]["MAX_INSTRUCTION_BY_FUNCTION"].as_integer().unwrap() as usize,
-        max_instruction_by_lambda: config["limits"]["MAX_INSTRUCTION_BY_LAMBDA"].as_integer().unwrap() as usize,
-        max_instruction_by_method: config["limits"]["MAX_INSTRUCTION_BY_METHOD"].as_integer().unwrap() as usize,
-        max_function_arguments: config["limits"]["MAX_FUNCTION_ARGUMENTS"].as_integer().unwrap() as usize,
-        max_lambda_arguments: config["limits"]["MAX_LAMBDA_ARGUMENTS"].as_integer().unwrap() as usize,
-        max_method_arguments: config["limits"]["MAX_METHOD_ARGUMENTS"].as_integer().unwrap() as usize,
+        max_instruction_depth: config["limits"]["MAX_INSTRUCTION_DEPTH"]
+            .as_integer()
+            .unwrap() as usize,
+        max_instruction_by_function: config["limits"]["MAX_INSTRUCTION_BY_FUNCTION"]
+            .as_integer()
+            .unwrap() as usize,
+        max_instruction_by_lambda: config["limits"]["MAX_INSTRUCTION_BY_LAMBDA"]
+            .as_integer()
+            .unwrap() as usize,
+        max_instruction_by_method: config["limits"]["MAX_INSTRUCTION_BY_METHOD"]
+            .as_integer()
+            .unwrap() as usize,
+        max_function_arguments: config["limits"]["MAX_FUNCTION_ARGUMENTS"]
+            .as_integer()
+            .unwrap() as usize,
+        max_lambda_arguments: config["limits"]["MAX_LAMBDA_ARGUMENTS"]
+            .as_integer()
+            .unwrap() as usize,
+        max_method_arguments: config["limits"]["MAX_METHOD_ARGUMENTS"]
+            .as_integer()
+            .unwrap() as usize,
         max_struct: config["limits"]["MAX_STRUCT"].as_integer().unwrap() as usize,
         max_loop_in_for: config["limits"]["MAX_LOOP_IN_FOR"].as_integer().unwrap() as usize,
         min_data_length: config["limits"]["MIN_DATA_LENGTH"].as_integer().unwrap() as usize,

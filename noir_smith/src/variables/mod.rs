@@ -1,10 +1,10 @@
+pub mod basic_trait;
 pub mod bloc_data;
-pub mod var_type;
-pub mod value;
-pub mod variable;
-pub mod operation;
+pub mod list_structs;
 pub mod operand;
+pub mod operation;
 pub mod operator;
 pub mod struct_type;
-pub mod list_structs;
-pub mod basic_trait;
+pub mod value;
+pub mod var_type;
+pub mod variable;

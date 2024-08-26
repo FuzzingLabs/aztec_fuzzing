@@ -1,10 +1,12 @@
-use std::cmp::min;
-use crate::{tools::constants::CONFIG, functions::list_functions::ListFunctions, tools::random::Random};
 use super::{bloc_data::BlocData, struct_type::StructType, var_type::random_type_with_depth};
+use crate::{
+    functions::list_functions::ListFunctions, tools::constants::CONFIG, tools::random::Random,
+};
+use std::cmp::min;
 
 /// Represent a list of structures
-pub struct ListStructs{
-    structs: Vec<StructType>
+pub struct ListStructs {
+    structs: Vec<StructType>,
 }
 
 impl ListStructs {
@@ -27,11 +29,19 @@ impl ListStructs {
     }
 
     /// Add a randomly generated new structure to this list
-    pub fn add_random_struct(&mut self, random: &mut Random, list_global: &BlocData, list_functions: &ListFunctions) -> String {
+    pub fn add_random_struct(
+        &mut self,
+        random: &mut Random,
+        list_global: &BlocData,
+        list_functions: &ListFunctions,
+    ) -> String {
         let size = random.gen_range(1, CONFIG.max_composite_size);
         let mut key_types = Vec::with_capacity(size);
         for i in 0..size {
-            key_types.push((random_type_with_depth(random, self, min(1, CONFIG.max_composite_depth)).clone(), format!("elem{}", i+1)));
+            key_types.push((
+                random_type_with_depth(random, self, min(1, CONFIG.max_composite_depth)).clone(),
+                format!("elem{}", i + 1),
+            ));
         }
         let mut new_strct = StructType::new(key_types, format!("strct{}", self.next_id()));
         let ret = new_strct.generate_struct_code(random, list_global, list_functions, &self);
@@ -40,9 +50,9 @@ impl ListStructs {
 
         ret
     }
- 
+
     /// Only used in the name of the structures
     fn next_id(&self) -> usize {
-        self.structs.len()+1
+        self.structs.len() + 1
     }
 }

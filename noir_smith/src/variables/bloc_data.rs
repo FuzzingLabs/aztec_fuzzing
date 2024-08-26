@@ -1,15 +1,15 @@
-use crate::tools::constants::CONFIG;
 use crate::functions::lambda::Lambda;
+use crate::tools::constants::CONFIG;
 use crate::tools::random::Random;
-use crate::variables::variable::Variable;
 use crate::variables::var_type::VarType;
+use crate::variables::variable::Variable;
 
 use super::list_structs::ListStructs;
 use super::var_type;
 
 /// Represent all data (every declared variable and lambda function) from a specific code block
 #[derive(Clone)]
-pub struct BlocData{
+pub struct BlocData {
     variables: Vec<Variable>,
     lambdas: Vec<Lambda>,
     name_number_to_skip: usize,
@@ -53,13 +53,21 @@ impl BlocData {
     }
 
     /// Add a randomly generated new lambda function with a specified return type to this list
-    pub fn create_lambda(&mut self, random: &mut Random, list_structs: &ListStructs, ret_type: &VarType) -> Lambda {
+    pub fn create_lambda(
+        &mut self,
+        random: &mut Random,
+        list_structs: &ListStructs,
+        ret_type: &VarType,
+    ) -> Lambda {
         let mut bloc_variables = BlocData::new();
-        for _ in 0..CONFIG.max_lambda_arguments{
-
-            bloc_variables.add_variable(Variable::new(bloc_variables.next_variable_name(), false, &var_type::random_type(random, list_structs)));
+        for _ in 0..CONFIG.max_lambda_arguments {
+            bloc_variables.add_variable(Variable::new(
+                bloc_variables.next_variable_name(),
+                false,
+                &var_type::random_type(random, list_structs),
+            ));
         }
-        
+
         let new_lambda = Lambda::new(
             self.next_lambda_name(),
             bloc_variables,
@@ -71,15 +79,22 @@ impl BlocData {
 
     /// Return a randomly chosen variable that has a type matching one of the list of types given as parameter
     /// Return None if there is none
-    pub fn get_random_variable(&self, random: &mut Random, allowed_types: Vec<&VarType>, mutable: bool) -> Option<&Variable> {
-        let filtered_variables: Vec<&Variable> = self.variables
+    pub fn get_random_variable(
+        &self,
+        random: &mut Random,
+        allowed_types: Vec<&VarType>,
+        mutable: bool,
+    ) -> Option<&Variable> {
+        let filtered_variables: Vec<&Variable> = self
+            .variables
             .iter()
             .filter(|v| {
                 let type_condition = allowed_types.iter().any(|allowed_type| {
-                    var_type::way_to_type(random, &v.var_type(), &allowed_type, &mut false).is_some()
+                    var_type::way_to_type(random, &v.var_type(), &allowed_type, &mut false)
+                        .is_some()
                 });
                 let mutable_condition = !mutable | v.is_mutable();
-        
+
                 type_condition && mutable_condition
             })
             .collect();
@@ -87,29 +102,32 @@ impl BlocData {
         if filtered_variables.len() == 0 {
             return None;
         }
-    
+
         Some(random.choose_random_item_from_vec(&filtered_variables))
     }
 
     /// Return a randomly chosen lambda function that has a return type matching one of the list of types given as parameter
     /// Return None if there is none
-    pub fn get_random_lambda(&self, random: &mut Random, allowed_types: Vec<VarType>) -> Option<&Lambda> {
-        let filtered_lambdas: Vec<&Lambda> = self.lambdas
+    pub fn get_random_lambda(
+        &self,
+        random: &mut Random,
+        allowed_types: Vec<VarType>,
+    ) -> Option<&Lambda> {
+        let filtered_lambdas: Vec<&Lambda> = self
+            .lambdas
             .iter()
-            .filter(|l| {
-                match l.ret_type() {
-                    Some(t) => allowed_types.iter().any(|allowed_type| {
-                            var_type::way_to_type(random, t, &allowed_type, &mut false).is_some()
-                        }),
-                    None => false,
-                }
+            .filter(|l| match l.ret_type() {
+                Some(t) => allowed_types.iter().any(|allowed_type| {
+                    var_type::way_to_type(random, t, &allowed_type, &mut false).is_some()
+                }),
+                None => false,
             })
             .collect();
 
         if filtered_lambdas.len() == 0 {
             return None;
         }
-    
+
         Some(random.choose_random_item_from_vec(&filtered_lambdas))
     }
 
@@ -120,5 +138,4 @@ impl BlocData {
     pub fn next_lambda_name(&self) -> String {
         format!("lambda{}", self.lambdas.len() + self.name_number_to_skip)
     }
-
 }

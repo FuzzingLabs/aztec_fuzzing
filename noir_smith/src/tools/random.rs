@@ -28,7 +28,7 @@ impl Random {
         }
 
         let sub_slice = &self.data[self.index..self.index + size];
-        
+
         self.index += size;
 
         let mut ret = usize::from_ne_bytes(sub_slice.try_into().unwrap()) % (max + 1 - min) + min;
@@ -56,7 +56,7 @@ impl Random {
         }
 
         let sub_slice = &self.data[self.index..self.index + 16];
-        
+
         self.index += 16;
 
         u128::from_ne_bytes(sub_slice.try_into().unwrap())
@@ -69,7 +69,7 @@ impl Random {
         }
 
         let sub_slice = &self.data[self.index..self.index + 16];
-        
+
         self.index += 16;
 
         let random_u128 = u128::from_ne_bytes(sub_slice.try_into().unwrap());
@@ -84,7 +84,7 @@ impl Random {
         }
 
         let sub_slice = &self.data[self.index..self.index + 16];
-        
+
         self.index += 16;
 
         let random_i128 = i128::from_ne_bytes(sub_slice.try_into().unwrap());
@@ -110,7 +110,9 @@ impl Random {
         let mut name = String::with_capacity(size);
 
         for _ in 0..size {
-            let random_char = std::char::from_u32(self.gen_range(b'a' as usize, b'z' as usize) as u32).unwrap_or('\0');
+            let random_char =
+                std::char::from_u32(self.gen_range(b'a' as usize, b'z' as usize) as u32)
+                    .unwrap_or('\0');
             name.push(random_char);
         }
 

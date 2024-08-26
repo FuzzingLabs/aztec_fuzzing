@@ -1,25 +1,28 @@
+use noir_smith::{generate_code, generate_code_with_seed};
+use rand::Rng;
 use std::env;
 use std::fs::File;
 use std::io::{Read, Write};
-use rand::Rng;
-use noir_smith::{generate_code, generate_code_with_seed};
 
-/// This program generates code based on either a seed or data from a file. 
+/// This program generates code based on either a seed or data from a file.
 /// It supports the following command line options:
 ///
-/// Usage: 
+/// Usage:
 ///     `program_name [-s <seed> | -d <file_path>] [-o <output_path>]`
 ///
 /// Options:
 ///     - `-s <seed>`: Generate code using the specified seed.
 ///     - `-d <file_path>`: Generate code using data from the specified file.
-///     - `-o <output_path>`: Specify the output file to store the generated code. 
+///     - `-o <output_path>`: Specify the output file to store the generated code.
 ///        If not provided, the code will be printed to the console.
 fn main() {
     let args: Vec<String> = env::args().collect();
-    
+
     if args.len() > 5 {
-        eprintln!("Usage: {} [-s <seed> | -d <file_path>] [-o <output_path>]", args[0]);
+        eprintln!(
+            "Usage: {} [-s <seed> | -d <file_path>] [-o <output_path>]",
+            args[0]
+        );
         std::process::exit(1);
     }
 
@@ -32,32 +35,44 @@ fn main() {
         match args[i].as_str() {
             "-s" => {
                 if i + 1 >= args.len() {
-                    eprintln!("Usage: {} [-s <seed> | -d <file_path>] [-o <output_path>]", args[0]);
+                    eprintln!(
+                        "Usage: {} [-s <seed> | -d <file_path>] [-o <output_path>]",
+                        args[0]
+                    );
                     std::process::exit(1);
                 }
                 mode = Some("seed");
                 input = Some(args[i + 1].clone());
                 i += 1;
-            },
+            }
             "-d" => {
                 if i + 1 >= args.len() {
-                    eprintln!("Usage: {} [-s <seed> | -d <file_path>] [-o <output_path>]", args[0]);
+                    eprintln!(
+                        "Usage: {} [-s <seed> | -d <file_path>] [-o <output_path>]",
+                        args[0]
+                    );
                     std::process::exit(1);
                 }
                 mode = Some("file");
                 input = Some(args[i + 1].clone());
                 i += 1;
-            },
+            }
             "-o" => {
                 if i + 1 >= args.len() {
-                    eprintln!("Usage: {} [-s <seed> | -d <file_path>] [-o <output_path>]", args[0]);
+                    eprintln!(
+                        "Usage: {} [-s <seed> | -d <file_path>] [-o <output_path>]",
+                        args[0]
+                    );
                     std::process::exit(1);
                 }
                 output_path = Some(args[i + 1].clone());
                 i += 1;
-            },
+            }
             _ => {
-                eprintln!("Usage: {} [-s <seed> | -d <file_path>] [-o <output_path>]", args[0]);
+                eprintln!(
+                    "Usage: {} [-s <seed> | -d <file_path>] [-o <output_path>]",
+                    args[0]
+                );
                 std::process::exit(1);
             }
         }
@@ -66,16 +81,20 @@ fn main() {
 
     let generated_code = match mode.as_deref() {
         Some("seed") => {
-            let seed: u64 = input.expect("Seed argument is missing").parse().expect("Please provide a valid u64 for the seed");
+            let seed: u64 = input
+                .expect("Seed argument is missing")
+                .parse()
+                .expect("Please provide a valid u64 for the seed");
             generate_code_with_seed(seed)
-        },
+        }
         Some("file") => {
             let file_path = input.expect("File path argument is missing");
             let mut file = File::open(&file_path).expect("Failed to open the input file");
             let mut data = Vec::new();
-            file.read_to_end(&mut data).expect("Failed to read the input file");
+            file.read_to_end(&mut data)
+                .expect("Failed to read the input file");
             generate_code(&data)
-        },
+        }
         _ => {
             let seed: u64 = rand::thread_rng().gen();
             generate_code_with_seed(seed)
@@ -89,7 +108,7 @@ fn main() {
                     eprintln!("Failed to write to file: {}", e);
                     std::process::exit(1);
                 }
-            },
+            }
             Err(e) => {
                 eprintln!("Failed to create file: {}", e);
                 std::process::exit(1);

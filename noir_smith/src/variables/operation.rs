@@ -1,6 +1,6 @@
-use crate::{tools::random::Random, variables::var_type::VarType};
-use crate::variables::operand::Operand;
 use super::operator::Operator;
+use crate::variables::operand::Operand;
+use crate::{tools::random::Random, variables::var_type::VarType};
 
 /// Represent an operation between two operand
 #[derive(Clone)]
@@ -12,8 +12,12 @@ pub struct Operation {
 }
 
 impl Operation {
-    pub fn new(operation_type: &VarType, operator: Operator, first_element: Operand, second_element: Operand) -> Self {
-
+    pub fn new(
+        operation_type: &VarType,
+        operator: Operator,
+        first_element: Operand,
+        second_element: Operand,
+    ) -> Self {
         Operation {
             operation_type: operation_type.clone(),
             operator,
@@ -30,17 +34,33 @@ impl Operation {
         let mut ret = String::new();
 
         match &self.first_element {
-            Operand::Variable(variable) => ret = format!("{}({}", ret, variable.name_and_way(random, &self.interaction_type())),
-            Operand::Operation(interaction) => ret = format!("{}({}", ret, interaction.to_string(random)),
-            Operand::Value(value,_) => ret = format!("{}({}", ret, value),
+            Operand::Variable(variable) => {
+                ret = format!(
+                    "{}({}",
+                    ret,
+                    variable.name_and_way(random, &self.interaction_type())
+                )
+            }
+            Operand::Operation(interaction) => {
+                ret = format!("{}({}", ret, interaction.to_string(random))
+            }
+            Operand::Value(value, _) => ret = format!("{}({}", ret, value),
         };
 
         ret = format!("{} {} ", ret, self.operator);
 
         match &self.second_element {
-            Operand::Variable(variable) => ret = format!("{}{})", ret, variable.name_and_way(random, &self.interaction_type())),
-            Operand::Operation(interaction) => ret = format!("{}{})", ret, interaction.to_string(random)),
-            Operand::Value(value,_) => ret = format!("{}{})", ret, value),
+            Operand::Variable(variable) => {
+                ret = format!(
+                    "{}{})",
+                    ret,
+                    variable.name_and_way(random, &self.interaction_type())
+                )
+            }
+            Operand::Operation(interaction) => {
+                ret = format!("{}{})", ret, interaction.to_string(random))
+            }
+            Operand::Value(value, _) => ret = format!("{}{})", ret, value),
         };
 
         ret

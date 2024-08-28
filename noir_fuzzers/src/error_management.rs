@@ -16,6 +16,7 @@ pub fn list_ignored_errors() -> Vec<&'static str> {
     errors
 }
 
+#[allow(dead_code)]
 pub fn ignored_error_cmd(err: &str) -> bool {
     for line in err.lines() {
         if line.contains("error:") || line.contains("Message:") {
@@ -27,6 +28,7 @@ pub fn ignored_error_cmd(err: &str) -> bool {
     true
 }
 
+#[allow(dead_code)]
 pub fn ignored_error(err: &str) -> bool {
     if !list_ignored_errors().iter().any(|&e| err.contains(e)) {
         return false;
@@ -35,6 +37,7 @@ pub fn ignored_error(err: &str) -> bool {
 }
 
 /// This function removes ANSI escape codes from an error message.
+#[allow(dead_code)]
 pub fn clean_ansi_escape_codes(input: &str) -> String {
     let regex = regex::Regex::new(r"\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]").unwrap();
     regex.replace_all(input, "").into_owned()

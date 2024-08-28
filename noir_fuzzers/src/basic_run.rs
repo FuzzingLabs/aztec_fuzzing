@@ -1,19 +1,22 @@
-use std::io::{self, Write};
 use fm::FileManager;
 use nargo::ops::compile_workspace;
+use nargo_toml::{resolve_workspace_from_toml, PackageSelection};
+use noir_smith::generate_code_with_seed;
 use noirc_driver::{file_manager_with_stdlib, NOIR_ARTIFACT_VERSION_STRING};
 use noirc_frontend::hir::def_map::parse_file;
 use noirc_frontend::hir::ParsedFiles;
 use noirc_frontend::parser;
 use rand::Rng;
+use std::io::{self, Write};
 use std::path::Path;
-use nargo_toml::{resolve_workspace_from_toml, PackageSelection};
-use noir_smith::{generate_code, generate_code_with_seed};
 mod error_management;
 
-
 fn parse_all(fm: &FileManager) -> ParsedFiles {
-    let ret = fm.as_file_map().all_file_ids().map(|&file_id| (file_id, parse_file(fm, file_id))).collect();
+    let ret = fm
+        .as_file_map()
+        .all_file_ids()
+        .map(|&file_id| (file_id, parse_file(fm, file_id)))
+        .collect();
     ret
 }
 
@@ -31,7 +34,6 @@ fn main() {
 
     std::fs::create_dir_all(&crash_dir).expect("Failed to create the crashes dir");
 
-
     let mut loop_count = 0;
     let mut crash_count = 0;
 
@@ -44,11 +46,10 @@ fn main() {
 
         let mut fm = fm_stdlib.clone();
         let mut parsed_files = parsed_files_stdlib.clone();
-        
+
         let parsed = parser::parse_program(&code_generated);
         let file_id = fm.add_file_with_source(&nr_main_path, code_generated.clone());
         parsed_files.insert(file_id.expect("No file id"), parsed);
-
 
         let options = noirc_driver::CompileOptions::default();
 
@@ -69,7 +70,9 @@ fn main() {
                 let mut is_error = false;
 
                 for error in &errors {
-                    if error.diagnostic.is_error() && !error_management::ignored_error(&error.diagnostic.message){
+                    if error.diagnostic.is_error()
+                        && !error_management::ignored_error(&error.diagnostic.message)
+                    {
                         is_error = true;
                     }
                 }
@@ -79,20 +82,22 @@ fn main() {
 
                     let crash = format!("crash{}", crash_count);
 
-                    std::fs::create_dir_all(&crash_dir.join(&crash)).expect("Failed to create a crash dir");
-                    std::fs::write(&crash_dir.join(&crash).join("code.nr"), &code_generated).expect("Failed to write code");
+                    std::fs::create_dir_all(&crash_dir.join(&crash))
+                        .expect("Failed to create a crash dir");
+                    std::fs::write(&crash_dir.join(&crash).join("code.nr"), &code_generated)
+                        .expect("Failed to write code");
                     let mut errors_string = String::new();
                     for err in &errors {
                         errors_string = format!("{}\n{}", errors_string, err.diagnostic.message);
                     }
-                    std::fs::write(&crash_dir.join(&crash).join("err"), &errors_string).expect("Failed to write err");
+                    std::fs::write(&crash_dir.join(&crash).join("err"), &errors_string)
+                        .expect("Failed to write err");
                 }
             }
         }
         loop_count += 1;
-        
+
         print!("\rLoop Count: {} Crash Count: {}", loop_count, crash_count);
         io::stdout().flush().unwrap();
     }
-
 }

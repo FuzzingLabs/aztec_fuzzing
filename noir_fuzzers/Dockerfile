@@ -31,7 +31,7 @@ RUN sed -i 's|git = "https://github.com/noir-lang/noir"|path = "/usr/src/noir_la
 COPY . .
 
 # Build the project in release mode
-RUN cargo build
+RUN cargo build --release
 
 # Create a minimal runtime image
 FROM debian:buster-slim
@@ -45,5 +45,5 @@ COPY --from=builder /usr/src/noir_fuzzers/target/release/hfuzz_cmd_run /usr/loca
 COPY --from=builder /usr/src/noir_fuzzers/target/release/hfuzz_run_parser /usr/local/bin/hfuzz_run_parser
 COPY --from=builder /usr/src/noir_fuzzers/target/release/dharma_grammar_run /usr/local/bin/dharma_grammar_run
 
-# Set the entrypoint (You can modify this to point to your desired binary)
+# Set the entrypoint
 ENTRYPOINT ["/usr/local/bin/basic_run"]

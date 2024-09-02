@@ -45,5 +45,9 @@ COPY --from=builder /usr/src/noir_fuzzers/target/release/hfuzz_cmd_run /usr/loca
 COPY --from=builder /usr/src/noir_fuzzers/target/release/hfuzz_run_parser /usr/local/bin/hfuzz_run_parser
 COPY --from=builder /usr/src/noir_fuzzers/target/release/dharma_grammar_run /usr/local/bin/dharma_grammar_run
 
+# Copy the entrypoint script
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 # Set the entrypoint
-ENTRYPOINT ["/usr/local/bin/basic_run"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

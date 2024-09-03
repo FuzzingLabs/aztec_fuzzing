@@ -34,7 +34,7 @@ COPY . .
 RUN cargo build --release
 
 # Create a minimal runtime image
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
 # Copy the compiled binaries from the builder stage
 COPY --from=builder /usr/src/noir_fuzzers/target/release/basic_run /usr/local/bin/basic_run

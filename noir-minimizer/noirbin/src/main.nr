@@ -1,3 +1,36 @@
-fn main() {for i in {for i in {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {    for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {for i in 0..1 {}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+fn main() {a || {
+let lambda = || {
+let lambda = || {
+let lambda = || {
+let lambda = || {
+let lambda = || {
+let lambda = || {
+let lambda = || {
+let lambda = || {
+let lambda = || {
+let lambda = || {
+let lambda = || {
+let lambda = || {
+let lambda = || {
+let lambda = || {
+let lambda = || {
+let lambda = || {
+};
+};
+};
+};
+};
+};
+};
+};
+};
+};
+};
+};
+};
+};
+};
+};
+};
+};
 }

@@ -62,10 +62,6 @@ fn main() -> io::Result<()> {
                     // No need to increment `i`, re-check the same position in case more removals can be done
                     continue;
                 }
-            } else {
-                // If the error message changes, stop the loop
-                eprintln!("Error message changed, exiting the loop.");
-                break;
             }
 
             // Store the previous error message for comparison
@@ -101,7 +97,7 @@ fn read_file_contents(file_path: &str) -> io::Result<Vec<u8>> {
 // Executes the `nargo execute` command with the current contents
 fn execute_command(contents: &str) -> io::Result<bool> {
     fs::write(TARGET_FILE_PATH, contents.as_bytes())?;
-    let output = Command::new("../nargo")
+    let output = Command::new("nargo")
         .arg("execute")
         .current_dir("./noirbin")
         .output()
@@ -111,7 +107,7 @@ fn execute_command(contents: &str) -> io::Result<bool> {
 
 // Retrieves the error message from the command output
 fn get_error_message() -> io::Result<String> {
-    let output = Command::new("../nargo")
+    let output = Command::new("nargo")
         .arg("execute")
         .current_dir("./noirbin")
         .output()

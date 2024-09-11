@@ -2,6 +2,6 @@
 name = "noirbin"
 type = "bin"
 authors = [""]
-compiler_version = ">=0.34.0"
+compiler_version = ">=0.32.0"
 
 [dependencies]

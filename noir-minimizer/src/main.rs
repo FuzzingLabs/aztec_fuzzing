@@ -46,8 +46,8 @@ fn main() -> io::Result<()> {
 
             // If it's the first iteration or the error message is the same, attempt minimization
             if previous_error.is_empty() || error_message == previous_error {
-                // Try removing one character at position `i`
-                let new_contents = attempt_minimization(&contents_str, i)?;
+                // Try removing a range of characters starting at position `i`
+                let new_contents = attempt_minimization(&contents_str, i, 5)?;
 
                 // Check if the error remains the same with the modified contents
                 if error_message == get_error_message()? {
@@ -119,10 +119,10 @@ fn get_error_message() -> io::Result<String> {
     Ok(String::from_utf8_lossy(&output.stderr).to_string())
 }
 
-// Attempts to minimize the content by removing a character at the specified index
-fn attempt_minimization(contents: &str, index: usize) -> io::Result<String> {
+// Attempts to minimize the content by removing a range of characters starting at the specified index
+fn attempt_minimization(contents: &str, index: usize, range_length: usize) -> io::Result<String> {
     let mut new_contents = contents.to_string();
-    new_contents.remove(index);
+    new_contents.replace_range(index..index + range_length, "");
     fs::write(TARGET_FILE_PATH, new_contents.as_bytes())?;
     Ok(new_contents)
 }

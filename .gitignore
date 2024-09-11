@@ -15,3 +15,5 @@ Cargo.lock
 
 hfuzz_target
 hfuzz_workspace
+
+noir_fuzzers/corpus

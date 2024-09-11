@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate honggfuzz;
-use noirc_frontend::parser;
 use noir_smith::{generate_code, tools::constants::CONFIG};
+use noirc_frontend::parser;
 
 /// This program will run Hongfuzz, only calling the parser
 /// with code that is randomly generated using the data provided by Hongfuzz as a source of randomness

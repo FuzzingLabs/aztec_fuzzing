@@ -1,5 +1,5 @@
-use std::io;
 use noir_smith::generate_code;
+use std::io;
 
 /// This program takes a folder as a parameter and generates a unique code for each file in the folder by using the file's contents as a source of randomness.
 /// the codes generated are placed in a folder named 'crashes_found'
@@ -15,7 +15,7 @@ fn main() -> io::Result<()> {
 
     let crash_dir = std::env::current_dir().unwrap().join("crashes_found");
     if !crash_dir.exists() {
-         std::fs::create_dir_all(&crash_dir).expect("Failed to create the crashes dir");
+        std::fs::create_dir_all(&crash_dir).expect("Failed to create the crashes dir");
     }
 
     let entries = std::fs::read_dir(file_path)?;
@@ -30,17 +30,17 @@ fn main() -> io::Result<()> {
                 if let Some(file_str) = file_name.to_str() {
                     if file_str.starts_with("SIG") {
                         println!("File name : {}", file_str);
-                        let data = std::fs::read( std::env::current_dir().unwrap().join(&path)).expect("Could not read file");
+                        let data = std::fs::read(std::env::current_dir().unwrap().join(&path))
+                            .expect("Could not read file");
                         std::fs::remove_file(std::env::current_dir().unwrap().join(&path))?;
                         let code_generated = generate_code(&data);
-                        std::fs::write(crash_dir.join(file_str.to_string()), &code_generated).expect("Failed to write main.nr");
+                        std::fs::write(crash_dir.join(file_str.to_string()), &code_generated)
+                            .expect("Failed to write main.nr");
                     }
                 }
             }
         }
-
     }
 
     Ok(())
-
 }

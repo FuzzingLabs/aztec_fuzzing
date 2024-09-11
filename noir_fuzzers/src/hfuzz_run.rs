@@ -4,13 +4,19 @@ extern crate toml;
 use fm::FileManager;
 use nargo::ops::compile_workspace;
 use nargo_toml::{resolve_workspace_from_toml, PackageSelection};
-use noirc_driver::{file_manager_with_stdlib, CompileOptions, NOIR_ARTIFACT_VERSION_STRING};
-use noirc_frontend::{hir::{def_map::parse_file, ParsedFiles}, parse_program};
 use noir_smith::{generate_code, tools::constants::CONFIG};
+use noirc_driver::{file_manager_with_stdlib, CompileOptions, NOIR_ARTIFACT_VERSION_STRING};
+use noirc_frontend::{
+    hir::{def_map::parse_file, ParsedFiles},
+    parse_program,
+};
 mod error_management;
 
 fn parse_all(fm: &FileManager) -> ParsedFiles {
-    fm.as_file_map().all_file_ids().map(|&file_id| (file_id, parse_file(fm, file_id))).collect()
+    fm.as_file_map()
+        .all_file_ids()
+        .map(|&file_id| (file_id, parse_file(fm, file_id)))
+        .collect()
 }
 
 /// This program will run Hongfuzz, calling the compiler
@@ -32,11 +38,10 @@ fn main() {
 
             let mut fm = fm_stdlib.clone();
             let mut parsed_files = parsed_files_stdlib.clone();
-            
+
             let parsed = parse_program(&code_generated);
             let file_id = fm.add_file_with_source(&nr_main_path, code_generated.clone());
             parsed_files.insert(file_id.expect("No file id"), parsed);
-
 
             let options = CompileOptions::default();
 
@@ -51,13 +56,16 @@ fn main() {
 
             match compile_workspace(&fm, &parsed_files, &workspace, &options) {
                 Ok(_) => return,
-                Err(errors) => for error in errors.iter() {
-                    if error.diagnostic.is_error() && !error_management::ignored_error(&error.diagnostic.message) {
-                        panic!("{}", error.diagnostic.message);
+                Err(errors) => {
+                    for error in errors.iter() {
+                        if error.diagnostic.is_error()
+                            && !error_management::ignored_error(&error.diagnostic.message)
+                        {
+                            panic!("{}", error.diagnostic.message);
+                        }
                     }
-                },
+                }
             }
         });
     }
 }
-

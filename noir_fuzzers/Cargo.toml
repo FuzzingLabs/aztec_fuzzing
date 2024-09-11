@@ -18,7 +18,7 @@ noirc_driver = { git = "https://github.com/noir-lang/noir" }
 fm = { git = "https://github.com/noir-lang/noir" }
 nargo_toml = { git = "https://github.com/noir-lang/noir" }
 nargo = { git = "https://github.com/noir-lang/noir" }
-noir_smith = { path = "$CARGO_MANIFEST_DIR/../../noir_smith" }
+noir_smith = { path = "$CARGO_MANIFEST_DIR/../noir_smith" }
 
 [profile.release]
 opt-level = 0

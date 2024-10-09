@@ -17,3 +17,4 @@ hfuzz_target
 hfuzz_workspace
 
 noir_fuzzers/corpus
+noir-minimizer/minimized_output

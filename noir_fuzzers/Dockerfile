@@ -15,8 +15,11 @@ WORKDIR /usr/src/noir_fuzzers
 # Copy the Cargo.toml
 COPY Cargo.toml ./
 
-# Copy the local crate if exists
+# Copy the noir smith directory
 COPY ./noir_smith ./noir_smith
+
+# Copy the dharma grammars
+COPY ./dharma_grammars ./dharma_grammars
 
 # Fetch dependencies
 RUN cargo fetch
@@ -30,20 +33,27 @@ RUN sed -i 's|git = "https://github.com/noir-lang/noir"|path = "/usr/src/noir_la
 # Copy the source code
 COPY . .
 
-# Build the project in release mode
-RUN cargo build --release
-
 # Create a minimal runtime image
 FROM debian:bullseye-slim
 
-# Copy the compiled binaries from the builder stage
-COPY --from=builder /usr/src/noir_fuzzers/target/release/basic_run /usr/local/bin/basic_run
-COPY --from=builder /usr/src/noir_fuzzers/target/release/basic_cmd_run /usr/local/bin/basic_cmd_run
-COPY --from=builder /usr/src/noir_fuzzers/target/release/reproducer /usr/local/bin/reproducer
-COPY --from=builder /usr/src/noir_fuzzers/target/release/hfuzz_run /usr/local/bin/hfuzz_run
-COPY --from=builder /usr/src/noir_fuzzers/target/release/hfuzz_cmd_run /usr/local/bin/hfuzz_cmd_run
-COPY --from=builder /usr/src/noir_fuzzers/target/release/hfuzz_run_parser /usr/local/bin/hfuzz_run_parser
-COPY --from=builder /usr/src/noir_fuzzers/target/release/dharma_grammar_run /usr/local/bin/dharma_grammar_run
+# Install Python, pip, and git
+RUN apt-get update && apt-get install -y python3 python3-pip git && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install dharma using pip
+RUN pip3 install dharma
+
+# Copy the Rust toolchain from the builder stage
+COPY --from=builder /usr/local/cargo /usr/local/cargo
+COPY --from=builder /usr/local/rustup /usr/local/rustup
+
+# Set environment variables for the Rust toolchain
+ENV CARGO_HOME=/usr/local/cargo
+ENV RUSTUP_HOME=/usr/local/rustup
+ENV PATH=$CARGO_HOME/bin:$PATH
+
+# Copy the source code from the builder stage
+COPY --from=builder /usr/src/noir_fuzzers /usr/src/noir_fuzzers
 
 # Copy the entrypoint script
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh

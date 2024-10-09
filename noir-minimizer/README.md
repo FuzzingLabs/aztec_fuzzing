@@ -2,7 +2,7 @@
 
 The noir minimizer takes a noir file which crash the compiler as input and tries to minimize it. 
 
-#### Requirements
+#### Requirements
 
 [Nargo](https://noir-lang.org/docs/getting_started/installation/)
 

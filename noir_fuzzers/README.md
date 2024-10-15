@@ -69,3 +69,25 @@ And then you can use the reproducer like this:
 ```bash
 cargo run --bin reproducer hfuzz_workspace/hfuzz_run/
 ```
+
+## Run a fuzzing campaign using Docker
+
+Build the Docker image : 
+
+```bash
+sudo docker build -t noir-fuzzer .
+```
+
+Run the fuzzer for 1 hour : 
+
+```bash
+docker run -it noir-fuzzer basic_run
+```
+
+If you want to reduce or increase the duration of the fuzzing campaign, you can edit this line in [entrypoint.sh](https://github.com/FuzzingLabs/aztec_fuzzing/blob/master/noir_fuzzers/entrypoint.sh) : 
+
+```bash
+timeout 3600 cargo run --bin "$1" || true
+```
+
+Once the fuzzer has finished running, you'll have access to a shell in a directory containing the crashes found by the fuzzer.

@@ -27,6 +27,8 @@
      ```
      The arguments specify that we want 4 threads (-n 4), a timeout of 30 seconds (-t 30), and the specified corpus as input (-i data_corpus).
    - Honggfuzz will execute and monitor the compiler, using the inputs from the corpus and generating new inputs to maximize code coverage.
+  
+     You can add the `-M` argument to enable corpus minimization.
 
 2. **Using `reproducer`:**
    - After running `hfuzz_run`, there might be several crashes found during the fuzzing session.

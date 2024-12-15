@@ -69,7 +69,7 @@ fn main() {
                 "--silence-warnings",
                 "--program-dir",
                 noir_project_dir.to_str().unwrap_or_else(|| {
-                    panic!("Impossible de convertir le chemin en chaîne UTF-8 valide")
+                    panic!("Failed to convert the path to a valid UTF-8 string")
                 }),
             ])
             .output();
